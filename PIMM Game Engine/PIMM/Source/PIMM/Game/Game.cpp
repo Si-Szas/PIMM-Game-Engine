@@ -47,6 +47,14 @@ pimm::Game::Game(const GameDescriptor& descriptor)
 
 pimm::Game::~Game()
 {
+	//Ensure proper clean up of IMGUI
+	if (ImGui::GetCurrentContext() != nullptr)
+	{
+		ImGui_ImplDX11_Shutdown();
+		ImGui_ImplWin32_Shutdown();
+		ImGui::DestroyContext();
+	}
+
 	PIMMLogInformation("Game is shutting down...");
 }
 
