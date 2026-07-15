@@ -20,21 +20,18 @@ pimm::Game::Game(const GameDescriptor& descriptor)
 	m_graphicsDevice = std::make_unique<GraphicsDevice>(GraphicsDeviceDescriptor{ *m_logger });
 	m_display = std::make_unique<Display>(DisplayDescriptor{ {*m_logger, descriptor.windowSize}, *m_graphicsDevice });
 	m_uiManager = std::make_unique<UIManager>(UIManagerDescriptor{ {*m_logger}, *m_graphicsDevice, m_display->GetHandle() });
-	m_worldRenderer = std::make_unique<WorldRenderer>(WorldRendererDescriptor{ {*m_logger}, *m_graphicsDevice, *m_uiManager });
-	//Initialize world
-	m_world = std::make_unique<World>(WorldDescriptor{ BaseDescriptor{*m_logger}, GameContext{*m_inputSystem}, {*m_worldRenderer} });
-	//Set world and uiManager in input system to be initialized since they were passed as null at first
-	
+
 	//Initialize the resource manager
 	m_resourceManager = std::make_unique<ResourceManager>(ResourceManagerDescriptor{ {*m_logger}, SystemContext{ *m_graphicsDevice } });
 	
 	//Initialize the world renderer
-	m_worldRenderer = std::make_unique<WorldRenderer>(WorldRendererDescriptor{ {*m_logger}, *m_graphicsDevice });
+	m_worldRenderer = std::make_unique<WorldRenderer>(WorldRendererDescriptor{ {*m_logger}, *m_graphicsDevice, *m_uiManager });
 	//Initialize world
 	m_world = std::make_unique<World>(WorldDescriptor{ BaseDescriptor{*m_logger}, GameContext{*m_inputSystem, *m_resourceManager}, {*m_worldRenderer} });
 	//Set world in input system to be initialized since it was passed as null at first
 	m_inputSystem->SetWorld(*m_world);
 	m_inputSystem->SetUIManager(*m_uiManager);
+
 	//TEMPORARY CURSOR LOCK
 	m_inputSystem->SetCursorLockArea(m_display->GetClientAreaInScreenSpace());
 	PIMMLogInformation("Game successfully initialized.");
