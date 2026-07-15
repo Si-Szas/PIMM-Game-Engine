@@ -19,6 +19,7 @@ namespace pimm
 			virtual World& GetWorld() noexcept final;
 			virtual Logger& GetLogger() noexcept final;
 			virtual InputSystem& GetInputSystem() noexcept final;
+			virtual ResourceManager& GetResourceManager() noexcept final;
 
 			//DESTRUCTOR
 			virtual ~Game();
@@ -42,6 +43,8 @@ namespace pimm
 			RefPtr<GraphicsDevice> m_graphicsDevice{};
 			//Using smart pointers avoid memory leaks in case a pointer is not deleted
 			UniquePtr<Display> m_display{};
+			//Unique pointer to resource manager
+			UniquePtr<ResourceManager> m_resourceManager{};
 			//Unique pointer to the world
 			UniquePtr<World> m_world{};
 			//World Renderer

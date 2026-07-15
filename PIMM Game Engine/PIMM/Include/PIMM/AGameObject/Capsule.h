@@ -2,6 +2,7 @@
 #include <PIMM/Core/Common.h>
 #include <PIMM/AGameObject/AGameObject.h>
 #include <PIMM/AComponent/CapsuleComponent.h>
+#include <PIMM/AComponent/MaterialComponent.h>
 
 namespace pimm
 {
@@ -20,6 +21,7 @@ namespace pimm
 
 		private:
 			CapsuleComponent* m_capsuleComponent{};
+			MaterialComponent* m_materialComponent{};
 
 			f32 height = 1.0f;
 			f32 radius = 0.5f;

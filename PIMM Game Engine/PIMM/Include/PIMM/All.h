@@ -30,3 +30,6 @@
 #include <PIMM/InputSystem/Commands/DeleteAGameObjectCommand.h>
 #include <PIMM/InputSystem/Commands/DeleteAllAGameObjectsCommand.h>
 #include <PIMM/InputSystem/Commands/ExitApplicationCommand.h>
+//MATERIALS//
+#include <PIMM/Resource/MaterialResource.h>
+#include <PIMM/Resource/ResourceManager.h>

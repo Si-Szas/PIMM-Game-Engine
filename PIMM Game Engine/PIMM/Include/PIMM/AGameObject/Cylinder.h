@@ -2,6 +2,7 @@
 #include <PIMM/Core/Common.h>
 #include <PIMM/AGameObject/AGameObject.h>
 #include <PIMM/AComponent/CylinderComponent.h>
+#include <PIMM/AComponent/MaterialComponent.h>
 
 namespace pimm
 {
@@ -19,6 +20,7 @@ namespace pimm
 
 		private:
 			CylinderComponent* m_cylinderComponent{};
+			MaterialComponent* m_materialComponent{};
 
 			//Defines how smooth the cylinder looks
 			f32 height = 1.0f;

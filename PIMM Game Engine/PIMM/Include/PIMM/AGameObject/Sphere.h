@@ -2,6 +2,7 @@
 #include <PIMM/Core/Common.h>
 #include <PIMM/AGameObject/AGameObject.h>
 #include <PIMM/AComponent/SphereComponent.h>
+#include <PIMM/AComponent/MaterialComponent.h>
 
 namespace pimm
 {
@@ -20,6 +21,7 @@ namespace pimm
 
 		private:
 			SphereComponent* m_sphereComponent{};
+			MaterialComponent* m_materialComponent{};
 
 			f32 radius = 0.5f;
 			ui32 sliceCount = 50 * radius;

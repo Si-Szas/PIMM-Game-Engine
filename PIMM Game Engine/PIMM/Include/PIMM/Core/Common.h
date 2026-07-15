@@ -28,6 +28,7 @@ namespace pimm
 	struct GameContext
 	{
 		InputSystem& inputSystem;
+		ResourceManager& resourceManager;
 	};
 
 	struct WorldRendererDescriptor 
@@ -174,5 +175,29 @@ namespace pimm
 	{
 		Rect windowSize{ 1280, 720 };
 		Logger::LogLevel logLevel = Logger::LogLevel::Error;
+	};
+
+	struct ResourceDescriptor
+	{
+		BaseDescriptor base;
+		const wchar_t* path{};
+		ResourceManager& manager;
+	};
+
+	struct MaterialResourceDescriptor
+	{
+		ResourceDescriptor base;
+		GraphicsDevice& graphicsDevice;
+	};
+
+	struct SystemContext
+	{
+		GraphicsDevice& graphicsDevice;
+	};
+
+	struct ResourceManagerDescriptor
+	{
+		BaseDescriptor base;
+		SystemContext systemContext;
 	};
 }

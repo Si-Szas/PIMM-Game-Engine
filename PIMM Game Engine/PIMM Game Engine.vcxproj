@@ -141,6 +141,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="PIMM\Source\PIMM\AComponent\MaterialComponent.cpp" />
+    <ClCompile Include="PIMM\Source\PIMM\Resource\MaterialResource.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Graphics\ImGui\imgui.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Graphics\ImGui\imgui_demo.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Graphics\ImGui\imgui_draw.cpp" />
@@ -193,8 +195,12 @@
     <ClCompile Include="PIMM\Source\PIMM\Graphics\VertexBuffer\VertexBuffer.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Graphics\VertexShaderSignature\VertexShaderSignature.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\AComponent\TransformComponent.cpp" />
+    <ClCompile Include="PIMM\Source\PIMM\Resource\Resource.cpp" />
+    <ClCompile Include="PIMM\Source\PIMM\Resource\ResourceManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="PIMM\Include\PIMM\AComponent\MaterialComponent.h" />
+    <ClInclude Include="PIMM\Include\PIMM\Resource\MaterialResource.h" />
     <ClInclude Include="PIMM\Include\PIMM\Graphics\ImGui\imconfig.h" />
     <ClInclude Include="PIMM\Include\PIMM\Graphics\ImGui\imgui.h" />
     <ClInclude Include="PIMM\Include\PIMM\Graphics\ImGui\imgui_impl_dx11.h" />
@@ -259,6 +265,8 @@
     <ClInclude Include="PIMM\Source\PIMM\Graphics\VertexBuffer\VertexBuffer.h" />
     <ClInclude Include="PIMM\Source\PIMM\Graphics\VertexShaderSignature\VertexShaderSignature.h" />
     <ClInclude Include="PIMM\Include\PIMM\AComponent\TransformComponent.h" />
+    <ClInclude Include="PIMM\Include\PIMM\Resource\Resource.h" />
+    <ClInclude Include="PIMM\Include\PIMM\Resource\ResourceManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

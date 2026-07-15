@@ -7,6 +7,7 @@
 #include <PIMM/Game/WorldRenderer.h>
 #include <PIMM/AGameObject/AGameObject.h>
 #include <PIMM/InputSystem/InputSystem.h>
+#include <PIMM/Resource/ResourceManager.h>
 
 pimm::Game::Game(const GameDescriptor& descriptor)
 {
@@ -19,9 +20,14 @@ pimm::Game::Game(const GameDescriptor& descriptor)
 	m_inputSystem = std::make_unique<InputSystem>(InputSystemDescriptor{ { *m_logger }, {nullptr} });
 	m_graphicsDevice = std::make_unique<GraphicsDevice>(GraphicsDeviceDescriptor{ *m_logger });
 	m_display = std::make_unique<Display>(DisplayDescriptor{ {*m_logger, descriptor.windowSize}, *m_graphicsDevice });
+	
+	//Initialize the resource manager
+	m_resourceManager = std::make_unique<ResourceManager>(ResourceManagerDescriptor{ {*m_logger}, SystemContext{ *m_graphicsDevice } });
+	
+	//Initialize the world renderer
 	m_worldRenderer = std::make_unique<WorldRenderer>(WorldRendererDescriptor{ {*m_logger}, *m_graphicsDevice });
 	//Initialize world
-	m_world = std::make_unique<World>(WorldDescriptor{ BaseDescriptor{*m_logger}, GameContext{*m_inputSystem}, {*m_worldRenderer} });
+	m_world = std::make_unique<World>(WorldDescriptor{ BaseDescriptor{*m_logger}, GameContext{*m_inputSystem, *m_resourceManager}, {*m_worldRenderer} });
 	//Set world in input system to be initialized since it was passed as null at first
 	m_inputSystem->SetWorld(*m_world);
 
@@ -75,6 +81,11 @@ pimm::Logger& pimm::Game::GetLogger() noexcept
 pimm::InputSystem& pimm::Game::GetInputSystem() noexcept
 {
 	return *m_inputSystem;
+}
+
+pimm::ResourceManager& pimm::Game::GetResourceManager() noexcept
+{
+	return *m_resourceManager;
 }
 
 pimm::World& pimm::Game::GetWorld() noexcept

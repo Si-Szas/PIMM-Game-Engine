@@ -2,6 +2,7 @@
 #include <PIMM/Core/Common.h>
 #include <PIMM/AGameObject/AGameObject.h>
 #include <PIMM/AComponent/QuadComponent.h>
+#include <PIMM/AComponent/MaterialComponent.h>
 
 namespace pimm
 {
@@ -20,5 +21,6 @@ namespace pimm
 
 		private:
 			QuadComponent* m_quadComponent{};
+			MaterialComponent* m_materialComponent{};
 	};
 }
