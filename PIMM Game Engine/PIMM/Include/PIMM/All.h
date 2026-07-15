@@ -30,3 +30,8 @@
 #include <PIMM/InputSystem/Commands/DeleteAGameObjectCommand.h>
 #include <PIMM/InputSystem/Commands/DeleteAllAGameObjectsCommand.h>
 #include <PIMM/InputSystem/Commands/ExitApplicationCommand.h>
+//UI
+#include <PIMM/Graphics/UIManager/UIManager.h>
+#include "UI/HierarchyPanel.h"
+#include "UI/InspectorPanel.h"
+#include "UI/AssetsPanel.h"

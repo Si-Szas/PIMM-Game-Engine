@@ -1,5 +1,6 @@
 #include <PIMM/InputSystem/InputSystem.h>
 #include <PIMM/Core/Identifier.h>
+#include <PIMM/Graphics/UIManager/UIManager.h>
 #include <PIMM/InputSystem/Commands/MoveForwardCommand.h>
 #include <PIMM/InputSystem/Commands/MoveLeftCommand.h>
 #include <PIMM/InputSystem/Commands/MoveBackwardCommand.h>
@@ -14,7 +15,8 @@
 
 pimm::InputSystem::InputSystem(const InputSystemDescriptor& descriptor) :
 	Base(descriptor.base),
-	m_world(descriptor.world)
+	m_world(descriptor.world),
+	m_uiManager(descriptor.uiManager)
 {
 	BindWKeyCommand(new MoveForwardCommand(descriptor));
 	BindAKeyCommand(new MoveLeftCommand(descriptor));
@@ -30,11 +32,18 @@ pimm::InputSystem::InputSystem(const InputSystemDescriptor& descriptor) :
 void pimm::InputSystem::Update()
 {
 	m_previousKeys = m_currentKeys;
+	m_previousMouseButtons = m_currentMouseButtons;
 
 	for (auto i : std::views::iota(0u, static_cast<std::size_t>(KeyCode::Count)))
 	{
 		const auto vk = GetInternalKeyCode(static_cast<KeyCode>(i));
 		m_currentKeys[i] = (GetAsyncKeyState(vk) & 0x8000) != 0;
+	}
+
+	for (auto i : std::views::iota(0u, static_cast<std::size_t>(MouseInput::Count)))
+	{
+		const auto vk = GetInternalMouseInput(static_cast<MouseInput>(i));
+		m_currentMouseButtons[i] = (GetAsyncKeyState(vk) & 0x8000) != 0;
 	}
 
 	m_previousMousePosition = m_mousePosition;
@@ -53,6 +62,12 @@ void pimm::InputSystem::Update()
 
 pimm::InputCommand* pimm::InputSystem::HandleInput()
 {
+	if (m_uiManager != nullptr &&
+		(m_uiManager->WantsCaptureMouse() || m_uiManager->WantsCaptureKeyboard()))
+	{
+		return NULL;
+	}
+
 	if (IsKeyDown(pimm::KeyCode::W)) return WKeyCommand;
 	else if (IsKeyDown(pimm::KeyCode::A)) return AKeyCommand;
 	else if (IsKeyDown(pimm::KeyCode::S)) return SKeyCommand;
@@ -191,6 +206,23 @@ bool pimm::InputSystem::IsKeyReleased(KeyCode key) const
 		m_previousKeys[static_cast<std::size_t>(key)];
 }
 
+bool pimm::InputSystem::IsMouseButtonDown(MouseInput button) const
+{
+	return m_currentMouseButtons[static_cast<std::size_t>(button)];
+}
+
+bool pimm::InputSystem::IsMouseButtonPressed(MouseInput button) const
+{
+	return m_currentMouseButtons[static_cast<std::size_t>(button)] &&
+		!m_previousMouseButtons[static_cast<std::size_t>(button)];
+}
+
+bool pimm::InputSystem::IsMouseButtonReleased(MouseInput button) const
+{
+	return !m_currentMouseButtons[static_cast<std::size_t>(button)] &&
+		m_previousMouseButtons[static_cast<std::size_t>(button)];
+}
+
 pimm::Vec2 pimm::InputSystem::GetMousePosition() const noexcept
 {
 	return m_mousePosition;
@@ -204,6 +236,11 @@ pimm::Vec2 pimm::InputSystem::GetMouseDelta() const noexcept
 void pimm::InputSystem::SetWorld(World& world)
 {
 	m_world = &world;
+}
+
+void pimm::InputSystem::SetUIManager(UIManager& uiManager)
+{
+	m_uiManager = &uiManager;
 }
 
 void pimm::InputSystem::SetCursorVisible(bool visible)
@@ -232,22 +269,22 @@ short pimm::InputSystem::GetInternalKeyCode(const KeyCode& key)
 	if (key >= KeyCode::A && key <= KeyCode::Z) return 'A' + (value - static_cast<int>(KeyCode::A));
 	//Key inputs from 0 to 9
 	if (key >= KeyCode::Num0 && key <= KeyCode::Num9) return '0' + (value - static_cast<int>(KeyCode::Num0));
-	
+
 	switch (key)
 	{
-		case KeyCode::Shift: return VK_SHIFT;
-		case KeyCode::Escape: return VK_ESCAPE;
-		case KeyCode::Space: return VK_SPACE;
-		case KeyCode::Enter: return VK_RETURN;
-		case KeyCode::LeftControl: return VK_LCONTROL;
-		case KeyCode::RightControl: return VK_RCONTROL;
-		case KeyCode::Up: return VK_UP;
-		case KeyCode::Down: return VK_DOWN;
-		case KeyCode::Left: return VK_LEFT;
-		case KeyCode::Right: return VK_RIGHT;
-		case KeyCode::Backspace: return VK_BACK;
-		case KeyCode::Delete: return VK_DELETE;
-		default: return 0;
+	case KeyCode::Shift: return VK_SHIFT;
+	case KeyCode::Escape: return VK_ESCAPE;
+	case KeyCode::Space: return VK_SPACE;
+	case KeyCode::Enter: return VK_RETURN;
+	case KeyCode::LeftControl: return VK_LCONTROL;
+	case KeyCode::RightControl: return VK_RCONTROL;
+	case KeyCode::Up: return VK_UP;
+	case KeyCode::Down: return VK_DOWN;
+	case KeyCode::Left: return VK_LEFT;
+	case KeyCode::Right: return VK_RIGHT;
+	case KeyCode::Backspace: return VK_BACK;
+	case KeyCode::Delete: return VK_DELETE;
+	default: return 0;
 	}
 }
 
@@ -255,10 +292,10 @@ short pimm::InputSystem::GetInternalMouseInput(const MouseInput& mouseInput)
 {
 	switch (mouseInput)
 	{
-		case MouseInput::MouseLeft: return VK_LBUTTON;
-		case MouseInput::MouseMiddle: return VK_MBUTTON;
-		case MouseInput::MouseRight: return VK_RBUTTON;
-		default: return 0;
+	case MouseInput::MouseLeft: return VK_LBUTTON;
+	case MouseInput::MouseMiddle: return VK_MBUTTON;
+	case MouseInput::MouseRight: return VK_RBUTTON;
+	default: return 0;
 	}
 }
 

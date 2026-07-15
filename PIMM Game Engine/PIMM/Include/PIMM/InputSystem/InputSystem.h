@@ -40,12 +40,16 @@ namespace pimm
 			bool IsKeyPressed(KeyCode key) const;
 			bool IsKeyReleased(KeyCode key) const;
 
+			bool IsMouseButtonDown(MouseInput button) const;
+			bool IsMouseButtonPressed(MouseInput button) const;
+			bool IsMouseButtonReleased(MouseInput button) const;
 			//GETTERS
 			Vec2 GetMousePosition() const noexcept;
 			Vec2 GetMouseDelta() const noexcept;
 
 			//SETTERS
 			void SetWorld(World& world);
+			void SetUIManager(UIManager& uiManager);
 			void SetCursorVisible(bool visible);
 			void SetCursorLocked(bool locked);
 			void SetCursorLockArea(const Rect& lockedArea);
@@ -63,6 +67,9 @@ namespace pimm
 			///// WORLD /////
 			World* m_world{};
 
+			///// UI /////
+			UIManager* m_uiManager{};
+
 			///// INPUT COMMANDS /////
 			InputCommand* WKeyCommand{};
 			InputCommand* AKeyCommand{};
@@ -79,6 +86,9 @@ namespace pimm
 
 			std::array<bool, static_cast<std::size_t>(KeyCode::Count)> m_currentKeys{};
 			std::array<bool, static_cast<std::size_t>(KeyCode::Count)> m_previousKeys{};
+
+			std::array<bool, static_cast<std::size_t>(MouseInput::Count)> m_currentMouseButtons{};
+			std::array<bool, static_cast<std::size_t>(MouseInput::Count)> m_previousMouseButtons{};
 
 			Vec2 m_mousePosition{};
 			Vec2 m_previousMousePosition{};

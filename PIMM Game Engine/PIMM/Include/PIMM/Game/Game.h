@@ -19,7 +19,7 @@ namespace pimm
 			virtual World& GetWorld() noexcept final;
 			virtual Logger& GetLogger() noexcept final;
 			virtual InputSystem& GetInputSystem() noexcept final;
-
+			pimm::UIManager* GetUIManager() noexcept { return m_uiManager.get(); }
 			//DESTRUCTOR
 			virtual ~Game();
 
@@ -31,6 +31,9 @@ namespace pimm
 			virtual void OnUpdate(f32 deltaTime) 
 			{
 			} 
+			virtual void OnUIRender()
+			{
+			}
 			
 		private:
 			void OnInternalUpdate(f32 deltaTime); //Act as a callback where we can place all the code that we need to execute each frame
@@ -42,6 +45,8 @@ namespace pimm
 			RefPtr<GraphicsDevice> m_graphicsDevice{};
 			//Using smart pointers avoid memory leaks in case a pointer is not deleted
 			UniquePtr<Display> m_display{};
+			// UI Manager
+			UniquePtr<UIManager> m_uiManager{};
 			//Unique pointer to the world
 			UniquePtr<World> m_world{};
 			//World Renderer
