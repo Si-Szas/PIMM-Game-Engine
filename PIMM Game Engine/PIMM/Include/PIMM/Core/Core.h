@@ -72,6 +72,11 @@ namespace pimm {
 	/////////// GAME LOOP - ENGINE TIME ///////////
 	class EngineTime;
 
+	///////////// MATERIALS /////////////
+	class ResourceManager;
+	class Resource;
+	class MaterialResource;
+
 	//Type Aliases
 	using i32 = int;
 	using ui32 = unsigned int;

@@ -47,6 +47,7 @@ namespace pimm
 			World& GetWorld() noexcept;
 			InputSystem& GetInputSystem() noexcept;
 			const WorldRenderer& GetWorldRenderer() noexcept;
+			ResourceManager& GetResourceManager() noexcept;
 
 			//Movement Modifiers
 			void ResetMovementModifiers();

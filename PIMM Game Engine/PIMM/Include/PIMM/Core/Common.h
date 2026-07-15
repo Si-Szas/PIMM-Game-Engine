@@ -28,6 +28,7 @@ namespace pimm
 	struct GameContext
 	{
 		InputSystem& inputSystem;
+		ResourceManager& resourceManager;
 	};
 
 	struct UIManagerDescriptor
@@ -187,4 +188,27 @@ namespace pimm
 		Logger::LogLevel logLevel = Logger::LogLevel::Error;
 	};
 
+	struct ResourceDescriptor
+	{
+		BaseDescriptor base;
+		const wchar_t* path{};
+		ResourceManager& manager;
+	};
+
+	struct MaterialResourceDescriptor
+	{
+		ResourceDescriptor base;
+		GraphicsDevice& graphicsDevice;
+	};
+
+	struct SystemContext
+	{
+		GraphicsDevice& graphicsDevice;
+	};
+
+	struct ResourceManagerDescriptor
+	{
+		BaseDescriptor base;
+		SystemContext systemContext;
+	};
 }

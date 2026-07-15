@@ -84,6 +84,12 @@ const pimm::WorldRenderer& pimm::AGameObject::GetWorldRenderer() noexcept
 	return m_worldRenderer;
 }
 
+pimm::ResourceManager& pimm::AGameObject::GetResourceManager() noexcept
+{
+	return m_gameContext.resourceManager;
+}
+
+
 void pimm::AGameObject::ResetMovementModifiers()
 {
 	forwardModifier = 0.0f;

@@ -8,6 +8,8 @@
 #include <PIMM/AGameObject/AGameObject.h>
 #include <PIMM/InputSystem/InputSystem.h>
 #include <PIMM/Graphics/UIManager/UIManager.h>
+#include <PIMM/Resource/ResourceManager.h>
+
 pimm::Game::Game(const GameDescriptor& descriptor)
 {
 	m_logger = std::make_unique<Logger>(descriptor.logLevel);
@@ -22,6 +24,15 @@ pimm::Game::Game(const GameDescriptor& descriptor)
 	//Initialize world
 	m_world = std::make_unique<World>(WorldDescriptor{ BaseDescriptor{*m_logger}, GameContext{*m_inputSystem}, {*m_worldRenderer} });
 	//Set world and uiManager in input system to be initialized since they were passed as null at first
+	
+	//Initialize the resource manager
+	m_resourceManager = std::make_unique<ResourceManager>(ResourceManagerDescriptor{ {*m_logger}, SystemContext{ *m_graphicsDevice } });
+	
+	//Initialize the world renderer
+	m_worldRenderer = std::make_unique<WorldRenderer>(WorldRendererDescriptor{ {*m_logger}, *m_graphicsDevice });
+	//Initialize world
+	m_world = std::make_unique<World>(WorldDescriptor{ BaseDescriptor{*m_logger}, GameContext{*m_inputSystem, *m_resourceManager}, {*m_worldRenderer} });
+	//Set world in input system to be initialized since it was passed as null at first
 	m_inputSystem->SetWorld(*m_world);
 	m_inputSystem->SetUIManager(*m_uiManager);
 	//TEMPORARY CURSOR LOCK
@@ -49,6 +60,12 @@ pimm::InputSystem& pimm::Game::GetInputSystem() noexcept
 {
 	return *m_inputSystem;
 }
+
+pimm::ResourceManager& pimm::Game::GetResourceManager() noexcept
+{
+	return *m_resourceManager;
+}
+
 pimm::World& pimm::Game::GetWorld() noexcept
 {
 	return *m_world;

@@ -35,3 +35,6 @@
 #include "UI/HierarchyPanel.h"
 #include "UI/InspectorPanel.h"
 #include "UI/AssetsPanel.h"
+//MATERIALS//
+#include <PIMM/Resource/MaterialResource.h>
+#include <PIMM/Resource/ResourceManager.h>

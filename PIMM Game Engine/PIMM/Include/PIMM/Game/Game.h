@@ -20,6 +20,8 @@ namespace pimm
 			virtual Logger& GetLogger() noexcept final;
 			virtual InputSystem& GetInputSystem() noexcept final;
 			pimm::UIManager* GetUIManager() noexcept { return m_uiManager.get(); }
+			virtual ResourceManager& GetResourceManager() noexcept final;
+
 			//DESTRUCTOR
 			virtual ~Game();
 
@@ -47,6 +49,8 @@ namespace pimm
 			UniquePtr<Display> m_display{};
 			// UI Manager
 			UniquePtr<UIManager> m_uiManager{};
+			//Unique pointer to resource manager
+			UniquePtr<ResourceManager> m_resourceManager{};
 			//Unique pointer to the world
 			UniquePtr<World> m_world{};
 			//World Renderer

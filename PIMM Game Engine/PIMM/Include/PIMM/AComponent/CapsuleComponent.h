@@ -1,6 +1,6 @@
 #pragma once
 #include <PIMM/Core/Common.h>
-#include <PIMM/AComponent/CylinderComponent.h>
+#include <PIMM/AComponent/AComponent.h>
 
 namespace pimm {
 	class CapsuleComponent final : public AComponent

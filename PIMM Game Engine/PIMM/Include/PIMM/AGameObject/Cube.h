@@ -2,6 +2,7 @@
 #include <PIMM/Core/Common.h>
 #include <PIMM/AGameObject/AGameObject.h>
 #include <PIMM/AComponent/CubeComponent.h>
+#include <PIMM/AComponent/MaterialComponent.h>
 
 namespace pimm 
 {
@@ -20,6 +21,7 @@ namespace pimm
 
 		private:
 			CubeComponent* m_cubeComponent{};
+			MaterialComponent* m_materialComponent{};
 	};
 }
 
