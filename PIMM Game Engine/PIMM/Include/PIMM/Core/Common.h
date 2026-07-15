@@ -30,10 +30,18 @@ namespace pimm
 		InputSystem& inputSystem;
 	};
 
+	struct UIManagerDescriptor
+	{
+		BaseDescriptor base;
+		GraphicsDevice& graphicsDevice;
+		void* windowHandle;
+	};
+
 	struct WorldRendererDescriptor 
 	{
 		BaseDescriptor base;
 		GraphicsDevice& graphicsEngine;
+		UIManager& uiManager;
 	};
 
 	struct GraphicsDeviceDescriptor
@@ -131,6 +139,7 @@ namespace pimm
 	{
 		BaseDescriptor base;
 		World* world;
+		UIManager* uiManager;
 	};
 
 	enum class KeyCode
@@ -161,7 +170,9 @@ namespace pimm
 	{
 		MouseLeft = 0,
 		MouseRight,
-		MouseMiddle
+		MouseMiddle,
+
+		Count
 	};
 
 	struct WorldDescriptor {
@@ -175,4 +186,5 @@ namespace pimm
 		Rect windowSize{ 1280, 720 };
 		Logger::LogLevel logLevel = Logger::LogLevel::Error;
 	};
+
 }

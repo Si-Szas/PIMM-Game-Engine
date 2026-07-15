@@ -6,6 +6,7 @@
 #include <PIMM/Graphics/VertexBuffer/VertexBuffer.h>
 #include <PIMM/Graphics/ConstantBuffer/ConstantBuffer.h>
 #include <PIMM/Graphics/IndexBuffer/IndexBuffer.h>
+#include <PIMM/Graphics/UIManager/UIManager.h>
 //GAME AND WORLD HEADER//
 #include <PIMM/Game/World.h>
 //GAME OBJECTS//
@@ -18,9 +19,6 @@
 #include <PIMM/AComponent/CubeComponent.h>
 #include <PIMM/AComponent/SphereComponent.h>
 #include <PIMM/AComponent/CameraComponent.h>
-//IMGUI//
-#include <PIMM/Graphics/ImGui/imgui_impl_dx11.h>
-#include <PIMM/Graphics/ImGui/imgui_impl_win32.h>
 
 #include <PIMM/Math/Vec2.h>
 #include <PIMM/Math/Vec3.h>
@@ -29,7 +27,8 @@
 
 pimm::WorldRenderer::WorldRenderer(const WorldRendererDescriptor& descriptor) :
 	Base(descriptor.base),
-	m_graphicsDevice(descriptor.graphicsEngine)
+	m_graphicsDevice(descriptor.graphicsEngine),
+	m_uiManager(descriptor.uiManager)
 {
 	//Creates the deferred device context
 	auto& device = m_graphicsDevice;
@@ -138,7 +137,7 @@ pimm::WorldRenderer::WorldRenderer(const WorldRendererDescriptor& descriptor) :
 	({
 		&m_dsConstantBuffer,
 		sizeof(ConstantData)
-	});
+		});
 
 	//We don't have any constant data to pass to the vertex, hull, or pixel shader
 	m_vsConstantBuffer = nullptr;
@@ -148,10 +147,10 @@ pimm::WorldRenderer::WorldRenderer(const WorldRendererDescriptor& descriptor) :
 }
 
 void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 deltaTime)
-{	
+{
 	////////// CAMERA SET-UP //////////
 	m_swapChainSize = swapChain.GetSize();;
-	
+
 	////////// DEVICE CONTEXT //////////
 	// - Update the constant buffer before everything
 	// - context.UpdateConstantBuffer(vsConstantBuffer, &data);
@@ -166,7 +165,7 @@ void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 d
 
 	////////// ACOMPONENTS //////////
 	auto numberOfComponents = 0u;
-	
+
 	////////// CONSTANT BUFFER DATA //////////
 	ConstantData data{};
 	{
@@ -230,58 +229,7 @@ void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 d
 	auto dsv = swapChain.GetDepthStencilView();
 	immediateContext->OMSetRenderTargets(1, &rtv, dsv);
 
-
-	//IMGUI
-	ImGui_ImplDX11_NewFrame();
-	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
-	// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-	if (show_demo_window)
-		ImGui::ShowDemoWindow(&show_demo_window);
-
-	// 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
-	{
-		static float f = 0.0f;
-		static int counter = 0;
-
-		ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-
-		ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-		ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
-		ImGui::Checkbox("Another Window", &show_another_window);
-
-		ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-		ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-		if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-			counter++;
-		ImGui::SameLine();
-		ImGui::Text("counter = %d", counter);
-
-		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-		ImGui::End();
-	}
-
-	// 3. Show another simple window.
-	if (show_another_window)
-	{
-		ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
-		ImGui::Text("Hello from another window!");
-		if (ImGui::Button("Close Me"))
-			show_another_window = false;
-		ImGui::End();
-	}
-
-	// Rendering
-	ImGui::Render();
-	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-
-	// Update and Render additional Platform Windows
-	if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-	{
-		ImGui::UpdatePlatformWindows();
-		ImGui::RenderPlatformWindowsDefault();
-	}
+	m_uiManager.Render();
 
 	//Present our back buffer with its rendered content on the window
 	swapChain.Present();

@@ -8,9 +8,6 @@
 #include <PIMM/Math/Matrix4x4.h>
 #include <vector>
 
-#include <PIMM/Graphics/ImGui/imgui_impl_dx11.h>
-#include <PIMM/Graphics/ImGui/imgui_impl_win32.h>
-
 namespace pimm
 {
 	//We don't want the graphics engine to be further dervied by other classes
@@ -41,7 +38,7 @@ namespace pimm
 
 		private:
 			Rect m_swapChainSize{};
-
+			UIManager& m_uiManager;
 			//Define a smart pointer to a render system variable of class Render System
 			GraphicsDevice& m_graphicsDevice;
 			RefPtr<DeviceContext> m_deviceContext{};
@@ -54,10 +51,6 @@ namespace pimm
 			RefPtr<ConstantBuffer> m_hsConstantBuffer{};
 			RefPtr<ConstantBuffer> m_dsConstantBuffer{};
 			RefPtr<ConstantBuffer> m_psConstantBuffer{};
-
-			bool show_demo_window = true;
-			bool show_another_window = false;
-			ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 	};
 }
 

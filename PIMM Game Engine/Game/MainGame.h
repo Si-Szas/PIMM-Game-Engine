@@ -12,7 +12,7 @@ class MainGame : public pimm::Game
 	protected:
 		virtual void OnCreate();
 		virtual void OnUpdate(pimm::f32 deltaTime);
-
+		void OnUIRender() override;
 	private:
 		//LIST OF GAME OBJECTS
 		//std::vector<pimm::AGameObject*> m_objectList{};

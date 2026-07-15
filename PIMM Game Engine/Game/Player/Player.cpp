@@ -31,13 +31,32 @@ void pimm::Player::OnUpdate(f32 deltaTime)
 	auto& inputSystem = GetInputSystem();
 
 	auto sensitivity = 0.1f;
-	auto rotation = GetTransform().GetRotation();
-	rotation.x += inputSystem.GetMouseDelta().y * sensitivity;
-	rotation.y += inputSystem.GetMouseDelta().x * sensitivity;
-	if (rotation.x > 100.0f) rotation.x = 100.0f;
-	else if (rotation.x < -100.0f) rotation.x = -100.0f;
-	GetTransform().SetRotation(rotation);
 
+	if (inputSystem.IsMouseButtonDown(MouseInput::MouseRight))
+	{
+		auto rotation = GetTransform().GetRotation();
+
+		rotation.x += inputSystem.GetMouseDelta().y * sensitivity;
+		rotation.y += inputSystem.GetMouseDelta().x * sensitivity;
+
+		if (rotation.x > 100.0f)
+			rotation.x = 100.0f;
+		else if (rotation.x < -100.0f)
+			rotation.x = -100.0f;
+
+		GetTransform().SetRotation(rotation);
+	}
+	if (inputSystem.IsMouseButtonPressed(MouseInput::MouseRight))
+	{
+		inputSystem.SetCursorVisible(false);
+		inputSystem.SetCursorLocked(true);
+	}
+
+	if (inputSystem.IsMouseButtonReleased(MouseInput::MouseRight))
+	{
+		inputSystem.SetCursorVisible(true);
+		inputSystem.SetCursorLocked(false);
+	}
 	auto position = GetTransform().GetPosition();
 
 	ResetMovementModifiers();

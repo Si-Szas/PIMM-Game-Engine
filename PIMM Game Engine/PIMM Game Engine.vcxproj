@@ -193,8 +193,12 @@
     <ClCompile Include="PIMM\Source\PIMM\Graphics\VertexBuffer\VertexBuffer.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Graphics\VertexShaderSignature\VertexShaderSignature.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\AComponent\TransformComponent.cpp" />
+    <ClCompile Include="PIMM\Source\PIMM\Graphics\UIManager\UIManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\UI\AssetsPanel.h" />
+    <ClInclude Include="Game\UI\HierarchyPanel.h" />
+    <ClInclude Include="Game\UI\InspectorPanel.h" />
     <ClInclude Include="PIMM\Include\PIMM\Graphics\ImGui\imconfig.h" />
     <ClInclude Include="PIMM\Include\PIMM\Graphics\ImGui\imgui.h" />
     <ClInclude Include="PIMM\Include\PIMM\Graphics\ImGui\imgui_impl_dx11.h" />
@@ -233,6 +237,7 @@
     <ClInclude Include="PIMM\Source\PIMM\Graphics\IndexBuffer\IndexBuffer.h" />
     <ClInclude Include="PIMM\Include\PIMM\AGameObject\AGameObject.h" />
     <ClInclude Include="PIMM\Include\PIMM\AGameObject\Quad.h" />
+    <ClInclude Include="PIMM\Source\PIMM\Graphics\UIManager\APanel.h" />
     <ClInclude Include="PIMM\Source\PIMM\Time\EngineTime.h" />
     <ClInclude Include="PIMM\Include\PIMM\Math\Matrix4x4.h" />
     <ClInclude Include="PIMM\Source\PIMM\Graphics\ConstantBuffer\ConstantBuffer.h" />
@@ -259,6 +264,7 @@
     <ClInclude Include="PIMM\Source\PIMM\Graphics\VertexBuffer\VertexBuffer.h" />
     <ClInclude Include="PIMM\Source\PIMM\Graphics\VertexShaderSignature\VertexShaderSignature.h" />
     <ClInclude Include="PIMM\Include\PIMM\AComponent\TransformComponent.h" />
+    <ClInclude Include="PIMM\Source\PIMM\Graphics\UIManager\UIManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -55,6 +55,10 @@ namespace pimm {
 		class SphereComponent;
 		class CylinderComponent;
 		class CapsuleComponent;
+
+	// ui //
+
+	class UIManager;
 	
 	///////////// INPUT SYSTEM /////////////
 	class InputSystem;
