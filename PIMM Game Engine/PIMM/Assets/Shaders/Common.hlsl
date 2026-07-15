@@ -46,3 +46,8 @@ cbuffer CameraData : register(b1)
     row_major float4x4 view;
     row_major float4x4 projection;
 }
+
+cbuffer MaterialData : register(b2)
+{
+    float3 materialColor;
+}

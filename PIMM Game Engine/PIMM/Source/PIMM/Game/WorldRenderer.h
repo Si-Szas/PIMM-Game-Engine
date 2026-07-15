@@ -29,9 +29,13 @@ namespace pimm
 			//DESTRUCTOR
 			virtual ~WorldRenderer() override;
 
-			struct alignas(16) ConstantData
+			struct alignas(16) ObjectData
 			{
 				Matrix4x4 world{};
+			};
+
+			struct alignas(16) CameraData
+			{
 				Matrix4x4 view{};
 				Matrix4x4 projection{};
 			};
@@ -47,10 +51,9 @@ namespace pimm
 			std::vector<RefPtr<VertexBuffer>> m_vertexBuffer{};
 			std::vector<RefPtr<IndexBuffer>> m_indexBuffer{};
 
-			RefPtr<ConstantBuffer> m_vsConstantBuffer{};
-			RefPtr<ConstantBuffer> m_hsConstantBuffer{};
-			RefPtr<ConstantBuffer> m_dsConstantBuffer{};
-			RefPtr<ConstantBuffer> m_psConstantBuffer{};
+			RefPtr<ConstantBuffer> m_objectConstantBuffer{};
+			RefPtr<ConstantBuffer> m_cameraConstantBuffer{};
+			RefPtr<ConstantBuffer> m_materialConstantBuffer{};
 	};
 }
 

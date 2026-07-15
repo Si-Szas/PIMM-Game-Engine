@@ -21,6 +21,6 @@ namespace pimm
 
 		private:
 			QuadComponent* m_quadComponent{};
-			MaterialComponent* m_materialComponent{};
+			//MaterialComponent* m_materialComponent{};
 	};
 }

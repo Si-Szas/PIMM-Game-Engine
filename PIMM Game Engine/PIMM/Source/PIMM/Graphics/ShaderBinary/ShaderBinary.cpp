@@ -1,6 +1,7 @@
 #include <PIMM/Graphics/ShaderBinary/ShaderBinary.h>
 #include <PIMM/Graphics/GraphicsUtility/GraphicsUtility.h>
 #include <d3dcompiler.h>
+#include <PIMM/Graphics/ShaderInclude/ShaderInclude.h>
 
 pimm::ShaderBinary::ShaderBinary(const ShaderCompileDescriptor& shaderCompileDescriptor, const GraphicsResourceDescriptor& graphicsResourceDescriptor) :
 	GraphicsResource(graphicsResourceDescriptor), m_type(shaderCompileDescriptor.shaderType)
@@ -19,6 +20,8 @@ pimm::ShaderBinary::ShaderBinary(const ShaderCompileDescriptor& shaderCompileDes
 		compileFlags |= D3DCOMPILE_DEBUG;
 	#endif
 	
+	ShaderInclude shaderInclude{};
+
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob;
 
 	//Compile HLSL source code into GPU executable bytecode
@@ -29,7 +32,7 @@ pimm::ShaderBinary::ShaderBinary(const ShaderCompileDescriptor& shaderCompileDes
 		shaderCompileDescriptor.shaderSourceCodeSize,	//Size in bytes
 		shaderCompileDescriptor.shaderSourceName,		//Name of the Source Files
 		nullptr,										//Optional list of macro definition (pre-processor)
-		nullptr,										//Interface used for handling include directives in shader source
+		&shaderInclude,									//Interface used for handling include directives in shader source
 		shaderCompileDescriptor.shaderEntryPoint,		//Name of function that acts as entry point for the shader
 		pimm::GraphicsUtility::GetShaderModelTarget(	//Shader model target. String that tells compiler what type of shader we are opening and the GPU feature we want to support
 			shaderCompileDescriptor.shaderType

@@ -109,6 +109,7 @@ void pimm::Sphere::OnCreate()
 		}));
 
 	m_sphereComponent = CreateOrGetComponent<SphereComponent>();
+	//m_materialComponent = CreateOrGetComponent<MaterialComponent>();
 }
 
 void pimm::Sphere::OnUpdate(f32 deltaTime)

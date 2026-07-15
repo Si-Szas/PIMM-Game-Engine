@@ -20,7 +20,7 @@ namespace pimm
 
 		private:
 			CylinderComponent* m_cylinderComponent{};
-			MaterialComponent* m_materialComponent{};
+			//MaterialComponent* m_materialComponent{};
 
 			//Defines how smooth the cylinder looks
 			f32 height = 1.0f;

@@ -22,8 +22,8 @@ pimm::ConstantBuffer::ConstantBuffer(const ConstantBufferDescriptor& constantBuf
 	PIMMGraphicsLogThrowOnFail(
 		m_d3dDevice.CreateBuffer
 		(
-			&bufferDescriptor,									//Pointer to a buffer descriptor. A structure that describes how the GPU buffer should be created
+			&bufferDescriptor,											//Pointer to a buffer descriptor. A structure that describes how the GPU buffer should be created
 			(constantBufferDescriptor.buffer) ? &initialData:nullptr,	//D3D11 Subresource data. Provides a way to supply initial CPU side data to the GPU resource during creation 
-			&m_buffer											//Output parameter. Hold the final buffer object
+			&m_buffer													//Output parameter. Hold the final buffer object
 		), "CreateBuffer() failed.");
 }

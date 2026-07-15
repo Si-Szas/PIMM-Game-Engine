@@ -20,12 +20,9 @@ struct DS_OUTPUT
     float4 color : COLOR0;
 };
 
-cbuffer ConstantData : register(b0)
+cbuffer MaterialData : register(b2)
 {
-    row_major float4x4 world;
-    row_major float4x4 view;
-    row_major float4x4 projection;
-   
+    float3 materialColor;
 }
 
 [domain("quad")]

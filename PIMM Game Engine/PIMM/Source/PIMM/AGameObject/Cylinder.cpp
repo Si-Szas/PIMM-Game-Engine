@@ -115,6 +115,7 @@ void pimm::Cylinder::OnCreate()
         }));
 
     m_cylinderComponent = CreateOrGetComponent<CylinderComponent>();
+    //m_materialComponent = CreateOrGetComponent<MaterialComponent>();
 }
 
 void pimm::Cylinder::OnUpdate(f32 deltaTime)

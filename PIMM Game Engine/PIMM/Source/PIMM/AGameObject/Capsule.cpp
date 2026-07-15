@@ -129,6 +129,7 @@ void pimm::Capsule::OnCreate()
         }));
 
     m_capsuleComponent = CreateOrGetComponent<CapsuleComponent>();
+    //m_materialComponent = CreateOrGetComponent<MaterialComponent>();
 }
 
 void pimm::Capsule::OnUpdate(f32 deltaTime)

@@ -203,6 +203,7 @@
     <ClInclude Include="Game\UI\InspectorPanel.h" />
     <ClCompile Include="PIMM\Source\PIMM\Resource\Resource.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Resource\ResourceManager.cpp" />
+    <ClInclude Include="PIMM\Source\PIMM\Graphics\ShaderInclude\ShaderInclude.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PIMM\Include\PIMM\AComponent\MaterialComponent.h" />

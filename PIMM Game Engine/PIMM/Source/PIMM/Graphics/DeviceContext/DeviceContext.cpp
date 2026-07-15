@@ -145,53 +145,67 @@ void pimm::DeviceContext::SetVertexBuffer(const VertexBuffer& buffer)
 	);
 }
 
-void pimm::DeviceContext::SetAllConstantBuffer(ui32 startSlot, ui32 numberOfBuffers, const ConstantBuffer& buffer)
+void pimm::DeviceContext::SetConstantBuffers(const std::span<ConstantBuffer*>& buffers)
 {
-	if (&buffer)
+	if (!buffers.size())
 	{
-		auto buff = buffer.m_buffer.Get();
-		m_context->VSSetConstantBuffers(startSlot, numberOfBuffers, &buff);
-		m_context->HSSetConstantBuffers(startSlot, numberOfBuffers, &buff);
-		m_context->DSSetConstantBuffers(startSlot, numberOfBuffers, &buff);
-		m_context->PSSetConstantBuffers(startSlot, numberOfBuffers, &buff);
+		PIMMLogError("No buffer passed to SetConstantBuffers()");
+		return;
 	}
+
+	if (buffers.size() > MaxConstantBuffersPerScene)
+	{
+		PIMMLogWarning("Number of buffers exceeds {}. Extra buffers will be ignored.", MaxConstantBuffersPerScene)
+	}
+
+	auto buffSize = static_cast<UINT>(std::min(buffers.size(), MaxConstantBuffersPerScene));
+	for (auto i = 0u; i < buffSize; i++)
+	{
+		m_constantBuffers[i] = (buffers[i]->m_buffer.Get());
+	}
+
+	m_context->VSSetConstantBuffers(0, buffSize, m_constantBuffers);
+	m_context->HSSetConstantBuffers(0, buffSize, m_constantBuffers);
+	m_context->DSSetConstantBuffers(0, buffSize, m_constantBuffers);
+	m_context->PSSetConstantBuffers(0, buffSize, m_constantBuffers);
+
 }
 
-void pimm::DeviceContext::SetVSConstantBuffer(ui32 startSlot, ui32 numberOfBuffers, const ConstantBuffer& buffer)
-{
-	if (&buffer)
-	{
-		auto buff = buffer.m_buffer.Get();
-		m_context->VSSetConstantBuffers(startSlot, numberOfBuffers, &buff);
-	}
-}
-
-void pimm::DeviceContext::SetHSConstantBuffer(ui32 startSlot, ui32 numberOfBuffers, const ConstantBuffer& buffer)
-{
-	if (&buffer)
-	{
-		auto buff = buffer.m_buffer.Get();
-		m_context->HSSetConstantBuffers(startSlot, numberOfBuffers, &buff);
-	}
-}
-
-void pimm::DeviceContext::SetDSConstantBuffer(ui32 startSlot, ui32 numberOfBuffers, const ConstantBuffer& buffer)
-{
-	if (&buffer)
-	{
-		auto buff = buffer.m_buffer.Get();
-		m_context->DSSetConstantBuffers(startSlot, numberOfBuffers, &buff);
-	}
-}
-
-void pimm::DeviceContext::SetPSConstantBuffer(ui32 startSlot, ui32 numberOfBuffers, const ConstantBuffer& buffer)
-{
-	if (&buffer)
-	{
-		auto buff = buffer.m_buffer.Get();
-		m_context->PSSetConstantBuffers(startSlot, numberOfBuffers, &buff);
-	}
-}
+//void pimm::DeviceContext::SetVSConstantBuffer(ui32 startSlot, ui32 numberOfBuffers, const ConstantBuffer& buffer)
+//{
+//	if (&buffer)
+//	{
+//		auto buff = buffer.m_buffer.Get();
+//		m_context->VSSetConstantBuffers(startSlot, numberOfBuffers, &buff);
+//	}
+//}
+//
+//void pimm::DeviceContext::SetHSConstantBuffer(ui32 startSlot, ui32 numberOfBuffers, const ConstantBuffer& buffer)
+//{
+//	if (&buffer)
+//	{
+//		auto buff = buffer.m_buffer.Get();
+//		m_context->HSSetConstantBuffers(startSlot, numberOfBuffers, &buff);
+//	}
+//}
+//
+//void pimm::DeviceContext::SetDSConstantBuffer(ui32 startSlot, ui32 numberOfBuffers, const ConstantBuffer& buffer)
+//{
+//	if (&buffer)
+//	{
+//		auto buff = buffer.m_buffer.Get();
+//		m_context->DSSetConstantBuffers(startSlot, numberOfBuffers, &buff);
+//	}
+//}
+//
+//void pimm::DeviceContext::SetPSConstantBuffer(ui32 startSlot, ui32 numberOfBuffers, const ConstantBuffer& buffer)
+//{
+//	if (&buffer)
+//	{
+//		auto buff = buffer.m_buffer.Get();
+//		m_context->PSSetConstantBuffers(startSlot, numberOfBuffers, &buff);
+//	}
+//}
 
 //void pimm::DeviceContext::SetConstantBuffer(const ConstantBuffer& vsConstantBuffer, const ConstantBuffer& psConstantBuffer)
 //{
@@ -226,16 +240,24 @@ Microsoft::WRL::ComPtr<ID3D11DeviceContext> pimm::DeviceContext::GetD3D11DeviceC
 }
 
 
-void pimm::DeviceContext::UpdateConstantBuffer(const ConstantBuffer& buffer, const void* data)
+void pimm::DeviceContext::UpdateConstantBuffer(const ConstantBuffer& buffer, const std::span<const std::byte>& data)
 {
 	//Means the buffer provided is a nullptr
 	if (!&buffer) return;
 
-	if (!data)
+	auto dataSize = static_cast<ui32>(data.size());
+	if (!dataSize)
 	{
-		PIMMLogError("Null data pointer passed to UpdateConstantBuffer()");
+		PIMMLogError("No data passed to UpdateConstantBuffer()");
 		return;
 	}
+
+	if (dataSize > buffer.m_size)
+	{
+		PIMMLogWarning("Buffer size ({} bytes) exceeds the constant buffer limit ({} bytes). Extra bytes will be ignored.", dataSize, buffer.m_size);
+	}
+
+	dataSize = std::min(dataSize, buffer.m_size);
 
 	auto buff = buffer.m_buffer.Get();
 
@@ -256,7 +278,7 @@ void pimm::DeviceContext::UpdateConstantBuffer(const ConstantBuffer& buffer, con
 		return;
 	}
 
-	std::memcpy(mapped.pData, data, buffer.m_size);
+	std::memcpy(mapped.pData, data.data(), buffer.m_size);
 	m_context->Unmap(buff, 0);
 }
 

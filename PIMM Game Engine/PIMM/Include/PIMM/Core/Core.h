@@ -55,6 +55,7 @@ namespace pimm {
 		class SphereComponent;
 		class CylinderComponent;
 		class CapsuleComponent;
+		class MaterialComponent;
 
 	// ui //
 

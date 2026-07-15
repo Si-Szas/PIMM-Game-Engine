@@ -21,7 +21,7 @@ namespace pimm
 
 		private:
 			CubeComponent* m_cubeComponent{};
-			MaterialComponent* m_materialComponent{};
+			//MaterialComponent* m_materialComponent{};
 	};
 }
 

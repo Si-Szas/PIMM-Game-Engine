@@ -11,6 +11,7 @@
 #include <PIMM/Game/World.h>
 //GAME OBJECTS//
 #include <PIMM/AGameObject/AGameObject.h>
+#include <PIMM/AGameObject/Quad.h>
 #include <PIMM/AGameObject/Cube.h>
 #include <PIMM/AGameObject/Sphere.h>
 //COMPONENTS//
@@ -19,6 +20,8 @@
 #include <PIMM/AComponent/CubeComponent.h>
 #include <PIMM/AComponent/SphereComponent.h>
 #include <PIMM/AComponent/CameraComponent.h>
+//MATERIALS//
+#include <PIMM/Resource/MaterialResource.h>
 
 #include <PIMM/Math/Vec2.h>
 #include <PIMM/Math/Vec3.h>
@@ -34,116 +37,24 @@ pimm::WorldRenderer::WorldRenderer(const WorldRendererDescriptor& descriptor) :
 	auto& device = m_graphicsDevice;
 	m_deviceContext = device.CreateDeviceContext();
 
-	//Define the Shader File Path
-		// Relative paths are relative to the root of project folder (DirectX Game Folder)
-	constexpr char vertexShaderFilePath[] = "PIMM/Assets/Shaders/VertexShader.hlsl";
-	//Read the contents of the shader file
-	std::ifstream vertexShaderStream(vertexShaderFilePath);
-	if (!vertexShaderStream) PIMMLogThrowError("Failed to open VertexShader.hlsl file.");
-	//Retrieve file data. So calling Range would call the entire shader into a string
-	std::string vertexShaderFileData{
-		std::istreambuf_iterator<char>(vertexShaderStream),	//Beginning of the file
-		std::istreambuf_iterator<char>()				//Beginning of the end
-	};
-
-	//Create a ShaderSourceCode using constexpr (evaluate value at compile time)
-	auto vertexShaderSourceCode = vertexShaderFileData.c_str();
-	auto vertexShaderSourceCodeSize = vertexShaderFileData.length();
-
-	//Call our compile shader method, pass the shader we created
-		//VERTEX SHADER
-	auto vs = device.CompileShader({
-		vertexShaderFilePath,
-		vertexShaderSourceCode,
-		vertexShaderSourceCodeSize,
-		"VS_Main",
-		ShaderType::VertexShader
-		});
-
-	//Define Shader File Path for Hull Shader
-	constexpr char hullShaderFilePath[] = "PIMM/Assets/Shaders/HullShader.hlsl";
-	std::ifstream hullShaderStream(hullShaderFilePath);
-	if (!hullShaderStream) PIMMLogThrowError("Failed to open HullShader.hlsl file.");
-
-	std::string hullShaderFileData{
-		std::istreambuf_iterator<char>(hullShaderStream),	//Beginning of the file
-		std::istreambuf_iterator<char>()				//Beginning of the end
-	};
-
-	auto hullShaderSourceCode = hullShaderFileData.c_str();
-	auto hullShaderSourceCodeSize = hullShaderFileData.length();
-
-	//Compile Hull Shader
-	auto hs = device.CompileShader({
-		hullShaderFilePath,
-		hullShaderSourceCode,
-		hullShaderSourceCodeSize,
-		"HS_Main",
-		ShaderType::HullShader
-		});
-
-	//Define Shader File Path for Domain Shader
-	constexpr char domainShaderFilePath[] = "PIMM/Assets/Shaders/DomainShader.hlsl";
-	std::ifstream domainShaderStream(domainShaderFilePath);
-	if (!domainShaderStream) PIMMLogThrowError("Failed to open DomainShader.hlsl file.");
-
-	std::string domainShaderFileData{
-		std::istreambuf_iterator<char>(domainShaderStream),	//Beginning of the file
-		std::istreambuf_iterator<char>()				//Beginning of the end
-	};
-
-	auto domainShaderSourceCode = domainShaderFileData.c_str();
-	auto domainShaderSourceCodeSize = domainShaderFileData.length();
-
-	//Compile Domain Shader
-	auto ds = device.CompileShader({
-		domainShaderFilePath,
-		domainShaderSourceCode,
-		domainShaderSourceCodeSize,
-		"DS_Main",
-		ShaderType::DomainShader
-		});
-
-	constexpr char pixelShaderFilePath[] = "PIMM/Assets/Shaders/PixelShader.hlsl";
-	//Read the contents of the shader file
-	std::ifstream pixelShaderStream(pixelShaderFilePath);
-	if (!pixelShaderStream) PIMMLogThrowError("Failed to open PixelShader.hlsl file.");
-	//Retrieve file data. So calling Range would call the entire shader into a string
-	std::string pixelShaderFileData{
-		std::istreambuf_iterator<char>(pixelShaderStream),	//Beginning of the file
-		std::istreambuf_iterator<char>()				//Beginning of the end
-	};
-
-	//Create a ShaderSourceCode using constexpr (evaluate value at compile time)
-	auto pixelShaderSourceCode = pixelShaderFileData.c_str();
-	auto pixelShaderSourceCodeSize = pixelShaderFileData.length();
-
-	//PIXEL SHADER
-	auto ps = device.CompileShader({
-		pixelShaderFilePath,
-		pixelShaderSourceCode,
-		pixelShaderSourceCodeSize,
-		"PS_Main",
-		ShaderType::PixelShader
-		});
-
-	auto vertexShaderSignature = device.CreateVertexShaderSignature({ vs });
-
-	//Create Graphics Pipeline State
-	m_pipeline = device.CreateGraphicsPipelineState({ *vertexShaderSignature, *ps, *hs, *ds });
-
 	//Create constant buffer
-	m_dsConstantBuffer = device.CreateConstantBuffer
+	m_objectConstantBuffer = device.CreateConstantBuffer
 	({
-		&m_dsConstantBuffer,
-		sizeof(ConstantData)
-		});
+		{},
+		sizeof(ObjectData)
+	});
 
-	//We don't have any constant data to pass to the vertex, hull, or pixel shader
-	m_vsConstantBuffer = nullptr;
-	m_hsConstantBuffer = nullptr;
-	m_psConstantBuffer = nullptr;
+	m_cameraConstantBuffer = device.CreateConstantBuffer
+	({
+		{},
+		sizeof(CameraData)
+	});
 
+	m_materialConstantBuffer = device.CreateConstantBuffer
+	({
+		{},
+		pimm::MaterialResource::MaxDataSize
+	});
 }
 
 void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 deltaTime)
@@ -160,79 +71,80 @@ void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 d
 	//	- Bind all objects inside graphics pipeline state (shaders) to actual GPU pipeline
 	auto& context = *m_deviceContext;
 	context.ClearAndSetBackBuffer(swapChain, { 0.251f, 0.141f, 0.31f, 1.0f });
-	context.SetGraphicsPipelineState(*m_pipeline);
 	context.SetViewportSize(m_swapChainSize);
 
 	////////// ACOMPONENTS //////////
 	auto numberOfComponents = 0u;
 
 	////////// CONSTANT BUFFER DATA //////////
-	ConstantData data{};
+	auto& cameraCB = *m_cameraConstantBuffer;
+	auto& objectCB = *m_objectConstantBuffer;
+	auto& materialCB = *m_materialConstantBuffer;
+
 	{
-		auto cameraComponents = world.GetAComponent<CameraComponent>(numberOfComponents);
-
-		for (auto i : std::views::iota(0u, numberOfComponents))
+		////////// CONSTANT BUFFER DATA //////////
+		CameraData cameraData{};
 		{
-			auto camComponent = cameraComponents[i];
-			data.view = camComponent->GetViewMatrix();
-			camComponent->SetViewportSize(m_swapChainSize);
-			data.projection = camComponent->GetProjectionMatrix();
-			break;
+			auto cameraComponents = world.GetAComponent<CameraComponent>(numberOfComponents);
+
+			for (auto i : std::views::iota(0u, numberOfComponents))
+			{
+				auto camComponent = cameraComponents[i];
+				cameraData.view = camComponent->GetViewMatrix();
+				camComponent->SetViewportSize(m_swapChainSize);
+				cameraData.projection = camComponent->GetProjectionMatrix();
+				context.UpdateConstantBuffer(cameraCB, std::as_bytes(std::span{ &cameraData, 1 }));
+				break;
+			}
 		}
-	}
-	{
-		auto gameObjects = world.GetAllGameObjects();
-		ui32 totalGameObjects = static_cast<ui32>(gameObjects.size());
-
-		//std::cout << "[LOG] Current Game Objects No.: " << totalGameObjects << std::endl;
-
-		for (auto i : std::views::iota(0u, totalGameObjects))
 		{
-			auto object = gameObjects[i];
-			if (!object) continue;
-			auto& transform = object->GetTransform();
-			size_t objectType = object->GetTypeID();
+			ObjectData objectData{};
+			auto gameObjects = world.GetAllGameObjects();
+			ui32 totalGameObjects = static_cast<ui32>(gameObjects.size());
 
-			data.world = transform.GetAffineWorldMatrix();
+			//std::cout << "[LOG] Current Game Objects No.: " << totalGameObjects << std::endl;
 
-			////////// UPDATE EACH CONSTANT BUFFER PASSED TO THE SHADERS //////////
-			auto& vsConstantBuffer = *m_vsConstantBuffer;
-			auto& hsConstantBuffer = *m_hsConstantBuffer;
-			auto& dsConstantBuffer = *m_dsConstantBuffer;
-			auto& psConstantBuffer = *m_psConstantBuffer;
-			context.UpdateConstantBuffer(vsConstantBuffer, &data);
-			context.UpdateConstantBuffer(hsConstantBuffer, &data);
-			context.UpdateConstantBuffer(dsConstantBuffer, &data);
-			context.UpdateConstantBuffer(psConstantBuffer, &data);
+			for (auto i : std::views::iota(0u, totalGameObjects))
+			{
+				auto object = gameObjects[i];
+				if (!object) continue;
+				auto& transform = object->GetTransform();
+				size_t objectType = object->GetTypeID();
+				auto material = object->GetMaterialComponent().GetMaterial();
 
-			auto& vb = *m_vertexBuffer[object->GetVertexOffset()];
-			auto& ib = *m_indexBuffer[object->GetIndexLocation()];
+				if (material)
+				{
+					objectData.world = transform.GetAffineWorldMatrix();
 
-			context.SetVertexBuffer(vb);
-			////////// SET EACH CONSTANT BUFFER PASSED TO THE SHADERS //////////
-			context.SetVSConstantBuffer(0, 1, vsConstantBuffer);
-			context.SetHSConstantBuffer(0, 1, hsConstantBuffer);
-			context.SetDSConstantBuffer(0, 1, dsConstantBuffer);
-			context.SetPSConstantBuffer(0, 1, psConstantBuffer);
+					context.SetGraphicsPipelineState(material->GetGraphicsPipelineState());
+					context.UpdateConstantBuffer(objectCB, std::as_bytes(std::span{ &objectData, 1 }));
+					context.UpdateConstantBuffer(materialCB, material->GetData());
+					ConstantBuffer* cbs[] = { &objectCB, &cameraCB, &materialCB };
+					context.SetConstantBuffers(std::span<ConstantBuffer*>{cbs});
 
-			context.SetIndexBuffer(ib);
-			context.Draw4PatchIndexedTriangleList(ib.GetIndexListSize(), 0u, 0u);
+					auto& vb = *m_vertexBuffer[object->GetVertexOffset()];
+					auto& ib = *m_indexBuffer[object->GetIndexLocation()];
+					context.SetVertexBuffer(vb);
+					context.SetIndexBuffer(ib);
+					context.Draw4PatchIndexedTriangleList(ib.GetIndexListSize(), 0u, 0u);
+				}
+			}
 		}
+
+		//Pass device context where we will extract the commands from
+		m_graphicsDevice.ExecuteCommandList(context);
+
+		auto immediateContext = m_graphicsDevice.GetD3DDeviceContext();
+		m_deviceContext->ExecuteCommandList(immediateContext);
+		auto rtv = swapChain.GetRenderTargetView();
+		auto dsv = swapChain.GetDepthStencilView();
+		immediateContext->OMSetRenderTargets(1, &rtv, dsv);
+
+		m_uiManager.Render();
+
+		//Present our back buffer with its rendered content on the window
+		swapChain.Present();
 	}
-
-	//Pass device context where we will extract the commands from
-	m_graphicsDevice.ExecuteCommandList(context);
-
-	auto immediateContext = m_graphicsDevice.GetD3DDeviceContext();
-	m_deviceContext->ExecuteCommandList(immediateContext);
-	auto rtv = swapChain.GetRenderTargetView();
-	auto dsv = swapChain.GetDepthStencilView();
-	immediateContext->OMSetRenderTargets(1, &rtv, dsv);
-
-	m_uiManager.Render();
-
-	//Present our back buffer with its rendered content on the window
-	swapChain.Present();
 }
 
 pimm::GraphicsDevice& pimm::WorldRenderer::GetGraphicsDevice() const noexcept

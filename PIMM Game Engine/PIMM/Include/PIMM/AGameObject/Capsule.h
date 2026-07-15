@@ -21,7 +21,7 @@ namespace pimm
 
 		private:
 			CapsuleComponent* m_capsuleComponent{};
-			MaterialComponent* m_materialComponent{};
+			//MaterialComponent* m_materialComponent{};
 
 			f32 height = 1.0f;
 			f32 radius = 0.5f;

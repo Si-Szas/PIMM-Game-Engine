@@ -49,6 +49,9 @@ namespace pimm
 			const WorldRenderer& GetWorldRenderer() noexcept;
 			ResourceManager& GetResourceManager() noexcept;
 
+			//Get the material component
+			MaterialComponent& GetMaterialComponent() noexcept;
+
 			//Movement Modifiers
 			void ResetMovementModifiers();
 
@@ -84,6 +87,8 @@ namespace pimm
 			
 			// COMPONENTS SHARED BY ALL GAME OBJECTS
 			TransformComponent* m_transform{};
+			MaterialComponent* m_material{};
+
 			GameContext m_gameContext;
 			World& m_world;
 			const WorldRenderer& m_worldRenderer;

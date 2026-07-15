@@ -21,7 +21,7 @@ namespace pimm
 
 		private:
 			SphereComponent* m_sphereComponent{};
-			MaterialComponent* m_materialComponent{};
+			//MaterialComponent* m_materialComponent{};
 
 			f32 radius = 0.5f;
 			ui32 sliceCount = 50 * radius;

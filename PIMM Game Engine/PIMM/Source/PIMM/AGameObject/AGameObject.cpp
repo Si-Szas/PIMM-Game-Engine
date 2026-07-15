@@ -1,6 +1,7 @@
 #include <PIMM/AGameObject/AGameObject.h>
 #include <PIMM/AComponent/AComponent.h>
 #include <PIMM/AComponent/TransformComponent.h>
+#include <PIMM/AComponent/MaterialComponent.h>
 #include <PIMM/Game/World.h>
 #include <PIMM/Game/WorldRenderer.h>
 
@@ -11,6 +12,7 @@ pimm::AGameObject::AGameObject(const AGameObjectDescriptor& descriptor) :
 	m_worldRenderer(descriptor.worldRenderer)
 {
 	m_transform = CreateOrGetComponent<TransformComponent>();
+	m_material = CreateOrGetComponent<MaterialComponent>();
 }
 
 pimm::AGameObject::~AGameObject()
@@ -89,6 +91,10 @@ pimm::ResourceManager& pimm::AGameObject::GetResourceManager() noexcept
 	return m_gameContext.resourceManager;
 }
 
+pimm::MaterialComponent& pimm::AGameObject::GetMaterialComponent() noexcept
+{
+	return *m_material;
+}
 
 void pimm::AGameObject::ResetMovementModifiers()
 {

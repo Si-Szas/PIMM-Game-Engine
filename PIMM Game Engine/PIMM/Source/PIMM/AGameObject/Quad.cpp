@@ -43,6 +43,7 @@ void pimm::Quad::OnCreate()
 		}));
 
 	m_quadComponent = CreateOrGetComponent<QuadComponent>();
+	//m_materialComponent = CreateOrGetComponent<MaterialComponent>();
 }
 
 void pimm::Quad::OnUpdate(f32 deltaTime) {
