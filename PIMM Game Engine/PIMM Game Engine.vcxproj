@@ -199,6 +199,20 @@
     <ClInclude Include="Game\UI\AssetsPanel.h" />
     <ClInclude Include="Game\UI\HierarchyPanel.h" />
     <ClInclude Include="Game\UI\InspectorPanel.h" />
+<<<<<<< Updated upstream
+=======
+    <ClCompile Include="PIMM\Source\PIMM\Resource\Resource.cpp" />
+    <ClCompile Include="PIMM\Source\PIMM\Resource\ResourceManager.cpp" />
+    <ClInclude Include="Game\UI\ScenePanel.h" />
+    <ClInclude Include="PIMM\Source\PIMM\Graphics\ShaderInclude\ShaderInclude.h" />
+    <ClInclude Include="PIMM\Include\PIMM\Resource\TextureResource.h" />
+    <ClInclude Include="PIMM\Source\PIMM\Graphics\Texture\Texture.h" />
+    <ClInclude Include="PIMM\Source\PIMM\Graphics\Sampler\Sampler.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="PIMM\Include\PIMM\AComponent\MaterialComponent.h" />
+    <ClInclude Include="PIMM\Include\PIMM\Resource\MaterialResource.h" />
+>>>>>>> Stashed changes
     <ClInclude Include="PIMM\Include\PIMM\Graphics\ImGui\imconfig.h" />
     <ClInclude Include="PIMM\Include\PIMM\Graphics\ImGui\imgui.h" />
     <ClInclude Include="PIMM\Include\PIMM\Graphics\ImGui\imgui_impl_dx11.h" />

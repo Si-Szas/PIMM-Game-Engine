@@ -2,9 +2,11 @@
 #include <PIMM/Graphics/UIManager/APanel.h>
 #include <PIMM/Graphics/ImGui/imgui.h>
 
-class AssetsPanel : public pimm::APanel
+class AssetsPanel final : public pimm::APanel
 {
 public:
+	AssetsPanel() : APanel("Assets") {} 
+
     void Render() override
     {
         ImGui::Begin("Assets");
