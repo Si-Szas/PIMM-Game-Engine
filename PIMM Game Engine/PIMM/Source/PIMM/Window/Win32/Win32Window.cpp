@@ -3,8 +3,8 @@
 #include <stdexcept>
 
 //IMGUI//
-#include <PIMM/Graphics/ImGui/imgui_impl_dx11.h>
-#include <PIMM/Graphics/ImGui/imgui_impl_win32.h>
+#include <PIMM/ImGui/imgui_impl_dx11.h>
+#include <PIMM/ImGui/imgui_impl_win32.h>
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 static LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)

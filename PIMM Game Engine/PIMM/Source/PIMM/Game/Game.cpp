@@ -7,7 +7,7 @@
 #include <PIMM/Game/WorldRenderer.h>
 #include <PIMM/AGameObject/AGameObject.h>
 #include <PIMM/InputSystem/InputSystem.h>
-#include <PIMM/Graphics/UIManager/UIManager.h>
+#include <PIMM/UIManager/UIManager.h>
 #include <PIMM/Resource/ResourceManager.h>
 
 pimm::Game::Game(const GameDescriptor& descriptor)

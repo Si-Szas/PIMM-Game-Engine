@@ -1,7 +1,7 @@
-#include <PIMM/Graphics/UIManager/UIManager.h>
+#include <PIMM/UIManager/UIManager.h>
 #include <PIMM/Graphics/GraphicsDevice/GraphicsDevice.h>
-#include <PIMM/Graphics/ImGui/imgui_impl_dx11.h>
-#include <PIMM/Graphics/ImGui/imgui_impl_win32.h>
+#include <PIMM/ImGui/imgui_impl_dx11.h>
+#include <PIMM/ImGui/imgui_impl_win32.h>
 #include <Windows.h>
 
 pimm::UIManager::UIManager(const UIManagerDescriptor& descriptor) :

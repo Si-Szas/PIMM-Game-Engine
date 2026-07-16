@@ -1,6 +1,6 @@
 #pragma once
-#include <PIMM/Graphics/UIManager/APanel.h>
-#include <PIMM/Graphics/ImGui/imgui.h>
+#include <PIMM/UIManager/APanel.h>
+#include <PIMM/ImGui/imgui.h>
 
 class HierarchyPanel : public pimm::APanel {
 public:

@@ -1,6 +1,6 @@
 #include <PIMM/InputSystem/InputSystem.h>
 #include <PIMM/Core/Identifier.h>
-#include <PIMM/Graphics/UIManager/UIManager.h>
+#include <PIMM/UIManager/UIManager.h>
 #include <PIMM/InputSystem/Commands/MoveForwardCommand.h>
 #include <PIMM/InputSystem/Commands/MoveLeftCommand.h>
 #include <PIMM/InputSystem/Commands/MoveBackwardCommand.h>

@@ -1,6 +1,6 @@
 #include "MainGame.h"
 #include "Player/Player.h"
-#include <PIMM/Graphics/ImGui/imgui.h>
+#include <PIMM/ImGui/imgui.h>
 using namespace pimm;
 
 MainGame::MainGame(const GameDescriptor& descriptor) :

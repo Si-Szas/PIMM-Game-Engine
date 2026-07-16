@@ -6,7 +6,7 @@
 #include <PIMM/Graphics/VertexBuffer/VertexBuffer.h>
 #include <PIMM/Graphics/ConstantBuffer/ConstantBuffer.h>
 #include <PIMM/Graphics/IndexBuffer/IndexBuffer.h>
-#include <PIMM/Graphics/UIManager/UIManager.h>
+#include <PIMM/UIManager/UIManager.h>
 //GAME AND WORLD HEADER//
 #include <PIMM/Game/World.h>
 //GAME OBJECTS//

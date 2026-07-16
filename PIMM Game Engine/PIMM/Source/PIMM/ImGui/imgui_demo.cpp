@@ -130,7 +130,7 @@ Index of this file:
 #define _CRT_SECURE_NO_WARNINGS
 #endif
 
-#include <PIMM/Graphics/ImGui/imgui.h>
+#include <PIMM/ImGui/imgui.h>
 #ifndef IMGUI_DISABLE
 
 // System includes

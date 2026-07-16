@@ -3,7 +3,7 @@
 #include <PIMM/Core/Core.h>
 #include <vector>
 #include <memory>
-#include <PIMM/Graphics/UIManager/APanel.h>
+#include <PIMM/UIManager/APanel.h>
 
 namespace pimm
 {

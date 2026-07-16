@@ -144,13 +144,13 @@
     <ClCompile Include="PIMM\Source\PIMM\Graphics\FrameBuffer\FrameBuffer.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\AComponent\MaterialComponent.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Resource\MaterialResource.cpp" />
-    <ClCompile Include="PIMM\Source\PIMM\Graphics\ImGui\imgui.cpp" />
-    <ClCompile Include="PIMM\Source\PIMM\Graphics\ImGui\imgui_demo.cpp" />
-    <ClCompile Include="PIMM\Source\PIMM\Graphics\ImGui\imgui_draw.cpp" />
-    <ClCompile Include="PIMM\Source\PIMM\Graphics\ImGui\imgui_impl_dx11.cpp" />
-    <ClCompile Include="PIMM\Source\PIMM\Graphics\ImGui\imgui_impl_win32.cpp" />
-    <ClCompile Include="PIMM\Source\PIMM\Graphics\ImGui\imgui_tables.cpp" />
-    <ClCompile Include="PIMM\Source\PIMM\Graphics\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="PIMM\Source\PIMM\ImGui\imgui.cpp" />
+    <ClCompile Include="PIMM\Source\PIMM\ImGui\imgui_demo.cpp" />
+    <ClCompile Include="PIMM\Source\PIMM\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="PIMM\Source\PIMM\ImGui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="PIMM\Source\PIMM\ImGui\imgui_impl_win32.cpp" />
+    <ClCompile Include="PIMM\Source\PIMM\ImGui\imgui_tables.cpp" />
+    <ClCompile Include="PIMM\Source\PIMM\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\InputSystem\Commands\CreateAGameObjectCommand.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\InputSystem\Commands\DeleteAGameObjectCommand.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\InputSystem\Commands\DeleteAllAGameObjectsCommand.cpp" />
@@ -196,7 +196,7 @@
     <ClCompile Include="PIMM\Source\PIMM\Graphics\VertexBuffer\VertexBuffer.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Graphics\GraphicsPipelineLayout\GraphicsPipelineLayout.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\AComponent\TransformComponent.cpp" />
-    <ClCompile Include="PIMM\Source\PIMM\Graphics\UIManager\UIManager.cpp" />
+    <ClCompile Include="PIMM\Source\PIMM\UIManager\UIManager.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Resource\TextureResource.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Graphics\Texture\Texture.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Graphics\Sampler\Sampler.cpp" />
@@ -216,14 +216,14 @@
   <ItemGroup>
     <ClInclude Include="PIMM\Include\PIMM\AComponent\MaterialComponent.h" />
     <ClInclude Include="PIMM\Include\PIMM\Resource\MaterialResource.h" />
-    <ClInclude Include="PIMM\Include\PIMM\Graphics\ImGui\imconfig.h" />
-    <ClInclude Include="PIMM\Include\PIMM\Graphics\ImGui\imgui.h" />
-    <ClInclude Include="PIMM\Include\PIMM\Graphics\ImGui\imgui_impl_dx11.h" />
-    <ClInclude Include="PIMM\Include\PIMM\Graphics\ImGui\imgui_impl_win32.h" />
-    <ClInclude Include="PIMM\Include\PIMM\Graphics\ImGui\imgui_internal.h" />
-    <ClInclude Include="PIMM\Include\PIMM\Graphics\ImGui\imstb_rectpack.h" />
-    <ClInclude Include="PIMM\Include\PIMM\Graphics\ImGui\imstb_textedit.h" />
-    <ClInclude Include="PIMM\Include\PIMM\Graphics\ImGui\imstb_truetype.h" />
+    <ClInclude Include="PIMM\Include\PIMM\ImGui\imconfig.h" />
+    <ClInclude Include="PIMM\Include\PIMM\ImGui\imgui.h" />
+    <ClInclude Include="PIMM\Include\PIMM\ImGui\imgui_impl_dx11.h" />
+    <ClInclude Include="PIMM\Include\PIMM\ImGui\imgui_impl_win32.h" />
+    <ClInclude Include="PIMM\Include\PIMM\ImGui\imgui_internal.h" />
+    <ClInclude Include="PIMM\Include\PIMM\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="PIMM\Include\PIMM\ImGui\imstb_textedit.h" />
+    <ClInclude Include="PIMM\Include\PIMM\ImGui\imstb_truetype.h" />
     <ClInclude Include="PIMM\Include\PIMM\InputSystem\Commands\CreateAGameObjectCommand.h" />
     <ClInclude Include="PIMM\Include\PIMM\InputSystem\Commands\DeleteAGameObjectCommand.h" />
     <ClInclude Include="PIMM\Include\PIMM\InputSystem\Commands\DeleteAllAGameObjectsCommand.h" />
@@ -254,7 +254,7 @@
     <ClInclude Include="PIMM\Source\PIMM\Graphics\IndexBuffer\IndexBuffer.h" />
     <ClInclude Include="PIMM\Include\PIMM\AGameObject\AGameObject.h" />
     <ClInclude Include="PIMM\Include\PIMM\AGameObject\Quad.h" />
-    <ClInclude Include="PIMM\Source\PIMM\Graphics\UIManager\APanel.h" />
+    <ClInclude Include="PIMM\Source\PIMM\UIManager\APanel.h" />
     <ClInclude Include="PIMM\Source\PIMM\Time\EngineTime.h" />
     <ClInclude Include="PIMM\Include\PIMM\Math\Matrix4x4.h" />
     <ClInclude Include="PIMM\Source\PIMM\Graphics\ConstantBuffer\ConstantBuffer.h" />
@@ -281,7 +281,7 @@
     <ClInclude Include="PIMM\Source\PIMM\Graphics\VertexBuffer\VertexBuffer.h" />
     <ClInclude Include="PIMM\Source\PIMM\Graphics\GraphicsPipelineLayout\GraphicsPipelineLayout.h" />
     <ClInclude Include="PIMM\Include\PIMM\AComponent\TransformComponent.h" />
-    <ClInclude Include="PIMM\Source\PIMM\Graphics\UIManager\UIManager.h" />
+    <ClInclude Include="PIMM\Source\PIMM\UIManager\UIManager.h" />
     <ClInclude Include="PIMM\Include\PIMM\Resource\Resource.h" />
     <ClInclude Include="PIMM\Include\PIMM\Resource\ResourceManager.h" />
   </ItemGroup>
