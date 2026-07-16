@@ -75,7 +75,7 @@ void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 d
 {
 	////////// CAMERA SET-UP //////////
 	m_swapChainSize = swapChain.GetSize();;
-
+	Rect frameBufferSize = (m_sceneViewSize.width > 0 && m_sceneViewSize.height > 0) ? m_sceneViewSize : m_swapChainSize;
 	////////// DEVICE CONTEXT //////////
 	// - Update the constant buffer before everything
 	// - context.UpdateConstantBuffer(vsConstantBuffer, &data);
@@ -97,7 +97,7 @@ void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 d
 
 	pimm::FrameBufferDescriptor frameBufferDescriptor{
 		.graphicsDevice = m_graphicsDevice,
-		.size = m_swapChainSize, 
+		.size = frameBufferSize,
 		.sampleCount = 1
 	};
 	
@@ -120,7 +120,7 @@ void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 d
 			{
 				auto camComponent = cameraComponents[i];
 				cameraData.view = camComponent->GetViewMatrix();
-				camComponent->SetViewportSize(m_swapChainSize);
+				camComponent->SetViewportSize(frameBufferSize);
 				cameraData.projection = camComponent->GetProjectionMatrix();
 				context.UpdateConstantBuffer(cameraCB, std::as_bytes(std::span{ &cameraData, 1 }));
 				break;
