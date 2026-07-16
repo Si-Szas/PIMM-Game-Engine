@@ -115,6 +115,12 @@ namespace pimm
 		ui32 indexListSize{};		//Size of the buffer
 	};
 
+	struct FrameBufferDescriptor
+	{
+		Rect size{};
+		ui32 sampleCount;
+	};
+
 	//POINTS
 	struct Vertex
 	{

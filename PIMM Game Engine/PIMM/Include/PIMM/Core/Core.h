@@ -32,6 +32,7 @@ namespace pimm {
 	class VertexBuffer;
 	class ConstantBuffer;
 	class IndexBuffer;
+	class FrameBuffer;
 	
 	///////////// WORLD /////////////
 	// Identifier
