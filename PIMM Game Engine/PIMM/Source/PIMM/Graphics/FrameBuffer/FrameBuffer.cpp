@@ -34,10 +34,10 @@ void pimm::FrameBuffer::Resize(GraphicsDevice& graphicsDevice, Rect newSize)
     m_size.width = newSize.width;
     m_size.height =newSize.height;
 
-    // Clear old handles safely before allocating new memory textures
-    m_colorTexture.Reset();
-    m_rtv.Reset();
-    m_srv.Reset();
+    // move textures
+    m_previousColorTexture = std::move(m_colorTexture);
+    m_previousRtv = std::move(m_rtv);
+    m_previousSrv = std::move(m_srv);
     m_dsv.Reset();
 
     // Render Target Texture

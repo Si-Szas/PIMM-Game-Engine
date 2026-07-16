@@ -29,6 +29,12 @@ namespace pimm
             Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_srv;
             Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_dsv;
 
+
+			// keep alive for one extra frame for resizing
+			Microsoft::WRL::ComPtr<ID3D11Texture2D> m_previousColorTexture;
+			Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_previousRtv;
+			Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_previousSrv;
+
 			Rect m_size{ 0, 0 };
             ui32 m_sampleCount = 1;
 	};

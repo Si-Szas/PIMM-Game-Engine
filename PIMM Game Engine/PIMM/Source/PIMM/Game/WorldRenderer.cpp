@@ -86,7 +86,7 @@ void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 d
 	auto& context = *m_deviceContext;
 	
 	//context.ClearAndSetBackBuffer(swapChain, { 0.251f, 0.141f, 0.31f, 1.0f });
-	context.SetViewportSize(m_swapChainSize);
+	context.SetViewportSize(frameBufferSize);
 
 	////////// TEXUTRES //////////
 	Sampler* samplers[] = { m_sampler.get() };
@@ -177,6 +177,17 @@ void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 d
 		auto rtv = swapChain.GetRenderTargetView();
 		auto dsv = swapChain.GetDepthStencilView();
 		immediateContext->OMSetRenderTargets(1, &rtv, dsv);
+		float clearColor[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
+
+		// clear backbuffer
+
+		immediateContext->ClearRenderTargetView(rtv, clearColor);
+		immediateContext->ClearDepthStencilView(
+			dsv,
+			D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
+			1.0f,
+			0
+		);
 
 		m_uiManager.Render();
 
