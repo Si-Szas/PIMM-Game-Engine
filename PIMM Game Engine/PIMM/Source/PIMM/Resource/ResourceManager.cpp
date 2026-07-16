@@ -1,5 +1,6 @@
 #include <PIMM/Resource/ResourceManager.h>
 #include <PIMM/Resource/MaterialResource.h>
+#include <PIMM/Resource/TextureResource.h>
 
 #include <filesystem>
 
@@ -34,8 +35,12 @@ pimm::RefPtr<pimm::Resource> pimm::ResourceManager::CreateResourceFromFileConcre
 	RefPtr<Resource> resourcePtr{};
 	try
 	{
+		//For Materials
 		if (!extension.compare(L".hlsl") || !extension.compare(L".fx"))
 			resourcePtr = std::make_shared<MaterialResource>(MaterialResourceDescriptor{ GetResourceDescriptor(file_path), m_systemContext.graphicsDevice });
+		//For Textures
+		if (!extension.compare(L".jpg") || !extension.compare(L".png"))
+			resourcePtr = std::make_shared<TextureResource>(TextureResourceDescriptor{ GetResourceDescriptor(file_path), m_systemContext.graphicsDevice });
 	}
 	catch (...)
 	{

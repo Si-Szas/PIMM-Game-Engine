@@ -5,7 +5,8 @@ VS_OUTPUT VS_Main(VS_INPUT input)
     VS_OUTPUT output;
     
     output.position = input.position;
-    output.color = float4(materialColor, 1.0f);
+    //output.color = input.color;
+    output.texcoord = input.texcoord;
     
     return output;
 }
@@ -39,7 +40,7 @@ HS_OUTPUT HS_Main(
     HS_OUTPUT output;
 
     output.position = ip[i].position;
-    output.color = ip[i].color;
+    output.texcoord = ip[i].texcoord;
 
     return output;
 }
@@ -61,14 +62,26 @@ DS_OUTPUT DS_Main(
     float4 projectionPosition = mul(viewPosition, projection);
     output.position = projectionPosition;
     
-    float4 topColor = lerp(patch[0].color, patch[1].color, domain.x);
-    float4 bottomColor = lerp(patch[2].color, patch[3].color, domain.x);
-    output.color = lerp(topColor, bottomColor, domain.y);
+    float2 topUV = lerp(patch[0].texcoord, patch[1].texcoord, domain.x);
+    float2 bottomUV = lerp(patch[2].texcoord, patch[3].texcoord, domain.x);
+    output.texcoord = lerp(topUV, bottomUV, domain.y);
+
+    //float4 topColor = lerp(patch[0].texcoord, patch[1].texcoord, domain.x);
+    //float4 bottomColor = lerp(patch[2].texcoord, patch[3].texcoord, domain.x);
+    //output.color = lerp(topColor, bottomColor, domain.y);
     
     return output;
 }
 
 float4 PS_Main(DS_OUTPUT input) : SV_Target
 {
-    return input.color;
+    float4 diffuse = Diffuse.Sample(DefaultSampler, input.texcoord);
+
+    //If texture does not exist, then render using the objects's material color
+    if (diffuse.a == 0.0f)
+    {
+        return float4(materialColor.rgb, 1.0f);
+    }
+
+    return float4(materialColor.rgb * diffuse.rgb, 1.0f);
 }

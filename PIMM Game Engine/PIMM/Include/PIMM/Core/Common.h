@@ -2,6 +2,7 @@
 #include <PIMM/Core/Core.h>
 #include <PIMM/Core/Logger.h>
 #include <PIMM/Math/Rect.h>
+#include <PIMM/Math/Vec2.h>
 #include <PIMM/Math/Vec3.h>
 #include <PIMM/Math/Vec4.h>
 
@@ -19,6 +20,17 @@ namespace pimm
 		Rect size{};
 	};
 
+	struct GraphicsDeviceDescriptor
+	{
+		BaseDescriptor base;
+	};
+
+	struct SwapChainDescriptor
+	{
+		void* windowHandle{};
+		Rect windowSize{};
+	};
+
 	struct DisplayDescriptor
 	{
 		WindowDescriptor window;
@@ -29,6 +41,7 @@ namespace pimm
 	{
 		InputSystem& inputSystem;
 		ResourceManager& resourceManager;
+		GraphicsDevice& graphicsDevice;
 	};
 
 	struct UIManagerDescriptor
@@ -43,17 +56,6 @@ namespace pimm
 		BaseDescriptor base;
 		GraphicsDevice& graphicsEngine;
 		UIManager& uiManager;
-	};
-
-	struct GraphicsDeviceDescriptor
-	{
-		BaseDescriptor base;
-	};
-
-	struct SwapChainDescriptor
-	{
-		void* windowHandle{};
-		Rect windowSize{};
 	};
 
 	enum class ShaderType 
@@ -75,17 +77,17 @@ namespace pimm
 		ShaderType shaderType{};		//Type of shader we are compiling
 	};
 
-	struct VertexShaderSignatureDescriptor
+	struct GraphicsPipelineLayoutDescriptor
 	{
 		const RefPtr<ShaderBinary>& vertexShaderBinary;
+		const RefPtr<ShaderBinary>& pixelShaderBinary;
+		const RefPtr<ShaderBinary>& hullShaderBinary;
+		const RefPtr<ShaderBinary>& domainShaderBinary;
 	};
 
 	struct GraphicsPipelineStateDescriptor
 	{
-		const VertexShaderSignature& vertexShader;
-		const ShaderBinary& pixelShader;
-		const ShaderBinary& hullShader;
-		const ShaderBinary& domainShader;
+		const GraphicsPipelineLayout& layout;
 	};
 
 	struct BinaryData
@@ -117,13 +119,14 @@ namespace pimm
 	struct Vertex
 	{
 		Vec3 position;
-		Vec4 color;
+		//Vec4 color;
+		Vec2 texCoord;
 	};
 
 	struct AGameObjectDescriptor
 	{
 		BaseDescriptor base;
-		GameContext gameContext;
+		GameContext& gameContext;
 		World& world;
 		WorldRenderer& worldRenderer;
 	};
@@ -133,6 +136,7 @@ namespace pimm
 		BaseDescriptor base;
 		AGameObject& object;
 		World& world;
+		GameContext& gameContext;
 	};
 
 	//INPUT SYSTEM
@@ -195,6 +199,12 @@ namespace pimm
 		ResourceManager& manager;
 	};
 
+	struct TextureResourceDescriptor
+	{
+		ResourceDescriptor base;
+		GraphicsDevice& graphicsDevice;
+	};
+
 	struct MaterialResourceDescriptor
 	{
 		ResourceDescriptor base;
@@ -210,5 +220,16 @@ namespace pimm
 	{
 		BaseDescriptor base;
 		SystemContext systemContext;
+	};
+
+	struct TextureDescriptor
+	{
+		Rect size{};
+		const void* pixels{};
+	};
+
+	struct SamplerDescriptor
+	{
+
 	};
 }

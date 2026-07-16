@@ -29,13 +29,21 @@ void pimm::Capsule::OnCreate()
             f32 y = radius * sinf(phi) + bottomYPos;
             f32 z = radius * cosf(phi) * sinf(theta);
             // Compute colors
-            f32 r = (x / radius) * 0.5f + 0.5f;
-            f32 g = (y / radius) * 0.5f + 0.5f;
-            f32 b = (z / radius) * 0.5f + 0.5f;
-
+            //f32 r = (x / radius) * 0.5f + 0.5f;
+            //f32 g = (y / radius) * 0.5f + 0.5f;
+            //f32 b = (z / radius) * 0.5f + 0.5f;
+            //
+            //capsuleVertices.push_back({
+            //    {x, y, z},
+            //    {r, g, b, 1.0f}
+            //    });
+            //Compute UVs
+            f32 u = (f32)j / sliceCount;
+            f32 v = ((f32)i / stackCount) * 0.3333f;
+            
             capsuleVertices.push_back({
                 {x, y, z},
-                {r, g, b, 1.0f}
+                {u, v}
                 });
         }
     }
@@ -53,14 +61,22 @@ void pimm::Capsule::OnCreate()
 
             f32 x = radius * cosf(theta);
             f32 z = radius * sinf(theta);
-
-            f32 r = (x / (2.0f * radius)) + 0.5f;
-            f32 g = (y / height) + 0.5f;
-            f32 b = (z / (2.0f * radius)) + 0.5f;
+            //Compute Colors
+            //f32 r = (x / (2.0f * radius)) + 0.5f;
+            //f32 g = (y / height) + 0.5f;
+            //f32 b = (z / (2.0f * radius)) + 0.5f;
+            //
+            //capsuleVertices.push_back({
+            //    {x, y, z},
+            //    {r, g, b, 1.0f}
+            //    });
+            //Compute UVs
+            f32 u = (f32)j / sliceCount;
+            f32 v = 0.3333f + (((f32)i / stackCount) * 0.3333f);
 
             capsuleVertices.push_back({
                 {x, y, z},
-                {r, g, b, 1.0f}
+                {u, v}
                 });
         }
     }
@@ -78,13 +94,21 @@ void pimm::Capsule::OnCreate()
             f32 y = radius * sinf(phi) + topYPos;
             f32 z = radius * cosf(phi) * sinf(theta);
             // Compute colors
-            f32 r = (x / radius) * 0.5f + 0.5f;
-            f32 g = (y / radius) * 0.5f + 0.5f;
-            f32 b = (z / radius) * 0.5f + 0.5f;
+            //f32 r = (x / radius) * 0.5f + 0.5f;
+            //f32 g = (y / radius) * 0.5f + 0.5f;
+            //f32 b = (z / radius) * 0.5f + 0.5f;
+            //
+            //capsuleVertices.push_back({
+            //    {x, y, z},
+            //    {r, g, b, 1.0f}
+            //    });
+            // Compute UVs
+            f32 u = (f32)j / sliceCount;
+            f32 v = 0.6666f + (((f32)i / stackCount) * 0.3333f);
 
             capsuleVertices.push_back({
                 {x, y, z},
-                {r, g, b, 1.0f}
+                {u, v}
                 });
         }
     }

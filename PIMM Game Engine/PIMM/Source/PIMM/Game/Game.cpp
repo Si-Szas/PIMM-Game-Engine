@@ -27,7 +27,7 @@ pimm::Game::Game(const GameDescriptor& descriptor)
 	//Initialize the world renderer
 	m_worldRenderer = std::make_unique<WorldRenderer>(WorldRendererDescriptor{ {*m_logger}, *m_graphicsDevice, *m_uiManager });
 	//Initialize world
-	m_world = std::make_unique<World>(WorldDescriptor{ BaseDescriptor{*m_logger}, GameContext{*m_inputSystem, *m_resourceManager}, {*m_worldRenderer} });
+	m_world = std::make_unique<World>(WorldDescriptor{ BaseDescriptor{*m_logger}, GameContext{*m_inputSystem, *m_resourceManager, *m_graphicsDevice}, {*m_worldRenderer} });
 	//Set world in input system to be initialized since it was passed as null at first
 	m_inputSystem->SetWorld(*m_world);
 	m_inputSystem->SetUIManager(*m_uiManager);

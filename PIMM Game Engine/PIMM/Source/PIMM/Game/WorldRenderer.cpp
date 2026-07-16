@@ -22,6 +22,8 @@
 #include <PIMM/AComponent/CameraComponent.h>
 //MATERIALS//
 #include <PIMM/Resource/MaterialResource.h>
+//TEXTURES//
+#include <PIMM/Resource/TextureResource.h>
 
 #include <PIMM/Math/Vec2.h>
 #include <PIMM/Math/Vec3.h>
@@ -36,6 +38,9 @@ pimm::WorldRenderer::WorldRenderer(const WorldRendererDescriptor& descriptor) :
 	//Creates the deferred device context
 	auto& device = m_graphicsDevice;
 	m_deviceContext = device.CreateDeviceContext();
+
+	//For textures
+	m_textures.reserve(32);
 
 	//Create constant buffer
 	m_objectConstantBuffer = device.CreateConstantBuffer
@@ -55,6 +60,8 @@ pimm::WorldRenderer::WorldRenderer(const WorldRendererDescriptor& descriptor) :
 		{},
 		pimm::MaterialResource::MaxDataSize
 	});
+
+	m_sampler = device.CreateSampler({});
 }
 
 void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 deltaTime)
@@ -72,6 +79,10 @@ void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 d
 	auto& context = *m_deviceContext;
 	context.ClearAndSetBackBuffer(swapChain, { 0.251f, 0.141f, 0.31f, 1.0f });
 	context.SetViewportSize(m_swapChainSize);
+
+	////////// TEXUTRES //////////
+	Sampler* samplers[] = { m_sampler.get() };
+	context.SetSamplers(std::span<Sampler*>{samplers});
 
 	////////// ACOMPONENTS //////////
 	auto numberOfComponents = 0u;
@@ -121,6 +132,15 @@ void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 d
 					context.UpdateConstantBuffer(materialCB, material->GetData());
 					ConstantBuffer* cbs[] = { &objectCB, &cameraCB, &materialCB };
 					context.SetConstantBuffers(std::span<ConstantBuffer*>{cbs});
+
+					m_textures.clear();
+					m_textures.resize(material->GetNumberOfTextures());
+					for (auto t : std::views::iota(0u, m_textures.size()))
+					{
+						auto tex = material->GetTexture(t);
+						if (tex) m_textures[t] = &tex->GetTexture();
+					}
+					context.SetTextures(std::span<Texture*>{m_textures});
 
 					auto& vb = *m_vertexBuffer[object->GetVertexOffset()];
 					auto& ib = *m_indexBuffer[object->GetIndexLocation()];

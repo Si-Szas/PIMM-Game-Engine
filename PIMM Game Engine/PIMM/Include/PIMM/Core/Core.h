@@ -25,9 +25,9 @@ namespace pimm {
 	class SwapChain;
 	class DeviceContext;
 	class GraphicsPipelineState;
+	class GraphicsPipelineLayout;
 		//Shaders
 	class ShaderBinary;
-	class VertexShaderSignature;
 		//Buffers
 	class VertexBuffer;
 	class ConstantBuffer;
@@ -77,6 +77,11 @@ namespace pimm {
 	class ResourceManager;
 	class Resource;
 	class MaterialResource;
+
+	///////////// TEXTURES /////////////
+	class TextureResource;
+	class Texture;
+	class Sampler;
 
 	//Type Aliases
 	using i32 = int;

@@ -24,7 +24,8 @@ namespace pimm
 				UniquePtr<AComponent> component = std::make_unique<Type>(AComponentDescriptor{
 					{m_logger},
 					*this,
-					m_world
+					m_world,
+					m_gameContext
 				});
 				return static_cast<Type*>(CreateComponentInternal(component));
 			}

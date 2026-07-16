@@ -7,7 +7,9 @@
 #include <PIMM/Graphics/VertexBuffer/VertexBuffer.h>
 #include <PIMM/Graphics/ConstantBuffer/ConstantBuffer.h>
 #include <PIMM/Graphics/IndexBuffer/IndexBuffer.h>
-#include <PIMM/Graphics/VertexShaderSignature/VertexShaderSignature.h>
+#include <PIMM/Graphics/GraphicsPipelineLayout/GraphicsPipelineLayout.h>
+#include <PIMM/Graphics/Texture/Texture.h>
+#include <PIMM/Graphics/Sampler/Sampler.h>
 
 using namespace pimm;
 
@@ -86,9 +88,9 @@ RefPtr<VertexBuffer> GraphicsDevice::CreateVertexBuffer(const VertexBufferDescri
 	return std::make_shared<VertexBuffer>(descriptor, GetGraphicsResourceDescriptor());
 }
 
-RefPtr<VertexShaderSignature> GraphicsDevice::CreateVertexShaderSignature(const VertexShaderSignatureDescriptor& descriptor)
+RefPtr<GraphicsPipelineLayout> GraphicsDevice::CreateGraphicsPipelineLayout(const GraphicsPipelineLayoutDescriptor& descriptor)
 {
-	return std::make_shared<VertexShaderSignature>(descriptor, GetGraphicsResourceDescriptor());
+	return std::make_shared<GraphicsPipelineLayout>(descriptor, GetGraphicsResourceDescriptor());
 }
 
 RefPtr<ConstantBuffer> GraphicsDevice::CreateConstantBuffer(const ConstantBufferDescriptor& descriptor)
@@ -100,6 +102,17 @@ RefPtr<IndexBuffer> pimm::GraphicsDevice::CreateIndexBuffer(const IndexBufferDes
 {
 	return std::make_shared<IndexBuffer>(descriptor, GetGraphicsResourceDescriptor());
 }
+
+RefPtr<Texture> pimm::GraphicsDevice::CreateTexture(const TextureDescriptor& descriptor)
+{
+	return std::make_shared<Texture>(descriptor, GetGraphicsResourceDescriptor());
+}
+
+RefPtr<Sampler> pimm::GraphicsDevice::CreateSampler(const SamplerDescriptor& descriptor)
+{
+	return std::make_shared<Sampler>(descriptor, GetGraphicsResourceDescriptor());
+}
+
 
 //This function retrieves command lists, then executes it
 void GraphicsDevice::ExecuteCommandList(DeviceContext& context)

@@ -38,3 +38,6 @@
 //MATERIALS//
 #include <PIMM/Resource/MaterialResource.h>
 #include <PIMM/Resource/ResourceManager.h>
+//TEXTURES//
+#include <PIMM/Resource/TextureResource.h>
+#include <PIMM/Graphics/Sampler/Sampler.h>

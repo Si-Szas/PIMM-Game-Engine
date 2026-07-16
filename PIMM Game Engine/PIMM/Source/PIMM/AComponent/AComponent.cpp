@@ -3,7 +3,8 @@
 pimm::AComponent::AComponent(const AComponentDescriptor& descriptor) :
 	Identifier(descriptor.base),
 	m_object(descriptor.object),
-	m_world(descriptor.world)
+	m_world(descriptor.world),
+	m_context(descriptor.gameContext)
 {
 }
 

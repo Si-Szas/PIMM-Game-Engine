@@ -1,6 +1,7 @@
 #include <PIMM/Resource/MaterialResource.h>
 #include <PIMM/Graphics/GraphicsDevice/GraphicsDevice.h>
 #include <PIMM/Resource/ResourceManager.h>
+#include <PIMM/Graphics/GraphicsPipelineLayout/GraphicsPipelineLayout.h>
 
 #include <fstream>
 #include <filesystem>
@@ -30,10 +31,8 @@ pimm::MaterialResource::MaterialResource(const MaterialResourceDescriptor& descr
 		ShaderType::VertexShader 
 	});
 
-	m_vsSignature = m_graphicsDevice.CreateVertexShaderSignature({ vsBinary });
-
 	//Create and compile the Hull Shader
-	m_hsBinary = m_graphicsDevice.CompileShader({
+	auto hsBinary = m_graphicsDevice.CompileShader({
 		shaderFileStr.c_str(),
 		shaderCode.c_str(),
 		shaderCode.size(),
@@ -42,7 +41,7 @@ pimm::MaterialResource::MaterialResource(const MaterialResourceDescriptor& descr
 	});
 
 	//Create and compile the Domain Shader
-	m_dsBinary = m_graphicsDevice.CompileShader({
+	auto dsBinary = m_graphicsDevice.CompileShader({
 		shaderFileStr.c_str(),
 		shaderCode.c_str(),
 		shaderCode.size(),
@@ -51,26 +50,25 @@ pimm::MaterialResource::MaterialResource(const MaterialResourceDescriptor& descr
 	});
 
 	//Create and compile the Pixel Shader
-	m_psBinary = m_graphicsDevice.CompileShader({ 
+	auto psBinary = m_graphicsDevice.CompileShader({
 		shaderFileStr.c_str(), 
 		shaderCode.c_str(),
 		shaderCode.size(), "PS_Main", 
 		ShaderType::PixelShader 
 	});
 
-	m_pipeline = m_graphicsDevice.CreateGraphicsPipelineState({ *m_vsSignature,*m_psBinary, *m_hsBinary, *m_dsBinary });
+	m_layout = m_graphicsDevice.CreateGraphicsPipelineLayout({ vsBinary, psBinary, hsBinary, dsBinary });
+	m_pipeline = m_graphicsDevice.CreateGraphicsPipelineState({ *m_layout });
+	m_textures.resize(m_layout->GetMaxTextureSlots());
 }
 
 pimm::MaterialResource::MaterialResource(const MaterialResource& material, const MaterialResourceDescriptor& descriptor) : 
 	Resource(descriptor.base), 
 	m_graphicsDevice(descriptor.graphicsDevice)
 {
-	m_vsSignature = material.m_vsSignature;
-	m_hsBinary = material.m_hsBinary;
-	m_dsBinary = material.m_dsBinary;
-	m_psBinary = material.m_psBinary;
-
+	m_layout = material.m_layout;
 	m_pipeline = material.m_pipeline;
+	m_textures.resize(m_layout->GetMaxTextureSlots());
 }
 
 const pimm::GraphicsPipelineState& pimm::MaterialResource::GetGraphicsPipelineState() const noexcept
@@ -98,4 +96,32 @@ void pimm::MaterialResource::SetData(const std::span<const std::byte>& data)
 const std::span<const std::byte> pimm::MaterialResource::GetData() const noexcept
 {
 	return m_data;
+}
+
+
+pimm::TextureResource* pimm::MaterialResource::GetTexture(size_t index)
+{
+	if (index >= m_textures.size())
+	{
+		PIMMLogError("Index {} is out of bounds for list of size {}", index, m_textures.size());
+		return {};
+	}
+
+	return m_textures[index].get();
+}
+
+size_t pimm::MaterialResource::GetNumberOfTextures() const noexcept
+{
+	return m_textures.size();
+}
+
+void pimm::MaterialResource::SetTexture(size_t index, const pimm::RefPtr<pimm::TextureResource>& texture)
+{
+	if (index >= m_textures.size())
+	{
+		PIMMLogError("Index {} is out of bounds for list of size {}", index, m_textures.size());
+		return;
+	}
+
+	m_textures[index] = texture;
 }

@@ -54,6 +54,9 @@ namespace pimm
 			RefPtr<ConstantBuffer> m_objectConstantBuffer{};
 			RefPtr<ConstantBuffer> m_cameraConstantBuffer{};
 			RefPtr<ConstantBuffer> m_materialConstantBuffer{};
+
+			RefPtr<Sampler> m_sampler{};
+			std::vector<Texture*> m_textures{};
 	};
 }
 

@@ -14,7 +14,8 @@ void pimm::Cylinder::OnCreate()
     ui32 bottomCenterIndex = static_cast<ui32>(cylinderVertices.size());
     cylinderVertices.push_back({
         { 0.0f, -(height * 0.5f), 0.0f },
-        { 0.0f, 0.0f, 0.0f, 1.0f }
+        //{ 0.0f, 0.0f, 0.0f, 1.0f }
+        { 0.5f, 1.0f }
         });
 
     //Cylinder body / ring
@@ -30,13 +31,23 @@ void pimm::Cylinder::OnCreate()
             f32 x = radius * cosf(theta);
             f32 z = radius * sinf(theta);
 
-            f32 r = (x / (2.0f * radius)) + 0.5f;
-            f32 g = (y / height) + 0.5f;
-            f32 b = (z / (2.0f * radius)) + 0.5f;
+            //COMPUTE COLORS
+            //f32 r = (x / (2.0f * radius)) + 0.5f;
+            //f32 g = (y / height) + 0.5f;
+            //f32 b = (z / (2.0f * radius)) + 0.5f;
+            //
+            //cylinderVertices.push_back({
+            //    {x, y, z},
+            //    {r, g, b, 1.0f}
+            //    });
+
+            //COMPUTE UV
+            f32 u = (f32)j / sliceCount;
+            f32 v = 0.3333f + (((f32)i / stackCount) * 0.3333f);
 
             cylinderVertices.push_back({
                 {x, y, z},
-                {r, g, b, 1.0f}
+                {u, v}
                 });
         }
     }
@@ -45,7 +56,8 @@ void pimm::Cylinder::OnCreate()
     ui32 topCenterIndex = static_cast<ui32>(cylinderVertices.size());
     cylinderVertices.push_back({
         { 0.0f, (height * 0.5f), 0.0f },
-        { 1.0f, 1.0f, 1.0f, 1.0f }
+        //{ 1.0f, 1.0f, 1.0f, 1.0f }
+        { 0.5f, 0.0f }
         });
 
     //Create indices

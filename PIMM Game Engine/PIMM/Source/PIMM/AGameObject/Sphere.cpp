@@ -17,7 +17,8 @@ void pimm::Sphere::OnCreate()
 	//Push back the topmost vertex of the sphere
 	sphereVertices.push_back(
 		{ { 0.0f, radius, 0.0f },
-		{ 1.0f, 1.0f, 1.0f, 1.0f }
+	//	{ 1.0f, 1.0f, 1.0f, 1.0f }
+		{ 0.5f, 0.0f }
 		});
 
 	f32 phiStep = MathUtility::PI / stackCount;
@@ -25,6 +26,9 @@ void pimm::Sphere::OnCreate()
 
 	for (ui32 i = 1; i < stackCount; i++) {
 		f32 phi = i * phiStep;
+
+		f32 v = (f32)i / stackCount;
+
 		for (ui32 j = 0; j <= sliceCount; j++) {
 			f32 theta = j * thetaStep;
 
@@ -33,20 +37,28 @@ void pimm::Sphere::OnCreate()
 			f32 y = radius * std::cos(phi);
 			f32 z = radius * std::sin(phi) * std::sin(theta);
 			// Compute colors
-			f32 r = (x / radius) * 0.5f + 0.5f;
-			f32 g = (y / radius) * 0.5f + 0.5f;
-			f32 b = (z / radius) * 0.5f + 0.5f;
+			//f32 r = (x / radius) * 0.5f + 0.5f;
+			//f32 g = (y / radius) * 0.5f + 0.5f;
+			//f32 b = (z / radius) * 0.5f + 0.5f;
+			//
+			//sphereVertices.push_back({
+			//	{x, y, z},
+			//	{r, g, b, 1.0f}
+			//	});
+			// Compute uv
+			f32 u = (f32)j / sliceCount;
 
 			sphereVertices.push_back({
 				{x, y, z},
-				{r, g, b, 1.0f}
+				{u, v}
 				});
 		}
 	}
 	//Push back the bottommost vertex of the sphere
 	sphereVertices.push_back(
 		{ { 0.0f, -radius, 0.0f },
-		{ 0.0f, 0.0f, 0.0f, 1.0f }
+		//{ 0.0f, 0.0f, 0.0f, 1.0f }
+		{ 0.5f, 1.0f }
 		});
 
 	//Create index buffer

@@ -73,7 +73,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>Bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>Intermediate\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>PIMM/Include;PIMM/Source;$(IncludePath)</IncludePath>
+    <IncludePath>PIMM/Include;PIMM/Source;PIMM/Vendor/stb-image/include/;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>Bin\$(Platform)\$(Configuration)\</OutDir>
@@ -193,9 +193,12 @@
     <ClCompile Include="Game\main.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Window\Win32\Win32Window.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Graphics\VertexBuffer\VertexBuffer.cpp" />
-    <ClCompile Include="PIMM\Source\PIMM\Graphics\VertexShaderSignature\VertexShaderSignature.cpp" />
+    <ClCompile Include="PIMM\Source\PIMM\Graphics\GraphicsPipelineLayout\GraphicsPipelineLayout.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\AComponent\TransformComponent.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Graphics\UIManager\UIManager.cpp" />
+    <ClCompile Include="PIMM\Source\PIMM\Resource\TextureResource.cpp" />
+    <ClCompile Include="PIMM\Source\PIMM\Graphics\Texture\Texture.cpp" />
+    <ClCompile Include="PIMM\Source\PIMM\Graphics\Sampler\Sampler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\UI\AssetsPanel.h" />
@@ -204,6 +207,9 @@
     <ClCompile Include="PIMM\Source\PIMM\Resource\Resource.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Resource\ResourceManager.cpp" />
     <ClInclude Include="PIMM\Source\PIMM\Graphics\ShaderInclude\ShaderInclude.h" />
+    <ClInclude Include="PIMM\Include\PIMM\Resource\TextureResource.h" />
+    <ClInclude Include="PIMM\Source\PIMM\Graphics\Texture\Texture.h" />
+    <ClInclude Include="PIMM\Source\PIMM\Graphics\Sampler\Sampler.h" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PIMM\Include\PIMM\AComponent\MaterialComponent.h" />
@@ -271,7 +277,7 @@
     <ClInclude Include="PIMM\Include\PIMM\Game\Game.h" />
     <ClInclude Include="PIMM\Include\PIMM\Math\Vec4.h" />
     <ClInclude Include="PIMM\Source\PIMM\Graphics\VertexBuffer\VertexBuffer.h" />
-    <ClInclude Include="PIMM\Source\PIMM\Graphics\VertexShaderSignature\VertexShaderSignature.h" />
+    <ClInclude Include="PIMM\Source\PIMM\Graphics\GraphicsPipelineLayout\GraphicsPipelineLayout.h" />
     <ClInclude Include="PIMM\Include\PIMM\AComponent\TransformComponent.h" />
     <ClInclude Include="PIMM\Source\PIMM\Graphics\UIManager\UIManager.h" />
     <ClInclude Include="PIMM\Include\PIMM\Resource\Resource.h" />

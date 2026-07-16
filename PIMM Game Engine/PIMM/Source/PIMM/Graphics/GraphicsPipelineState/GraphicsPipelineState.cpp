@@ -1,24 +1,20 @@
 #include <PIMM/Graphics/GraphicsPipelineState/GraphicsPipelineState.h>
 #include <PIMM/Graphics/ShaderBinary/ShaderBinary.h>
-#include <PIMM/Graphics/VertexShaderSignature/VertexShaderSignature.h>
+#include <PIMM/Graphics/GraphicsPipelineLayout/GraphicsPipelineLayout.h>
 
 pimm::GraphicsPipelineState::GraphicsPipelineState(const GraphicsPipelineStateDescriptor& graphicsPipelineStateDescriptor, const GraphicsResourceDescriptor& descriptor):
 	GraphicsResource(descriptor)
 {
-	//Ensures that the shader type of the vertex shader is actually a vertex shader
-	if (graphicsPipelineStateDescriptor.pixelShader.GetShaderType() != ShaderType::PixelShader)
-		PIMMLogThrowInvalidArgument("The 'pixelShader' member is not a valid pixel shader binary.");
-
 	//Retrieve Vertex Shader Binary Data
-	auto vs = graphicsPipelineStateDescriptor.vertexShader.GetShaderBinaryData();
+	auto vs = graphicsPipelineStateDescriptor.layout.GetVSBinaryData();
 	//Retrieve Pixel Shader Binary Data
-	auto ps = graphicsPipelineStateDescriptor.pixelShader.GetData();
+	auto ps = graphicsPipelineStateDescriptor.layout.GetPSBinaryData();
 	//Retrieve Hull Shader Binary Data
-	auto hs = graphicsPipelineStateDescriptor.hullShader.GetData();
+	auto hs = graphicsPipelineStateDescriptor.layout.GetHSBinaryData();
 	////Retrieve Domain Shader Binary Data
-	auto ds = graphicsPipelineStateDescriptor.domainShader.GetData();
+	auto ds = graphicsPipelineStateDescriptor.layout.GetDSBinaryData();
 
-	auto vsInputElements = graphicsPipelineStateDescriptor.vertexShader.GetInputElementsData();
+	auto vsInputElements = graphicsPipelineStateDescriptor.layout.GetInputElementsData();
 
 	//Create Input Layout
 	PIMMGraphicsLogThrowOnFail(
@@ -46,17 +42,6 @@ pimm::GraphicsPipelineState::GraphicsPipelineState(const GraphicsPipelineStateDe
 	);
 
 	PIMMGraphicsLogThrowOnFail(
-		m_d3dDevice.CreatePixelShader
-		(
-			ps.data,		//Shader byte code (Pointer to binary data)
-			ps.dataSize,	//Size of shader byte code
-			nullptr,		//Pointer to a D3D11 class linkage object. Interface used to enable polymorphism by HLSL interface & classes (dynamic implementation binding)
-			&m_pixelShader	//Output parameter where created D3D11 Shader object will be stored
-		),
-		"CreatePixelShader() failed."
-	);
-
-	PIMMGraphicsLogThrowOnFail(
 		m_d3dDevice.CreateHullShader
 		(
 			hs.data,
@@ -77,4 +62,16 @@ pimm::GraphicsPipelineState::GraphicsPipelineState(const GraphicsPipelineStateDe
 		),
 		"CreateDomainShader() failed."
 	);
+
+	PIMMGraphicsLogThrowOnFail(
+		m_d3dDevice.CreatePixelShader
+		(
+			ps.data,		//Shader byte code (Pointer to binary data)
+			ps.dataSize,	//Size of shader byte code
+			nullptr,		//Pointer to a D3D11 class linkage object. Interface used to enable polymorphism by HLSL interface & classes (dynamic implementation binding)
+			&m_pixelShader	//Output parameter where created D3D11 Shader object will be stored
+		),
+		"CreatePixelShader() failed."
+	);
+
 }

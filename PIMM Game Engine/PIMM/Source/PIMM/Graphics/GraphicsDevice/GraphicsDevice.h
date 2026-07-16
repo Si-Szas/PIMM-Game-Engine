@@ -19,10 +19,14 @@ namespace pimm
 			RefPtr<DeviceContext> CreateDeviceContext();
 			RefPtr<ShaderBinary> CompileShader(const ShaderCompileDescriptor& descriptor);
 			RefPtr<GraphicsPipelineState> CreateGraphicsPipelineState(const GraphicsPipelineStateDescriptor& descriptor);
+			RefPtr<GraphicsPipelineLayout> CreateGraphicsPipelineLayout(const GraphicsPipelineLayoutDescriptor& descriptor);
+			
 			RefPtr<VertexBuffer> CreateVertexBuffer(const VertexBufferDescriptor& descriptor);
-			RefPtr<VertexShaderSignature> CreateVertexShaderSignature(const VertexShaderSignatureDescriptor& descriptor);
 			RefPtr<ConstantBuffer> CreateConstantBuffer(const ConstantBufferDescriptor& descriptor);
 			RefPtr<IndexBuffer> CreateIndexBuffer(const IndexBufferDescriptor& descriptor);
+
+			RefPtr<Texture> CreateTexture(const TextureDescriptor& descriptor);
+			RefPtr<Sampler> CreateSampler(const SamplerDescriptor& descriptor);
 
 			void ExecuteCommandList(DeviceContext& context);
 

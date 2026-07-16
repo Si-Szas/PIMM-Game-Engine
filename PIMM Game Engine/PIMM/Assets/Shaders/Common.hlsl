@@ -1,13 +1,13 @@
 struct VS_INPUT
 {
     float3 position : POSITION0;
-    float4 color : COLOR0;
+    float2 texcoord : TEXCOORD0;
 };
 
 struct VS_OUTPUT
 {
     float3 position : POSITION0;
-    float4 color : COLOR0;
+    float2 texcoord : TEXCOORD0;
 };
 
 #define NUMBER_CONTROL_POINTS 4
@@ -15,7 +15,7 @@ struct VS_OUTPUT
 struct HS_INPUT
 {
     float3 position : POSITION0;
-    float4 color : COLOR0;
+    float2 texcoord : TEXCOORD0;
 };
 
 struct HS_CONSTANT_DATA_OUTPUT
@@ -27,13 +27,13 @@ struct HS_CONSTANT_DATA_OUTPUT
 struct HS_OUTPUT
 {
     float3 position : POSITION0;
-    float4 color : COLOR0;
+    float2 texcoord : TEXCOORD0;
 };
 
 struct DS_OUTPUT
 {
     float4 position : SV_Position;
-    float4 color : COLOR0;
+    float2 texcoord : TEXCOORD0;
 };
 
 cbuffer ObjectData : register(b0)
@@ -51,3 +51,7 @@ cbuffer MaterialData : register(b2)
 {
     float3 materialColor;
 }
+
+sampler DefaultSampler : register(s0);
+
+Texture2D Diffuse : register(t0);

@@ -4,6 +4,10 @@
 #include <PIMM/Graphics/VertexBuffer/VertexBuffer.h>
 #include <PIMM/Graphics/ConstantBuffer/ConstantBuffer.h>
 #include <PIMM/Graphics/IndexBuffer/IndexBuffer.h>
+#include <PIMM/Graphics/Texture/Texture.h>
+#include <PIMM/Graphics/Sampler/Sampler.h>
+
+#include <ranges>
 
 #include <wrl.h>
 
@@ -158,16 +162,16 @@ void pimm::DeviceContext::SetConstantBuffers(const std::span<ConstantBuffer*>& b
 		PIMMLogWarning("Number of buffers exceeds {}. Extra buffers will be ignored.", MaxConstantBuffersPerScene)
 	}
 
-	auto buffSize = static_cast<UINT>(std::min(buffers.size(), MaxConstantBuffersPerScene));
-	for (auto i = 0u; i < buffSize; i++)
+	auto numBuffers = static_cast<UINT>(std::min(buffers.size(), MaxConstantBuffersPerScene));
+	for (auto i = 0u; i < numBuffers; i++)
 	{
 		m_constantBuffers[i] = (buffers[i]->m_buffer.Get());
 	}
 
-	m_context->VSSetConstantBuffers(0, buffSize, m_constantBuffers);
-	m_context->HSSetConstantBuffers(0, buffSize, m_constantBuffers);
-	m_context->DSSetConstantBuffers(0, buffSize, m_constantBuffers);
-	m_context->PSSetConstantBuffers(0, buffSize, m_constantBuffers);
+	m_context->VSSetConstantBuffers(0, numBuffers, m_constantBuffers.data());
+	m_context->HSSetConstantBuffers(0, numBuffers, m_constantBuffers.data());
+	m_context->DSSetConstantBuffers(0, numBuffers, m_constantBuffers.data());
+	m_context->PSSetConstantBuffers(0, numBuffers, m_constantBuffers.data());
 
 }
 
@@ -232,6 +236,47 @@ void pimm::DeviceContext::SetIndexBuffer(const IndexBuffer& buffer)
 		DXGI_FORMAT_R32_UINT,	//Format of the buffer
 		0						//Offset
 	);
+}
+
+void pimm::DeviceContext::SetTextures(const std::span<Texture*>& textures)
+{
+	if (textures.size() > MaxTexturesPerScene)
+	{
+		PIMMLogWarning("Number of textures exceeds {}. Extra textures will be ignored.", MaxTexturesPerScene)
+	}
+
+	auto numTextures = static_cast<UINT>(std::min(textures.size(), MaxTexturesPerScene));
+	
+	for (auto i : std::views::iota(0u, numTextures))
+	{
+		if (textures[i]) m_shaderResourceView[i] = (textures[i]->m_shaderResourceView.Get());
+		else m_shaderResourceView[i] = {};
+	}
+	
+	m_context->VSSetShaderResources(0, numTextures, m_shaderResourceView.data());
+	m_context->HSSetShaderResources(0, numTextures, m_shaderResourceView.data());
+	m_context->DSSetShaderResources(0, numTextures, m_shaderResourceView.data());
+	m_context->PSSetShaderResources(0, numTextures, m_shaderResourceView.data());
+}
+
+void pimm::DeviceContext::SetSamplers(const std::span<Sampler*>& samplers)
+{
+	if (samplers.size() > MaxSamplersPerScene)
+	{
+		PIMMLogWarning("Number of samplers exceeds {}. Extra samplers will be ignored.", MaxSamplersPerScene)
+	}
+
+	auto numSamplers = static_cast<UINT>(std::min(samplers.size(), MaxSamplersPerScene));
+	for (auto i : std::views::iota(0u, numSamplers))
+	{
+		if (samplers[i]) m_samplers[i] = (samplers[i]->m_sampler.Get());
+		else m_samplers[i] = {};
+	}
+	
+	m_context->VSSetSamplers(0, numSamplers, m_samplers.data());
+	m_context->HSSetSamplers(0, numSamplers, m_samplers.data());
+	m_context->DSSetSamplers(0, numSamplers, m_samplers.data());
+	m_context->PSSetSamplers(0, numSamplers, m_samplers.data());
 }
 
 Microsoft::WRL::ComPtr<ID3D11DeviceContext> pimm::DeviceContext::GetD3D11DeviceContext()

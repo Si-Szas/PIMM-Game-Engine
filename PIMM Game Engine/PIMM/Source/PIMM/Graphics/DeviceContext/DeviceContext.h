@@ -3,6 +3,7 @@
 #include <PIMM/Math/Vec4.h>
 
 #include <span>
+#include <array>
 
 namespace pimm {
 
@@ -24,6 +25,9 @@ namespace pimm {
 			void SetConstantBuffers(const std::span<ConstantBuffer*>& buffers);
 			void SetIndexBuffer(const IndexBuffer& buffer);
 
+			void SetTextures(const std::span<Texture*>& textures);
+			void SetSamplers(const std::span<Sampler*>& samplers);
+
 			//GETTER
 			Microsoft::WRL::ComPtr<ID3D11DeviceContext> GetD3D11DeviceContext();
 
@@ -38,11 +42,16 @@ namespace pimm {
 			void Draw4PatchIndexedTriangleList(ui32 indexCount, ui32 startVertexIndex, ui32 startIndexLocation);
 
 		public:
-			static constexpr std::size_t MaxConstantBuffersPerScene{ 16 };
+			static constexpr std::size_t MaxConstantBuffersPerScene{ D3D11_COMMONSHADER_CONSTANT_BUFFER_API_SLOT_COUNT };
+			static constexpr std::size_t MaxSamplersPerScene{ D3D11_COMMONSHADER_SAMPLER_SLOT_COUNT };
+			static constexpr std::size_t MaxTexturesPerScene{ D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT };
 
 		private:
 			Microsoft::WRL::ComPtr <ID3D11DeviceContext> m_context{};
-			ID3D11Buffer* m_constantBuffers[MaxConstantBuffersPerScene]{};
+
+			std::array<ID3D11Buffer*, MaxConstantBuffersPerScene> m_constantBuffers{};
+			std::array<ID3D11ShaderResourceView*, MaxTexturesPerScene> m_shaderResourceView{};
+			std::array<ID3D11SamplerState*, MaxSamplersPerScene> m_samplers{};
 	
 		friend class GraphicsDevice;
 	};
