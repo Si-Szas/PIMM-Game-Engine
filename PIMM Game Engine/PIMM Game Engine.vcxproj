@@ -141,6 +141,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="PIMM\Source\PIMM\Graphics\FrameBuffer\FrameBuffer.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\AComponent\MaterialComponent.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Resource\MaterialResource.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Graphics\ImGui\imgui.cpp" />
@@ -201,6 +202,7 @@
     <ClCompile Include="PIMM\Source\PIMM\Graphics\Sampler\Sampler.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="PIMM\Source\PIMM\Graphics\FrameBuffer\FrameBuffer.h" />
     <ClInclude Include="Game\UI\AssetsPanel.h" />
     <ClInclude Include="Game\UI\HierarchyPanel.h" />
     <ClInclude Include="Game\UI\InspectorPanel.h" />
