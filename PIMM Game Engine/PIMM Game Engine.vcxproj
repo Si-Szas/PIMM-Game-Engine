@@ -202,6 +202,7 @@
     <ClCompile Include="PIMM\Source\PIMM\Graphics\Sampler\Sampler.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\UI\ScenePanel.h" />
     <ClInclude Include="PIMM\Source\PIMM\Graphics\FrameBuffer\FrameBuffer.h" />
     <ClInclude Include="Game\UI\AssetsPanel.h" />
     <ClInclude Include="Game\UI\HierarchyPanel.h" />
@@ -254,7 +255,6 @@
     <ClInclude Include="PIMM\Source\PIMM\Graphics\IndexBuffer\IndexBuffer.h" />
     <ClInclude Include="PIMM\Include\PIMM\AGameObject\AGameObject.h" />
     <ClInclude Include="PIMM\Include\PIMM\AGameObject\Quad.h" />
-    <ClInclude Include="PIMM\Source\PIMM\UIManager\APanel.h" />
     <ClInclude Include="PIMM\Source\PIMM\Time\EngineTime.h" />
     <ClInclude Include="PIMM\Include\PIMM\Math\Matrix4x4.h" />
     <ClInclude Include="PIMM\Source\PIMM\Graphics\ConstantBuffer\ConstantBuffer.h" />
@@ -281,6 +281,7 @@
     <ClInclude Include="PIMM\Source\PIMM\Graphics\VertexBuffer\VertexBuffer.h" />
     <ClInclude Include="PIMM\Source\PIMM\Graphics\GraphicsPipelineLayout\GraphicsPipelineLayout.h" />
     <ClInclude Include="PIMM\Include\PIMM\AComponent\TransformComponent.h" />
+    <ClInclude Include="PIMM\Source\PIMM\UIManager\APanel.h" />
     <ClInclude Include="PIMM\Source\PIMM\UIManager\UIManager.h" />
     <ClInclude Include="PIMM\Include\PIMM\Resource\Resource.h" />
     <ClInclude Include="PIMM\Include\PIMM\Resource\ResourceManager.h" />

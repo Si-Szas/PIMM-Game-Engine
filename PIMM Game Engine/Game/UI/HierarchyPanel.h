@@ -1,10 +1,13 @@
 #pragma once
 #include <PIMM/UIManager/APanel.h>
 #include <PIMM/ImGui/imgui.h>
-
-class HierarchyPanel : public pimm::APanel {
+class HierarchyPanel final : public pimm::APanel
+{
 public:
-    void Render() override {
+    HierarchyPanel() : APanel("Hierarchy") {}
+
+    void Render() override
+    {
         ImGui::Begin("Hierarchy");
         ImGui::Selectable("Player");
         ImGui::Selectable("Floor");

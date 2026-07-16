@@ -77,8 +77,9 @@ void MainGame::OnCreate()
 
 	auto* uiManager = GetUIManager();
 	uiManager->RegisterPanel(std::make_unique<HierarchyPanel>());
-	uiManager->RegisterPanel(std::make_unique<InspectorPanel>());
+	uiManager->RegisterPanel(std::make_unique<InspectorPanel>(*player));
 	uiManager->RegisterPanel(std::make_unique<AssetsPanel>());
+	uiManager->RegisterPanel(std::make_unique<ScenePanel>());
 }
 
 void MainGame::OnUpdate(f32 deltaTime)
