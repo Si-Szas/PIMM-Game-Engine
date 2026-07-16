@@ -208,6 +208,7 @@
     <ClInclude Include="Game\UI\InspectorPanel.h" />
     <ClCompile Include="PIMM\Source\PIMM\Resource\Resource.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Resource\ResourceManager.cpp" />
+    <ClInclude Include="Game\UI\ScenePanel.h" />
     <ClInclude Include="PIMM\Source\PIMM\Graphics\ShaderInclude\ShaderInclude.h" />
     <ClInclude Include="PIMM\Include\PIMM\Resource\TextureResource.h" />
     <ClInclude Include="PIMM\Source\PIMM\Graphics\Texture\Texture.h" />
@@ -224,6 +225,14 @@
     <ClInclude Include="PIMM\Include\PIMM\ImGui\imstb_rectpack.h" />
     <ClInclude Include="PIMM\Include\PIMM\ImGui\imstb_textedit.h" />
     <ClInclude Include="PIMM\Include\PIMM\ImGui\imstb_truetype.h" />
+    <ClInclude Include="PIMM\Include\PIMM\Graphics\ImGui\imconfig.h" />
+    <ClInclude Include="PIMM\Include\PIMM\Graphics\ImGui\imgui.h" />
+    <ClInclude Include="PIMM\Include\PIMM\Graphics\ImGui\imgui_impl_dx11.h" />
+    <ClInclude Include="PIMM\Include\PIMM\Graphics\ImGui\imgui_impl_win32.h" />
+    <ClInclude Include="PIMM\Include\PIMM\Graphics\ImGui\imgui_internal.h" />
+    <ClInclude Include="PIMM\Include\PIMM\Graphics\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="PIMM\Include\PIMM\Graphics\ImGui\imstb_textedit.h" />
+    <ClInclude Include="PIMM\Include\PIMM\Graphics\ImGui\imstb_truetype.h" />
     <ClInclude Include="PIMM\Include\PIMM\InputSystem\Commands\CreateAGameObjectCommand.h" />
     <ClInclude Include="PIMM\Include\PIMM\InputSystem\Commands\DeleteAGameObjectCommand.h" />
     <ClInclude Include="PIMM\Include\PIMM\InputSystem\Commands\DeleteAllAGameObjectsCommand.h" />

@@ -2,8 +2,10 @@
 #include <PIMM/UIManager/APanel.h>
 #include <PIMM/ImGui/imgui.h>
 
-class HierarchyPanel : public pimm::APanel {
+class HierarchyPanel final : public pimm::APanel
+{
 public:
+    HierarchyPanel() : APanel("Hierarchy") {}
     void Render() override {
         ImGui::Begin("Hierarchy");
         ImGui::Selectable("Player");

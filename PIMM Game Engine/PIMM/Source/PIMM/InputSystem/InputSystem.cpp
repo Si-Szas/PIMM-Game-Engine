@@ -62,12 +62,6 @@ void pimm::InputSystem::Update()
 
 pimm::InputCommand* pimm::InputSystem::HandleInput()
 {
-	if (m_uiManager != nullptr &&
-		(m_uiManager->WantsCaptureMouse() || m_uiManager->WantsCaptureKeyboard()))
-	{
-		return NULL;
-	}
-
 	if (IsKeyDown(pimm::KeyCode::W)) return WKeyCommand;
 	else if (IsKeyDown(pimm::KeyCode::A)) return AKeyCommand;
 	else if (IsKeyDown(pimm::KeyCode::S)) return SKeyCommand;
