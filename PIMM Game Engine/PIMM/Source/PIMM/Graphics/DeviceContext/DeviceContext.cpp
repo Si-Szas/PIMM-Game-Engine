@@ -7,6 +7,8 @@
 #include <PIMM/Graphics/Texture/Texture.h>
 #include <PIMM/Graphics/Sampler/Sampler.h>
 
+#include <PIMM/Graphics/FrameBuffer/FrameBuffer.h>
+
 #include <ranges>
 
 #include <wrl.h>
@@ -49,6 +51,33 @@ void pimm::DeviceContext::ClearAndSetBackBuffer(const SwapChain& swapChain, cons
 		1,			//Number of render target views (we set all in one view, our back buffer)
 		&RTV,		//An array of pointers to the views (we simulate an array using &)
 		DSV		//Depth Stencil View
+	);
+}
+
+void pimm::DeviceContext::ClearAndSetFrameBuffer(const FrameBuffer& frameBuffer, const Vec4& color)
+{
+	//Similar logic to clearning and setting the back buffer, but we're specifically clearing the frame the scene is being drawn on
+	f32 colorArray[] = { color.x, color.y, color.z, color.w };
+
+	auto rtv = frameBuffer.GetRTV();
+	auto dsv = frameBuffer.GetDSV();
+
+	m_context->ClearRenderTargetView(
+		rtv, 
+		colorArray
+	);
+
+	m_context->ClearDepthStencilView(
+		dsv, 
+		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 
+		1.0f, 
+		0
+	);
+
+	m_context->OMSetRenderTargets(
+		1, 
+		&rtv, 
+		dsv
 	);
 }
 

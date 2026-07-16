@@ -6,6 +6,7 @@
 #include <PIMM/Graphics/VertexBuffer/VertexBuffer.h>
 #include <PIMM/Graphics/ConstantBuffer/ConstantBuffer.h>
 #include <PIMM/Graphics/IndexBuffer/IndexBuffer.h>
+#include <PIMM/Graphics/FrameBuffer/FrameBuffer.h>
 #include <PIMM/UIManager/UIManager.h>
 //GAME AND WORLD HEADER//
 #include <PIMM/Game/World.h>
@@ -42,6 +43,12 @@ pimm::WorldRenderer::WorldRenderer(const WorldRendererDescriptor& descriptor) :
 	//For textures
 	m_textures.reserve(32);
 
+	m_frameBuffer = device.CreateFrameBuffer({
+			m_graphicsDevice,
+			m_swapChainSize,
+			1
+	});
+
 	//Create constant buffer
 	m_objectConstantBuffer = device.CreateConstantBuffer
 	({
@@ -74,10 +81,11 @@ void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 d
 	// - context.UpdateConstantBuffer(vsConstantBuffer, &data);
 	// - We want to first clear the buffer, then after rendering on a back buffer, we want to move that back to the front buffer
 	// - Record render command that clears content of back buffer and binds it so we can render elements onto it
-	// - Use Pipeline
+	// - UsPipeline
 	//	- Bind all objects inside graphics pipeline state (shaders) to actual GPU pipeline
 	auto& context = *m_deviceContext;
-	context.ClearAndSetBackBuffer(swapChain, { 0.251f, 0.141f, 0.31f, 1.0f });
+	
+	//context.ClearAndSetBackBuffer(swapChain, { 0.251f, 0.141f, 0.31f, 1.0f });
 	context.SetViewportSize(m_swapChainSize);
 
 	////////// TEXUTRES //////////
@@ -86,6 +94,16 @@ void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 d
 
 	////////// ACOMPONENTS //////////
 	auto numberOfComponents = 0u;
+
+	pimm::FrameBufferDescriptor frameBufferDescriptor{
+		.graphicsDevice = m_graphicsDevice,
+		.size = m_swapChainSize, 
+		.sampleCount = 1
+	};
+	
+	m_frameBuffer->Create(m_graphicsDevice, frameBufferDescriptor);
+	context.ClearAndSetFrameBuffer(*m_frameBuffer, { 0.251f, 0.141f, 0.31f, 1.0f });
+	
 
 	////////// CONSTANT BUFFER DATA //////////
 	auto& cameraCB = *m_cameraConstantBuffer;

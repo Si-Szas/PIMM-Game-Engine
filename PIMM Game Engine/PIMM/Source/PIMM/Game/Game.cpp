@@ -67,3 +67,8 @@ pimm::World& pimm::Game::GetWorld() noexcept
 {
 	return *m_world;
 }
+
+pimm::WorldRenderer& pimm::Game::GetWorldRenderer() noexcept
+{
+	return *m_worldRenderer;
+}

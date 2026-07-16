@@ -1,6 +1,6 @@
 #pragma once
-#include <PIMM/Graphics/UIManager/APanel.h>
-#include <PIMM/Graphics/ImGui/imgui.h>
+#include <PIMM/UIManager/APanel.h>
+#include <PIMM/ImGui/imgui.h>
 
 class ScenePanel final : public pimm::APanel
 {
@@ -9,7 +9,7 @@ public:
 
     void Render() override
     {
-        ImGui::Begin("Scenes");
+        ImGui::Begin("Scene");
 
 
         ImGui::End();

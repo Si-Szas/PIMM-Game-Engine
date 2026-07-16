@@ -25,6 +25,8 @@ namespace pimm
 			Rect GetSwapChainSize() const noexcept;
 			std::vector<RefPtr<VertexBuffer>>& GetVertexBuffer() const noexcept;
 			std::vector<RefPtr<IndexBuffer>>& GetIndexBuffer() const noexcept;
+			FrameBuffer* GetFrameBuffer() const noexcept { return m_frameBuffer.get(); }
+
 
 			//DESTRUCTOR
 			virtual ~WorldRenderer() override;
@@ -54,6 +56,8 @@ namespace pimm
 			RefPtr<ConstantBuffer> m_objectConstantBuffer{};
 			RefPtr<ConstantBuffer> m_cameraConstantBuffer{};
 			RefPtr<ConstantBuffer> m_materialConstantBuffer{};
+
+			UniquePtr<FrameBuffer> m_frameBuffer{};
 
 			RefPtr<Sampler> m_sampler{};
 			std::vector<Texture*> m_textures{};

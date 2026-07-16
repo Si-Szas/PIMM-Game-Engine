@@ -1,6 +1,9 @@
 #include "MainGame.h"
 #include "Player/Player.h"
 #include <PIMM/ImGui/imgui.h>
+
+#include <PIMM/Graphics/FrameBuffer/FrameBuffer.h>
+
 using namespace pimm;
 
 MainGame::MainGame(const GameDescriptor& descriptor) :
@@ -80,6 +83,7 @@ void MainGame::OnCreate()
 	uiManager->RegisterPanel(std::make_unique<InspectorPanel>(*player));
 	uiManager->RegisterPanel(std::make_unique<AssetsPanel>());
 	uiManager->RegisterPanel(std::make_unique<ScenePanel>());
+
 }
 
 void MainGame::OnUpdate(f32 deltaTime)

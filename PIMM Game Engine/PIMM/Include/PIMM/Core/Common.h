@@ -117,6 +117,7 @@ namespace pimm
 
 	struct FrameBufferDescriptor
 	{
+		GraphicsDevice& graphicsDevice;
 		Rect size{};
 		ui32 sampleCount;
 	};

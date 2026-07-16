@@ -15,6 +15,7 @@ namespace pimm {
 		
 			//FUNCTION
 			void ClearAndSetBackBuffer(const SwapChain& swapChain, const Vec4& color);
+			void ClearAndSetFrameBuffer(const FrameBuffer& frameBuffer, const Vec4& color);
 			void ExecuteCommandList(const Microsoft::WRL::ComPtr<ID3D11DeviceContext>& immediateContext);
 
 			//SETTER
