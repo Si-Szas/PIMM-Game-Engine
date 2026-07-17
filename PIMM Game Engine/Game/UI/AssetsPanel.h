@@ -1,10 +1,11 @@
 #pragma once
 #include <PIMM/UIManager/APanel.h>
 #include <PIMM/ImGui/imgui.h>
+
 class AssetsPanel final : public pimm::APanel
 {
 public:
-    AssetsPanel() : APanel("Assets") {}
+	AssetsPanel() : APanel("Assets") {} 
 
     void Render() override
     {

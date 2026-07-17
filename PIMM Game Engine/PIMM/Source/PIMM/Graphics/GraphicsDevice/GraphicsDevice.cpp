@@ -11,6 +11,8 @@
 #include <PIMM/Graphics/Texture/Texture.h>
 #include <PIMM/Graphics/Sampler/Sampler.h>
 
+#include <PIMM/Graphics/FrameBuffer/FrameBuffer.h>
+
 using namespace pimm;
 
 GraphicsDevice::GraphicsDevice(const GraphicsDeviceDescriptor& descriptor): Base(descriptor.base)
@@ -102,6 +104,12 @@ RefPtr<IndexBuffer> pimm::GraphicsDevice::CreateIndexBuffer(const IndexBufferDes
 {
 	return std::make_shared<IndexBuffer>(descriptor, GetGraphicsResourceDescriptor());
 }
+
+UniquePtr<FrameBuffer> pimm::GraphicsDevice::CreateFrameBuffer(const FrameBufferDescriptor& descriptor)
+{
+	return std::make_unique<FrameBuffer>(descriptor, GetGraphicsResourceDescriptor());
+}
+
 
 RefPtr<Texture> pimm::GraphicsDevice::CreateTexture(const TextureDescriptor& descriptor)
 {

@@ -24,6 +24,7 @@ namespace pimm
 			RefPtr<VertexBuffer> CreateVertexBuffer(const VertexBufferDescriptor& descriptor);
 			RefPtr<ConstantBuffer> CreateConstantBuffer(const ConstantBufferDescriptor& descriptor);
 			RefPtr<IndexBuffer> CreateIndexBuffer(const IndexBufferDescriptor& descriptor);
+			UniquePtr<FrameBuffer> CreateFrameBuffer(const FrameBufferDescriptor& descriptor);
 
 			RefPtr<Texture> CreateTexture(const TextureDescriptor& descriptor);
 			RefPtr<Sampler> CreateSampler(const SamplerDescriptor& descriptor);

@@ -25,6 +25,9 @@ namespace pimm
 			Rect GetSwapChainSize() const noexcept;
 			std::vector<RefPtr<VertexBuffer>>& GetVertexBuffer() const noexcept;
 			std::vector<RefPtr<IndexBuffer>>& GetIndexBuffer() const noexcept;
+			FrameBuffer* GetFrameBuffer() const noexcept { return m_frameBuffer.get(); }
+			void SetSceneViewSize(Rect size) noexcept { m_sceneViewSize = size; }
+
 
 			//DESTRUCTOR
 			virtual ~WorldRenderer() override;
@@ -42,6 +45,7 @@ namespace pimm
 
 		private:
 			Rect m_swapChainSize{};
+			Rect m_sceneViewSize{};
 			UIManager& m_uiManager;
 			//Define a smart pointer to a render system variable of class Render System
 			GraphicsDevice& m_graphicsDevice;
@@ -54,6 +58,8 @@ namespace pimm
 			RefPtr<ConstantBuffer> m_objectConstantBuffer{};
 			RefPtr<ConstantBuffer> m_cameraConstantBuffer{};
 			RefPtr<ConstantBuffer> m_materialConstantBuffer{};
+
+			UniquePtr<FrameBuffer> m_frameBuffer{};
 
 			RefPtr<Sampler> m_sampler{};
 			std::vector<Texture*> m_textures{};
