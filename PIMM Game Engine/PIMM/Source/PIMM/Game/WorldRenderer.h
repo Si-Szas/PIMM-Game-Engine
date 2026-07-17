@@ -26,6 +26,7 @@ namespace pimm
 			std::vector<RefPtr<VertexBuffer>>& GetVertexBuffer() const noexcept;
 			std::vector<RefPtr<IndexBuffer>>& GetIndexBuffer() const noexcept;
 			FrameBuffer* GetFrameBuffer() const noexcept { return m_frameBuffer.get(); }
+			void SetSceneViewSize(Rect size) noexcept { m_sceneViewSize = size; }
 
 
 			//DESTRUCTOR
@@ -44,6 +45,7 @@ namespace pimm
 
 		private:
 			Rect m_swapChainSize{};
+			Rect m_sceneViewSize{};
 			UIManager& m_uiManager;
 			//Define a smart pointer to a render system variable of class Render System
 			GraphicsDevice& m_graphicsDevice;

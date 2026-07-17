@@ -82,7 +82,7 @@ void MainGame::OnCreate()
 	uiManager->RegisterPanel(std::make_unique<HierarchyPanel>());
 	uiManager->RegisterPanel(std::make_unique<InspectorPanel>(*player));
 	uiManager->RegisterPanel(std::make_unique<AssetsPanel>());
-	uiManager->RegisterPanel(std::make_unique<ScenePanel>());
+	uiManager->RegisterPanel(std::make_unique<ScenePanel>(GetWorldRenderer()));
 
 }
 
