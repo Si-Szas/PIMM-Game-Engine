@@ -21,6 +21,7 @@ namespace pimm
 			virtual InputSystem& GetInputSystem() noexcept final;
 			pimm::UIManager* GetUIManager() noexcept { return m_uiManager.get(); }
 			virtual ResourceManager& GetResourceManager() noexcept final;
+			virtual WorldRenderer& GetWorldRenderer() noexcept final;
 
 			//DESTRUCTOR
 			virtual ~Game();

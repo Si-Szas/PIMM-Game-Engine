@@ -5,9 +5,7 @@ class HierarchyPanel final : public pimm::APanel
 {
 public:
     HierarchyPanel() : APanel("Hierarchy") {}
-
-    void Render() override
-    {
+    void Render() override {
         ImGui::Begin("Hierarchy");
         ImGui::Selectable("Player");
         ImGui::Selectable("Floor");
