@@ -202,6 +202,7 @@
     <ClCompile Include="PIMM\Source\PIMM\Graphics\Sampler\Sampler.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CreditsPanel.h" />
     <ClInclude Include="Game\UI\ScenePanel.h" />
     <ClInclude Include="PIMM\Source\PIMM\Graphics\FrameBuffer\FrameBuffer.h" />
     <ClInclude Include="Game\UI\AssetsPanel.h" />
@@ -285,6 +286,9 @@
     <ClInclude Include="PIMM\Source\PIMM\UIManager\UIManager.h" />
     <ClInclude Include="PIMM\Include\PIMM\Resource\Resource.h" />
     <ClInclude Include="PIMM\Include\PIMM\Resource\ResourceManager.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\..\Downloads\dlsu.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
