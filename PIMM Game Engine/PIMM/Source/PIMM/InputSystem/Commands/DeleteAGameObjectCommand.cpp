@@ -20,6 +20,11 @@ void pimm::DeleteAGameObjectCommand::ExecuteCommand(AGameObject& gameObject, Wor
 	if (static_cast<ui32>(gameObjects.size()) > 2) world.DestroyAGameObjectInternal(gameObjects.back());
 }
 
+void pimm::DeleteAGameObjectCommand::ExecuteCommand(AGameObject& gameObject, World& world, ResourceManager& resourceManager)
+{
+
+}
+
 void pimm::DeleteAGameObjectCommand::UndoCommand(AGameObject& gameObject)
 {
 

@@ -17,6 +17,11 @@ void pimm::ExitApplicationCommand::ExecuteCommand(AGameObject& gameObject, World
 	PostQuitMessage(0);
 }
 
+void pimm::ExitApplicationCommand::ExecuteCommand(AGameObject& gameObject, World& world, ResourceManager& resourceManager)
+{
+
+}
+
 void pimm::ExitApplicationCommand::UndoCommand(AGameObject& gameObject)
 {
 
