@@ -1,6 +1,7 @@
 #pragma once
 #include <PIMM/Core/Base.h>
 #include <PIMM/Core/Core.h>
+#include <PIMM/Graphics/GraphicsDevice/GraphicsDevice.h>
 
 namespace pimm
 {
@@ -21,7 +22,7 @@ namespace pimm
 			virtual InputSystem& GetInputSystem() noexcept final;
 			pimm::UIManager* GetUIManager() noexcept { return m_uiManager.get(); }
 			virtual ResourceManager& GetResourceManager() noexcept final;
-			virtual WorldRenderer& GetWorldRenderer() noexcept final;
+			GraphicsDevice& GetGraphicsDevice() const noexcept { return *m_graphicsDevice; }
 
 			//DESTRUCTOR
 			virtual ~Game();
