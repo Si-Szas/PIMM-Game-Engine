@@ -31,12 +31,16 @@ public:
             auto object = gameObjects[i];
             if (!object) continue;
 
+            ImGui::PushID(i);
+
             if (object->GetTypeID() == pimm::Quad::getTypeId()) ImGui::Selectable("Floor");
             if (object->GetTypeID() == pimm::Cube::getTypeId()) ImGui::Selectable("Cube");
             if (object->GetTypeID() == pimm::Sphere::getTypeId()) ImGui::Selectable("Sphere");
             if (object->GetTypeID() == pimm::Cylinder::getTypeId()) ImGui::Selectable("Cylinder");
             if (object->GetTypeID() == pimm::Capsule::getTypeId()) ImGui::Selectable("Capsule");
             if (object->GetTypeID() == pimm::Player::getTypeId()) ImGui::Selectable("Player");
+
+            ImGui::PopID();
         }
 
         ImGui::End();
