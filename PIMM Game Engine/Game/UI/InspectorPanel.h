@@ -12,6 +12,8 @@ namespace pimm
 		void Render() override
 		{
 			ImGui::Begin("Inspector");
+			ImGui::Text("Player");
+			ImGui::NewLine();
 			ImGui::Text("Transform");
 
 			auto& transform = m_player.GetTransform();
