@@ -2,7 +2,7 @@
 This is the repository for the PIMM Game Engine for GDENG03 X21.
 Developed by:
 - Peter Gabriel C. Abada
-- Ivan James M. Penas
+- Ivan James M. Peñas
 - Megan Florence Sophia C. Sadio
 - Marco Luis R. Valdez
 ## Entry Point (Main Function)
