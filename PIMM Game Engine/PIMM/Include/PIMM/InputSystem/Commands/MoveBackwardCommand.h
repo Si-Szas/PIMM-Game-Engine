@@ -15,6 +15,7 @@ namespace pimm
 			//FUNCTIONS
 			void ExecuteCommand(){}
 			void ExecuteCommand(AGameObject& gameObject, World& world);
+			void ExecuteCommand(AGameObject& gameObject, World& world, ResourceManager& resourceManager);
 			void UndoCommand(AGameObject& gameObject);
 
 			~MoveBackwardCommand();

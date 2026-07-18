@@ -26,6 +26,11 @@ void pimm::DeleteAllAGameObjectsCommand::UndoCommand(AGameObject& gameObject)
 
 }
 
+void pimm::DeleteAllAGameObjectsCommand::ExecuteCommand(AGameObject& gameObject, World& world, ResourceManager& resourceManager)
+{
+
+}
+
 pimm::DeleteAllAGameObjectsCommand::~DeleteAllAGameObjectsCommand()
 {
 

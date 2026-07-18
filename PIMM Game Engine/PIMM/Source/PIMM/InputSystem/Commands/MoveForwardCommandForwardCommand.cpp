@@ -16,6 +16,11 @@ void pimm::MoveForwardCommand::ExecuteCommand(AGameObject& gameObject, World& wo
 	gameObject.SetForwardModifier(gameObject.GetForwardModifier() + 1.0f);
 }
 
+void pimm::MoveForwardCommand::ExecuteCommand(AGameObject& gameObject, World& world, ResourceManager& resourceManager)
+{
+
+}
+
 void pimm::MoveForwardCommand::UndoCommand(AGameObject& gameObject)
 {
 	gameObject.GetTransform().SetPosition(m_previousPosition);

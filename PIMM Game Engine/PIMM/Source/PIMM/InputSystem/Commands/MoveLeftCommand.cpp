@@ -14,6 +14,11 @@ void pimm::MoveLeftCommand::ExecuteCommand(AGameObject& gameObject, World& world
 	gameObject.SetRightModifier(gameObject.GetRightModifier() - 1.0f);
 }
 
+void pimm::MoveLeftCommand::ExecuteCommand(AGameObject& gameObject, World& world, ResourceManager& resourceManager)
+{
+
+}
+
 void pimm::MoveLeftCommand::UndoCommand(AGameObject& gameObject)
 {
 	gameObject.GetTransform().SetPosition(m_previousPosition);

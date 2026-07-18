@@ -19,6 +19,11 @@ void pimm::MoveBackwardCommand::UndoCommand(AGameObject& gameObject)
 	gameObject.GetTransform().SetPosition(m_previousPosition);
 }
 
+void pimm::MoveBackwardCommand::ExecuteCommand(AGameObject& gameObject, World& world, ResourceManager& resourceManager)
+{
+
+}
+
 pimm::MoveBackwardCommand::~MoveBackwardCommand()
 {
 }
