@@ -12,7 +12,6 @@
 #include <PIMM/AGameObject/Cylinder.h>
 #include <PIMM/AGameObject/Capsule.h>
 
-#include <fstream>
 #include <ranges>
 
 class HierarchyPanel final : public pimm::APanel
