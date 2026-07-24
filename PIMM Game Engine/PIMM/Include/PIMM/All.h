@@ -42,3 +42,6 @@
 //TEXTURES//
 #include <PIMM/Resource/TextureResource.h>
 #include <PIMM/Graphics/Sampler/Sampler.h>
+//MESH//
+#include <PIMM/Resource/MeshResource.h>
+//#include <PIMM/Resource/MeshManager/MeshManager.h>

@@ -58,8 +58,7 @@ namespace pimm {
 		class CapsuleComponent;
 		class MaterialComponent;
 
-	// ui //
-
+	///////////// UI /////////////
 	class UIManager;
 	
 	///////////// INPUT SYSTEM /////////////
@@ -74,15 +73,17 @@ namespace pimm {
 	/////////// GAME LOOP - ENGINE TIME ///////////
 	class EngineTime;
 
-	///////////// MATERIALS /////////////
+	///////////// RESOURCES /////////////
 	class ResourceManager;
-	class Resource;
-	class MaterialResource;
-
+		class Resource;
+		class MaterialResource;
 	///////////// TEXTURES /////////////
 	class TextureResource;
-	class Texture;
-	class Sampler;
+		class Texture;
+		class Sampler;
+	///////////// MESH /////////////
+	class MeshManager;
+		class MeshResource;
 
 	//Type Aliases
 	using i32 = int;
