@@ -1,5 +1,5 @@
-#include <PIMM/ResourceManager/TextureResource.h>
-#include <PIMM/ResourceManager/ResourceManager.h>
+#include <PIMM/Resource/TextureResource.h>
+#include <PIMM/Resource/ResourceManager.h>
 #include <PIMM/Graphics/GraphicsDevice/GraphicsDevice.h>
 
 #include <fstream>

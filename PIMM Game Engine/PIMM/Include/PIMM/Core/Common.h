@@ -218,12 +218,6 @@ namespace pimm
 		GraphicsDevice& graphicsDevice;
 	};
 
-	struct MeshResourceDescriptor
-	{
-		ResourceDescriptor base;
-		GraphicsDevice& graphicsDevice;
-	};
-
 	struct SystemContext
 	{
 		GraphicsDevice& graphicsDevice;
@@ -239,11 +233,6 @@ namespace pimm
 	{
 		Rect size{};
 		const void* pixels{};
-	};
-
-	struct MeshDescriptor
-	{
-
 	};
 
 	struct SamplerDescriptor

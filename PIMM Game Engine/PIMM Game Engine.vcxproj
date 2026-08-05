@@ -73,7 +73,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>Bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>Intermediate\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>PIMM/Include;PIMM/Source;PIMM/Vendor/stb-image/include/;PIMM/Vendor/tinyobjloader/include/;$(IncludePath)</IncludePath>
+    <IncludePath>PIMM/Include;PIMM/Source;PIMM/Vendor/stb-image/include/;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>Bin\$(Platform)\$(Configuration)\</OutDir>
@@ -141,8 +141,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="PIMM\Source\PIMM\Resource\MeshResource.cpp" />
-    <ClCompile Include="PIMM\Source\PIMM\Graphics\Mesh\Mesh.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Graphics\FrameBuffer\FrameBuffer.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\AComponent\MaterialComponent.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Resource\MaterialResource.cpp" />
@@ -205,8 +203,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\UI\ScenePanel.h" />
-    <ClInclude Include="PIMM\Include\PIMM\Resource\MeshResource.h" />
-    <ClInclude Include="PIMM\Source\PIMM\Graphics\Mesh\Mesh.h" />
     <ClInclude Include="PIMM\Source\PIMM\Graphics\FrameBuffer\FrameBuffer.h" />
     <ClInclude Include="Game\UI\AssetsPanel.h" />
     <ClInclude Include="Game\UI\HierarchyPanel.h" />
