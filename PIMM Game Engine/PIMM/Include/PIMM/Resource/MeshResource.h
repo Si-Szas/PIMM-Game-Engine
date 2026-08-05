@@ -13,7 +13,7 @@ namespace pimm {
 			const MaterialSlot* GetMaterialSlots(ui32& numberOfSlots) const noexcept;
 			ui32 GetNumberOfMaterialSlots() const noexcept;
 			const VertexBuffer& GetVertexBuffer() const noexcept;
-			const IndexBuffer* GetIndexBuffer() const noexcept;
+			const IndexBuffer& GetIndexBuffer() const noexcept;
 
 		private:
 			RefPtr<VertexBuffer> m_vertexBuffer{};

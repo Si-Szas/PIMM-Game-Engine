@@ -17,8 +17,8 @@ pimm::MeshResource::MeshResource(const MeshResourceDescriptor& desc) : Resource(
 	tinyobj::ObjReader objectReader{};
 
 	if (!objectReader.ParseFromFile(inputfile)) PIMMLogThrowError("ParseFromFile(), mesh failed to load.");
-	if (!objectReader.Error().empty()) PIMMLogThrowError("Failed to load mesh {}. Details: {}", inputfile, reader.Error());
-	if (!objectReader.Warning().empty()) PIMMLogWarning("Mesh {} loaded with warnings: {}", inputfile, reader.Warning());
+	if (!objectReader.Error().empty()) PIMMLogThrowError("Failed to load mesh {}. Details: {}", inputfile, objectReader.Error());
+	if (!objectReader.Warning().empty()) PIMMLogWarning("Mesh {} loaded with warnings: {}", inputfile, objectReader.Warning());
 
 	const auto& attributes = objectReader.GetAttrib();
 	const auto& shapes = objectReader.GetShapes();
