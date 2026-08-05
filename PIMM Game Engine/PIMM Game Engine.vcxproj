@@ -141,6 +141,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="PIMM\Source\PIMM\AComponent\MeshComponent.cpp" />
+    <ClCompile Include="PIMM\Source\PIMM\Resource\MeshResource.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Graphics\FrameBuffer\FrameBuffer.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\AComponent\MaterialComponent.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Resource\MaterialResource.cpp" />
@@ -203,6 +205,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\UI\ScenePanel.h" />
+    <ClInclude Include="PIMM\Include\PIMM\AComponent\MeshComponent.h" />
+    <ClInclude Include="PIMM\Include\PIMM\Resource\MeshResource.h" />
     <ClInclude Include="PIMM\Source\PIMM\Graphics\FrameBuffer\FrameBuffer.h" />
     <ClInclude Include="Game\UI\AssetsPanel.h" />
     <ClInclude Include="Game\UI\HierarchyPanel.h" />

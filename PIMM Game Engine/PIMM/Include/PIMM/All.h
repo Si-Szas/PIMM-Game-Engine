@@ -19,6 +19,7 @@
 #include <PIMM/AComponent/CubeComponent.h>
 #include <PIMM/AComponent/SphereComponent.h>
 #include <PIMM/AComponent/CapsuleComponent.h>
+#include <PIMM/AComponent/MeshComponent.h>
 //INPUT SYSTEM HEADER//
 #include <PIMM/InputSystem/InputSystem.h>
 #include <PIMM/InputSystem/InputCommand.h>
@@ -42,3 +43,5 @@
 //TEXTURES//
 #include <PIMM/Resource/TextureResource.h>
 #include <PIMM/Graphics/Sampler/Sampler.h>
+//MESHES//
+#include <PIMM/Resource/MeshResource.h>
