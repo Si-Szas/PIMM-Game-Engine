@@ -49,7 +49,7 @@ void pimm::Game::OnInternalUpdate(f32 deltaTime)
 	m_world->Update(deltaTime);
 	m_worldRenderer->Render(*m_world, m_display->GetSwapChain(), deltaTime);
 }
-pimm::Logger& pimm::Game::GetLogger() noexcept
+pimm::Logger& pimm::Game::GetLogger() const noexcept
 {
 	return *m_logger;
 }
