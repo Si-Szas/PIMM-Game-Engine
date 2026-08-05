@@ -13,7 +13,7 @@ namespace pimm
 
 			//DESTRUCTOR
 			virtual ~Base();
-			virtual Logger& GetLogger() noexcept final;
+			virtual Logger& GetLogger() const noexcept final;
 	
 		protected:
 			//Dependency injection, not singleton for logger

@@ -212,21 +212,29 @@ namespace pimm
 		GraphicsDevice& graphicsDevice;
 	};
 
+	struct SystemContext
+	{
+		GraphicsDevice& graphicsDevice;
+	};
+
+	//RESOURCES
+	struct ResourceManagerDescriptor
+	{
+		BaseDescriptor base;
+		SystemContext systemContext;
+	};
+
 	struct MaterialResourceDescriptor
 	{
 		ResourceDescriptor base;
 		GraphicsDevice& graphicsDevice;
 	};
 
-	struct SystemContext
+	struct MaterialSlot
 	{
-		GraphicsDevice& graphicsDevice;
-	};
-
-	struct ResourceManagerDescriptor
-	{
-		BaseDescriptor base;
-		SystemContext systemContext;
+		ui32 startIndex{};
+		ui32 indexCount{};
+		i32 materialIndex{};
 	};
 
 	struct TextureDescriptor
@@ -238,5 +246,17 @@ namespace pimm
 	struct SamplerDescriptor
 	{
 
+	};
+
+	struct MeshResourceDescriptor
+	{
+		ResourceDescriptor base;
+		GraphicsDevice& graphicsDevice;
+	};
+
+	struct MeshVertex
+	{
+		Vec3 position{};
+		Vec2 texcoord{};
 	};
 }

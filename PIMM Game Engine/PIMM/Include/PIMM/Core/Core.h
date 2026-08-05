@@ -57,6 +57,7 @@ namespace pimm {
 		class CylinderComponent;
 		class CapsuleComponent;
 		class MaterialComponent;
+		class MeshComponent;
 
 	// ui //
 
@@ -83,6 +84,9 @@ namespace pimm {
 	class TextureResource;
 	class Texture;
 	class Sampler;
+
+	///////////// MESHES /////////////
+	class MeshResource;
 
 	//Type Aliases
 	using i32 = int;

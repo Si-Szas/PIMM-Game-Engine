@@ -17,7 +17,7 @@ namespace pimm
 			
 			//GETTER
 			virtual World& GetWorld() noexcept final;
-			virtual Logger& GetLogger() noexcept final;
+			virtual Logger& GetLogger() const noexcept final;
 			virtual InputSystem& GetInputSystem() noexcept final;
 			pimm::UIManager* GetUIManager() noexcept { return m_uiManager.get(); }
 			virtual ResourceManager& GetResourceManager() noexcept final;
