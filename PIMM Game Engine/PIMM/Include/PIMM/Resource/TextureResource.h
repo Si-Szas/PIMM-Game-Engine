@@ -3,7 +3,7 @@
 
 namespace pimm
 {
-	class TextureResource : public Resource
+	class TextureResource final : public Resource
 	{
 		public:
 			//CONSTRUCTOR
