@@ -15,6 +15,8 @@
 #include <PIMM/AGameObject/Quad.h>
 #include <PIMM/AGameObject/Cube.h>
 #include <PIMM/AGameObject/Sphere.h>
+#include <PIMM/AGameObject/Cylinder.h>
+#include <PIMM/AGameObject/Capsule.h>
 //COMPONENTS//
 #include <PIMM/AComponent/AComponent.h>
 #include <PIMM/AComponent/TransformComponent.h>
@@ -160,11 +162,17 @@ void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 d
 					}
 					context.SetTextures(std::span<Texture*>{m_textures});
 
-					auto& vb = *m_vertexBuffer[object->GetVertexOffset()];
-					auto& ib = *m_indexBuffer[object->GetIndexLocation()];
-					context.SetVertexBuffer(vb);
-					context.SetIndexBuffer(ib);
-					context.Draw4PatchIndexedTriangleList(ib.GetIndexListSize(), 0u, 0u);
+					if (objectType == pimm::Quad::getTypeId()) context.SetVertexBuffer(object->GetComponent<QuadComponent>()->GetVertexBuffer());
+					if (objectType == pimm::Cube::getTypeId()) context.SetVertexBuffer(object->GetComponent<CubeComponent>()->GetVertexBuffer());
+					if (objectType == pimm::Sphere::getTypeId()) context.SetVertexBuffer(object->GetComponent<SphereComponent>()->GetVertexBuffer());
+					if (objectType == pimm::Cylinder::getTypeId()) context.SetVertexBuffer(object->GetComponent<CylinderComponent>()->GetVertexBuffer());
+					if (objectType == pimm::Capsule::getTypeId()) context.SetVertexBuffer(object->GetComponent<CapsuleComponent>()->GetVertexBuffer());
+					
+					if (objectType == pimm::Quad::getTypeId()) context.Draw4PatchIndexedTriangleList(object->GetComponent<QuadComponent>()->GetIndexBuffer().GetIndexListSize(), 0u, 0u);
+					if (objectType == pimm::Cube::getTypeId()) context.Draw4PatchIndexedTriangleList(object->GetComponent<CubeComponent>()->GetIndexBuffer().GetIndexListSize(), 0u, 0u);
+					if (objectType == pimm::Sphere::getTypeId()) context.Draw4PatchIndexedTriangleList(object->GetComponent<SphereComponent>()->GetIndexBuffer().GetIndexListSize(), 0u, 0u);
+					if (objectType == pimm::Cylinder::getTypeId()) context.Draw4PatchIndexedTriangleList(object->GetComponent<CylinderComponent>()->GetIndexBuffer().GetIndexListSize(), 0u, 0u);
+					if (objectType == pimm::Capsule::getTypeId()) context.Draw4PatchIndexedTriangleList(object->GetComponent<CapsuleComponent>()->GetIndexBuffer().GetIndexListSize(), 0u, 0u);
 				}
 			}
 		}
@@ -206,14 +214,14 @@ pimm::Rect pimm::WorldRenderer::GetSwapChainSize() const noexcept
 	return m_swapChainSize;
 }
 
-std::vector<pimm::RefPtr<pimm::VertexBuffer>>& pimm::WorldRenderer::GetVertexBuffer() const noexcept
+pimm::FrameBuffer* pimm::WorldRenderer::GetFrameBuffer() const noexcept
 {
-	return const_cast<WorldRenderer*>(this)->m_vertexBuffer;
+	return m_frameBuffer.get();
 }
 
-std::vector<pimm::RefPtr<pimm::IndexBuffer>>& pimm::WorldRenderer::GetIndexBuffer() const noexcept
-{
-	return const_cast<WorldRenderer*>(this)->m_indexBuffer;
+void pimm::WorldRenderer::SetSceneViewSize(pimm::Rect size) noexcept
+{ 
+	m_sceneViewSize = size;
 }
 
 pimm::WorldRenderer::~WorldRenderer()

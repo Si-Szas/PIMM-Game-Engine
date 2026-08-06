@@ -37,11 +37,11 @@ namespace pimm
 			}
 
 			//Get offset
-			ui32 GetVertexOffset() noexcept;
-			void SetVertexOffset(ui32 newOffset) noexcept;
-
-			ui32 GetIndexLocation() noexcept;
-			void SetIndexLocation(ui32 newLocation) noexcept;
+			//ui32 GetVertexOffset() noexcept;
+			//void SetVertexOffset(ui32 newOffset) noexcept;
+			//
+			//ui32 GetIndexLocation() noexcept;
+			//void SetIndexLocation(ui32 newLocation) noexcept;
 
 			//Get the transform component
 			TransformComponent& GetTransform() noexcept;
@@ -96,8 +96,8 @@ namespace pimm
 
 		protected:
 			// COUNTERS
-			ui32 m_vertexOffset = 0;
-			ui32 m_indexLocation = 0;
+			//ui32 m_vertexOffset = 0;
+			//ui32 m_indexLocation = 0;
 
 			// VELOCITY
 			Vec3 m_velocity{ 0.0f };

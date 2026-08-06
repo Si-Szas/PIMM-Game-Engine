@@ -46,25 +46,25 @@ pimm::AComponent* pimm::AGameObject::GetComponentInternal(size_t ID)
 	return {};
 }
 
-pimm::ui32 pimm::AGameObject::GetVertexOffset() noexcept
-{
-	return m_vertexOffset;
-}
-
-void pimm::AGameObject::SetVertexOffset(ui32 newOffset) noexcept
-{
-	m_vertexOffset = newOffset;
-}
-
-pimm::ui32 pimm::AGameObject::GetIndexLocation() noexcept
-{
-	return m_indexLocation;
-}
-
-void pimm::AGameObject::SetIndexLocation(ui32 newOffset) noexcept
-{
-	m_indexLocation = newOffset;
-}
+//pimm::ui32 pimm::AGameObject::GetVertexOffset() noexcept
+//{
+//	return m_vertexOffset;
+//}
+//
+//void pimm::AGameObject::SetVertexOffset(ui32 newOffset) noexcept
+//{
+//	m_vertexOffset = newOffset;
+//}
+//
+//pimm::ui32 pimm::AGameObject::GetIndexLocation() noexcept
+//{
+//	return m_indexLocation;
+//}
+//
+//void pimm::AGameObject::SetIndexLocation(ui32 newOffset) noexcept
+//{
+//	m_indexLocation = newOffset;
+//}
 
 pimm::TransformComponent& pimm::AGameObject::GetTransform() noexcept
 {

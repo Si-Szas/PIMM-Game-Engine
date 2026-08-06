@@ -10,5 +10,13 @@ namespace pimm
 		public:
 			//CONSTRUCTOR
 			explicit QuadComponent(const AComponentDescriptor& descriptor);
+
+			//GETTERS
+			VertexBuffer& GetVertexBuffer();
+			IndexBuffer& GetIndexBuffer();
+
+		private:
+			RefPtr<VertexBuffer> m_vertexBuffer{};
+			RefPtr<IndexBuffer> m_indexBuffer{};
 	};
 }

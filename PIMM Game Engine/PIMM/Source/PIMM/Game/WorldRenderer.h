@@ -23,11 +23,8 @@ namespace pimm
 			//GETTERS
 			GraphicsDevice& GetGraphicsDevice() const noexcept;
 			Rect GetSwapChainSize() const noexcept;
-			std::vector<RefPtr<VertexBuffer>>& GetVertexBuffer() const noexcept;
-			std::vector<RefPtr<IndexBuffer>>& GetIndexBuffer() const noexcept;
-			FrameBuffer* GetFrameBuffer() const noexcept { return m_frameBuffer.get(); }
-			void SetSceneViewSize(Rect size) noexcept { m_sceneViewSize = size; }
-
+			FrameBuffer* GetFrameBuffer() const noexcept;
+			void SetSceneViewSize(Rect size) noexcept;
 
 			//DESTRUCTOR
 			virtual ~WorldRenderer() override;
@@ -51,9 +48,6 @@ namespace pimm
 			GraphicsDevice& m_graphicsDevice;
 			RefPtr<DeviceContext> m_deviceContext{};
 			RefPtr<GraphicsPipelineState> m_pipeline{};
-
-			std::vector<RefPtr<VertexBuffer>> m_vertexBuffer{};
-			std::vector<RefPtr<IndexBuffer>> m_indexBuffer{};
 
 			RefPtr<ConstantBuffer> m_objectConstantBuffer{};
 			RefPtr<ConstantBuffer> m_cameraConstantBuffer{};
