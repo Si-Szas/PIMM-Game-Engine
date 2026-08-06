@@ -356,20 +356,18 @@ void pimm::DeviceContext::UpdateConstantBuffer(const ConstantBuffer& buffer, con
 	m_context->Unmap(buff, 0);
 }
 
-void pimm::DeviceContext::DrawTriangleList(ui32 vertexCount, ui32 startVertexLocation)
+void pimm::DeviceContext::DrawTriangleList(ui32 indexCount, ui32 startVertexIndex, ui32 startIndexLocation)
 {
 	//How it assembles data into geometric primitives
 	//Tells GPU how to connect the vertices
 	//Triangle list specifies how the GPU should treat vertex data, every 3 vertices is an independent triangle
 
-	//For tessellation
 	m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	//Call Draw function
-	m_context->Draw
-	(
-		vertexCount,		//Vertex Count. Defines number of vertices to draw
-		startVertexLocation //Start vertex location. Allows us to specify the index of the first index in the vertex buffer to start drawing from
+	
+	m_context->DrawIndexed(
+		indexCount, 
+		startIndexLocation, 
+		startVertexIndex
 	);
 }
 

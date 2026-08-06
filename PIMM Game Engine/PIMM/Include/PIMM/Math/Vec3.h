@@ -87,6 +87,12 @@ namespace pimm
 			return leftHandSide;
 		}
 
+		friend Vec3 operator/(Vec3 leftHandSide, float scalar)
+		{
+			float reciprocal = 1.0f / scalar;
+			return leftHandSide * reciprocal;
+		}
+
 		friend Vec3 operator*(Vec3 vector, f32 scalar)
 		{
 			vector *= scalar;

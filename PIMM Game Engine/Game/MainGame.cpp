@@ -78,6 +78,22 @@ void MainGame::OnCreate()
 	capsule->GetTransform().SetPosition({ -2.0f, 0.0f, 3.0f });
 	capsule->GetMaterialComponent().SetMaterial(woodMaterial);
 
+	//teapot
+	{
+		auto teapotMesh = GetResourceManager().CreateResourceFromFile<pimm::MeshResource>(L"Game/Assets/Meshes/teapot.obj");
+
+		auto brickTex = GetResourceManager().CreateResourceFromFile<pimm::TextureResource>(L"Game/Assets/Textures/red_brick.jpg");
+		auto brickMat = GetResourceManager().CreateResourceFromFile<pimm::MaterialResource>(L"Game/Assets/Shaders/Basic.hlsl");
+		if (brickMat) brickMat->SetTexture(0, brickTex);
+
+		auto mesh = world.CreateAGameObject<pimm::MeshObject>();
+		auto comp = mesh->CreateOrGetComponent<pimm::MeshComponent>();
+		comp->SetMesh(teapotMesh);
+		comp->SetMaterial(0, brickMat);
+		mesh->GetTransform().SetPosition({ 0, 1, 0 });
+		mesh->GetTransform().SetScale({ 2, 2, 2 });
+	}
+
 	auto* uiManager = GetUIManager();
 	uiManager->RegisterPanel(std::make_unique<HierarchyPanel>(world));
 	uiManager->RegisterPanel(std::make_unique<InspectorPanel>(*player));

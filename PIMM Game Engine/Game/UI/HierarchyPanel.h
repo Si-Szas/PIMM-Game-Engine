@@ -11,6 +11,7 @@
 #include <PIMM/AGameObject/Sphere.h>
 #include <PIMM/AGameObject/Cylinder.h>
 #include <PIMM/AGameObject/Capsule.h>
+#include <PIMM/AGameObject/MeshObject.h>
 
 #include <ranges>
 
@@ -39,6 +40,7 @@ public:
             if (object->GetTypeID() == pimm::Cylinder::getTypeId()) ImGui::Selectable("Cylinder");
             if (object->GetTypeID() == pimm::Capsule::getTypeId()) ImGui::Selectable("Capsule");
             if (object->GetTypeID() == pimm::Player::getTypeId()) ImGui::Selectable("Player");
+            if (object->GetTypeID() == pimm::MeshObject::getTypeId()) ImGui::Selectable("Mesh");
 
             ImGui::PopID();
         }

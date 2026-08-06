@@ -53,5 +53,3 @@ cbuffer MaterialData : register(b2)
 }
 
 sampler DefaultSampler : register(s0);
-
-Texture2D Diffuse : register(t0);

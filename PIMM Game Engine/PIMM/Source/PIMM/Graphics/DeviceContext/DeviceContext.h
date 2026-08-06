@@ -36,7 +36,7 @@ namespace pimm {
 			void UpdateConstantBuffer(const ConstantBuffer& buffer, const std::span<const std::byte>& data);
 			
 			//DRAW
-			void DrawTriangleList(ui32 vertexCount, ui32 startVertexLocation);
+			void DrawTriangleList(ui32 indexCount, ui32 startVertexIndex, ui32 startIndexLocation);
 			void DrawTriangleListWithTessellation(ui32 vertexCount, ui32 startVertexLocation);
 			void DrawQuadList(ui32 vertexCount, ui32 startVertexLocation);
 			void Draw3PatchIndexedTriangleList(ui32 indexCount, ui32 startVertexIndex, ui32 startIndexLocation);

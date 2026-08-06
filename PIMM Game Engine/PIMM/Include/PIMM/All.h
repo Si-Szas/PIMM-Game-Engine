@@ -11,6 +11,7 @@
 #include <PIMM/AGameObject/Sphere.h>
 #include <PIMM/AGameObject/Cylinder.h>
 #include <PIMM/AGameObject/Capsule.h>
+#include <PIMM/AGameObject/MeshObject.h>
 //COMPONENTS HEADER//
 #include <PIMM/AComponent/AComponent.h>
 #include <PIMM/AComponent/TransformComponent.h>

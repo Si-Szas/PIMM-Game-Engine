@@ -1,5 +1,7 @@
 #include "PIMM/Assets/Shaders/Common.hlsl"
 
+Texture2D Diffuse : register(t0);
+
 VS_OUTPUT VS_Main(VS_INPUT input)
 {
     VS_OUTPUT output;
