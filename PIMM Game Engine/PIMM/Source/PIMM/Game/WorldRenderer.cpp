@@ -162,11 +162,29 @@ void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 d
 					}
 					context.SetTextures(std::span<Texture*>{m_textures});
 
-					if (objectType == pimm::Quad::getTypeId()) context.SetVertexBuffer(object->GetComponent<QuadComponent>()->GetVertexBuffer());
-					else if (objectType == pimm::Cube::getTypeId()) context.SetVertexBuffer(object->GetComponent<CubeComponent>()->GetVertexBuffer());
-					else if (objectType == pimm::Sphere::getTypeId()) context.SetVertexBuffer(object->GetComponent<SphereComponent>()->GetVertexBuffer());
-					else if (objectType == pimm::Cylinder::getTypeId()) context.SetVertexBuffer(object->GetComponent<CylinderComponent>()->GetVertexBuffer());
-					else if (objectType == pimm::Capsule::getTypeId()) context.SetVertexBuffer(object->GetComponent<CapsuleComponent>()->GetVertexBuffer());
+					if (objectType == pimm::Quad::getTypeId())
+					{
+						context.SetVertexBuffer(object->GetComponent<QuadComponent>()->GetVertexBuffer());
+						context.SetIndexBuffer(object->GetComponent<QuadComponent>()->GetIndexBuffer());
+					}
+					else if (objectType == pimm::Cube::getTypeId())
+					{
+						context.SetVertexBuffer(object->GetComponent<CubeComponent>()->GetVertexBuffer());
+						context.SetIndexBuffer(object->GetComponent<CubeComponent>()->GetIndexBuffer());
+					}
+					else if (objectType == pimm::Sphere::getTypeId())
+					{
+						context.SetVertexBuffer(object->GetComponent<SphereComponent>()->GetVertexBuffer());
+						context.SetIndexBuffer(object->GetComponent<SphereComponent>()->GetIndexBuffer());
+					}
+					else if (objectType == pimm::Cylinder::getTypeId()) {
+						context.SetVertexBuffer(object->GetComponent<CylinderComponent>()->GetVertexBuffer());
+						context.SetIndexBuffer(object->GetComponent<CylinderComponent>()->GetIndexBuffer());
+					}
+					else if (objectType == pimm::Capsule::getTypeId()) {
+						context.SetVertexBuffer(object->GetComponent<CapsuleComponent>()->GetVertexBuffer());
+						context.SetIndexBuffer(object->GetComponent<CapsuleComponent>()->GetIndexBuffer());
+					}
 					
 					if (objectType == pimm::Quad::getTypeId()) context.Draw4PatchIndexedTriangleList(object->GetComponent<QuadComponent>()->GetIndexBuffer().GetIndexListSize(), 0u, 0u);
 					else if (objectType == pimm::Cube::getTypeId()) context.Draw4PatchIndexedTriangleList(object->GetComponent<CubeComponent>()->GetIndexBuffer().GetIndexListSize(), 0u, 0u);
