@@ -74,7 +74,7 @@
     <OutDir>Bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>Intermediate\$(Platform)\$(Configuration)\</IntDir>
     <IncludePath>PIMM/Include;PIMM/Source;PIMM/Vendor/stb-image/include/;PIMM/Vendor/tinyobjloader/include/;$(IncludePath)</IncludePath>
-    <IncludePath>PIMM/Include;PIMM/Source;PIMM/Vendor/stb-image/include/;PIMM/Vendor/ReactPhysics3D/include;$(IncludePath)</IncludePath>
+    <IncludePath>PIMM/Include;PIMM/Source;PIMM/Vendor/stb-image/include/;PIMM/Vendor/ReactPhysics3D/include;PIMM/Vendor/tinyobjloader/include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>Bin\$(Platform)\$(Configuration)\</OutDir>
