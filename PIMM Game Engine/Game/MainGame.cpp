@@ -18,6 +18,7 @@ void MainGame::OnCreate()
 
 	auto woodTexture = GetResourceManager().CreateResourceFromFile<pimm::TextureResource>(L"Game/Assets/Textures/wood.jpg");
 	auto stoneTexture = GetResourceManager().CreateResourceFromFile<pimm::TextureResource>(L"Game/Assets/Textures/stone.jpg");
+	auto brickTexture = GetResourceManager().CreateResourceFromFile<pimm::TextureResource>(L"Game/Assets/Textures/red_brick.jpg");
 
 	auto basicMaterial = GetResourceManager().CreateResourceFromFile<pimm::MaterialResource>(L"Game/Assets/Shaders/BasicFourPoint.hlsl");
 	if (basicMaterial)
@@ -47,6 +48,14 @@ void MainGame::OnCreate()
 		auto materialData = pimm::Vec3(1.0f);
 		woodMaterial->SetData(std::as_bytes(std::span{ &materialData, 1 }));
 		woodMaterial->SetTexture(0, woodTexture);
+	}
+
+	auto brickMaterial = GetResourceManager().CreateResourceFromFile<pimm::MaterialResource>(L"Game/Assets/Shaders/BasicThreePoint.hlsl");
+	if (brickMaterial)
+	{
+		auto materialData = pimm::Vec3(1.0f);
+		brickMaterial->SetData(std::as_bytes(std::span{ &materialData, 1 }));
+		brickMaterial->SetTexture(0, brickTexture);
 	}
 
 	auto player = world.CreateAGameObject<Player>();
@@ -82,14 +91,10 @@ void MainGame::OnCreate()
 	{
 		auto teapotMesh = GetResourceManager().CreateResourceFromFile<pimm::MeshResource>(L"Game/Assets/Meshes/teapot.obj");
 
-		auto brickTex = GetResourceManager().CreateResourceFromFile<pimm::TextureResource>(L"Game/Assets/Textures/red_brick.jpg");
-		auto brickMat = GetResourceManager().CreateResourceFromFile<pimm::MaterialResource>(L"Game/Assets/Shaders/BasicThreePoint.hlsl");
-		if (brickMat) brickMat->SetTexture(0, brickTex);
-
 		auto mesh = world.CreateAGameObject<pimm::MeshObject>();
 		auto comp = mesh->CreateOrGetComponent<pimm::MeshComponent>();
 		comp->SetMesh(teapotMesh);
-		comp->SetMaterial(0, brickMat);
+		comp->SetMaterial(0, brickMaterial);
 		mesh->GetTransform().SetPosition({ 0.0f, 1.0f, 0.0f });
 		mesh->GetTransform().SetScale({ 1.0f, 1.0f, 1.0f });
 	}
