@@ -83,15 +83,15 @@ void MainGame::OnCreate()
 		auto teapotMesh = GetResourceManager().CreateResourceFromFile<pimm::MeshResource>(L"Game/Assets/Meshes/teapot.obj");
 
 		auto brickTex = GetResourceManager().CreateResourceFromFile<pimm::TextureResource>(L"Game/Assets/Textures/red_brick.jpg");
-		auto brickMat = GetResourceManager().CreateResourceFromFile<pimm::MaterialResource>(L"Game/Assets/Shaders/Basic.hlsl");
+		auto brickMat = GetResourceManager().CreateResourceFromFile<pimm::MaterialResource>(L"Game/Assets/Shaders/BasicThreePoint.hlsl");
 		if (brickMat) brickMat->SetTexture(0, brickTex);
 
 		auto mesh = world.CreateAGameObject<pimm::MeshObject>();
 		auto comp = mesh->CreateOrGetComponent<pimm::MeshComponent>();
 		comp->SetMesh(teapotMesh);
 		comp->SetMaterial(0, brickMat);
-		mesh->GetTransform().SetPosition({ 0, 1, 0 });
-		mesh->GetTransform().SetScale({ 2, 2, 2 });
+		mesh->GetTransform().SetPosition({ 0.0f, 1.0f, 0.0f });
+		mesh->GetTransform().SetScale({ 1.0f, 1.0f, 1.0f });
 	}
 
 	auto* uiManager = GetUIManager();
