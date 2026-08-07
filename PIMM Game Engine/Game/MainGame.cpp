@@ -19,21 +19,21 @@ void MainGame::OnCreate()
 	auto woodTexture = GetResourceManager().CreateResourceFromFile<pimm::TextureResource>(L"Game/Assets/Textures/wood.jpg");
 	auto stoneTexture = GetResourceManager().CreateResourceFromFile<pimm::TextureResource>(L"Game/Assets/Textures/stone.jpg");
 
-	auto basicMaterial = GetResourceManager().CreateResourceFromFile<pimm::MaterialResource>(L"Game/Assets/Shaders/Basic.hlsl");
+	auto basicMaterial = GetResourceManager().CreateResourceFromFile<pimm::MaterialResource>(L"Game/Assets/Shaders/BasicFourPoint.hlsl");
 	if (basicMaterial)
 	{
 		auto materialData = pimm::Vec3(1.0f);
 		basicMaterial->SetData(std::as_bytes(std::span{ &materialData, 1 }));
 	}
 
-	auto purpleMaterial = GetResourceManager().CreateResourceFromFile<pimm::MaterialResource>(L"Game/Assets/Shaders/Basic.hlsl");
+	auto purpleMaterial = GetResourceManager().CreateResourceFromFile<pimm::MaterialResource>(L"Game/Assets/Shaders/BasicFourPoint.hlsl");
 	if (basicMaterial)
 	{
 		auto materialData = pimm::Vec3(1.0f, 1.0f, 0.0f);
 		purpleMaterial->SetData(std::as_bytes(std::span{ &materialData, 1 }));
 	}
 
-	auto stoneMaterial = GetResourceManager().CreateResourceFromFile<pimm::MaterialResource>(L"Game/Assets/Shaders/Basic.hlsl");
+	auto stoneMaterial = GetResourceManager().CreateResourceFromFile<pimm::MaterialResource>(L"Game/Assets/Shaders/BasicFourPoint.hlsl");
 	if (stoneMaterial)
 	{
 		auto materialData = pimm::Vec3(1.0f);
@@ -41,7 +41,7 @@ void MainGame::OnCreate()
 		stoneMaterial->SetTexture(0, stoneTexture);
 	}
 
-	auto woodMaterial = GetResourceManager().CreateResourceFromFile<pimm::MaterialResource>(L"Game/Assets/Shaders/Basic.hlsl");
+	auto woodMaterial = GetResourceManager().CreateResourceFromFile<pimm::MaterialResource>(L"Game/Assets/Shaders/BasicFourPoint.hlsl");
 	if (woodMaterial)
 	{
 		auto materialData = pimm::Vec3(1.0f);

@@ -13,11 +13,11 @@ VS_OUTPUT VS_Main(VS_INPUT input)
     return output;
 }
 
-HS_CONSTANT_DATA_OUTPUT CalcHSPatchConstants(
-	InputPatch<HS_INPUT, NUMBER_CONTROL_POINTS> ip,
+HS_CONSTANT_QUAD_OUTPUT CalcHSPatchConstants(
+	InputPatch<HS_INPUT, QUAD_CONTROL_POINTS> ip,
 	uint PatchID : SV_PrimitiveID)
 {
-    HS_CONSTANT_DATA_OUTPUT output;
+    HS_CONSTANT_QUAD_OUTPUT output;
 
     output.edgeTessFactor[0] =
     output.edgeTessFactor[1] =
@@ -32,10 +32,10 @@ HS_CONSTANT_DATA_OUTPUT CalcHSPatchConstants(
 [domain("quad")]
 [partitioning("integer")]
 [outputtopology("triangle_cw")]
-[outputcontrolpoints(NUMBER_CONTROL_POINTS)]
+[outputcontrolpoints(QUAD_CONTROL_POINTS)]
 [patchconstantfunc("CalcHSPatchConstants")]
 HS_OUTPUT HS_Main(
-	InputPatch<HS_INPUT, NUMBER_CONTROL_POINTS> ip,
+	InputPatch<HS_INPUT, QUAD_CONTROL_POINTS> ip,
 	uint i : SV_OutputControlPointID,
 	uint patchID : SV_PrimitiveID)
 {
@@ -49,9 +49,9 @@ HS_OUTPUT HS_Main(
 
 [domain("quad")]
 DS_OUTPUT DS_Main(
-	HS_CONSTANT_DATA_OUTPUT input,
+	HS_CONSTANT_QUAD_OUTPUT input,
 	float2 domain : SV_DomainLocation,
-	const OutputPatch<HS_OUTPUT, NUMBER_CONTROL_POINTS> patch)
+	const OutputPatch<HS_OUTPUT, QUAD_CONTROL_POINTS> patch)
 {
     DS_OUTPUT output;
     
@@ -68,10 +68,6 @@ DS_OUTPUT DS_Main(
     float2 bottomUV = lerp(patch[2].texcoord, patch[3].texcoord, domain.x);
     output.texcoord = lerp(topUV, bottomUV, domain.y);
 
-    //float4 topColor = lerp(patch[0].texcoord, patch[1].texcoord, domain.x);
-    //float4 bottomColor = lerp(patch[2].texcoord, patch[3].texcoord, domain.x);
-    //output.color = lerp(topColor, bottomColor, domain.y);
-    
     return output;
 }
 
