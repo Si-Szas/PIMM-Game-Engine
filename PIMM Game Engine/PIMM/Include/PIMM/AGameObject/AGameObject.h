@@ -12,99 +12,99 @@ namespace pimm
 	{
 		pimm_typeid(AGameObject)
 
-		public:
-			//CONSTRUCTOR
-			explicit AGameObject(const AGameObjectDescriptor& descriptor);
+	public:
+		//CONSTRUCTOR
+		explicit AGameObject(const AGameObjectDescriptor& descriptor);
 
-			template <typename Type>
-			Type* CreateOrGetComponent() requires IsRegistered<AComponent, Type>
-			{
-				auto comp = GetComponent<Type>();
-				if (comp) return comp;
-				UniquePtr<AComponent> component = std::make_unique<Type>(AComponentDescriptor{
-					{m_logger},
-					*this,
-					m_world,
-					m_gameContext
+		template <typename Type>
+		Type* CreateOrGetComponent() requires IsRegistered<AComponent, Type>
+		{
+			auto comp = GetComponent<Type>();
+			if (comp) return comp;
+			UniquePtr<AComponent> component = std::make_unique<Type>(AComponentDescriptor{
+				{m_logger},
+				*this,
+				m_world,
+				m_gameContext
 				});
-				return static_cast<Type*>(CreateComponentInternal(component));
-			}
+			return static_cast<Type*>(CreateComponentInternal(component));
+		}
 
-			template <typename Type>
-			Type* GetComponent() requires IsRegistered<AComponent, Type>
-			{
-				return static_cast<Type*>(GetComponentInternal(Type::getTypeId()));
-			}
+		template <typename Type>
+		Type* GetComponent() requires IsRegistered<AComponent, Type>
+		{
+			return static_cast<Type*>(GetComponentInternal(Type::getTypeId()));
+		}
 
-			//Get offset
-			//ui32 GetVertexOffset() noexcept;
-			//void SetVertexOffset(ui32 newOffset) noexcept;
-			//
-			//ui32 GetIndexLocation() noexcept;
-			//void SetIndexLocation(ui32 newLocation) noexcept;
+		//Get offset
+		ui32 GetVertexOffset() noexcept;
+		void SetVertexOffset(ui32 newOffset) noexcept;
 
-			//Get the transform component
-			TransformComponent& GetTransform() noexcept;
-			World& GetWorld() noexcept;
-			InputSystem& GetInputSystem() noexcept;
-			const WorldRenderer& GetWorldRenderer() noexcept;
-			ResourceManager& GetResourceManager() noexcept;
+		ui32 GetIndexLocation() noexcept;
+		void SetIndexLocation(ui32 newLocation) noexcept;
 
-			//Get the material component
-			MaterialComponent& GetMaterialComponent() noexcept;
+		//Get the transform component
+		TransformComponent& GetTransform() noexcept;
+		World& GetWorld() noexcept;
+		InputSystem& GetInputSystem() noexcept;
+		const WorldRenderer& GetWorldRenderer() noexcept;
+		ResourceManager& GetResourceManager() noexcept;
 
-			//Movement Modifiers
-			void ResetMovementModifiers();
+		//Get the material component
+		MaterialComponent& GetMaterialComponent() noexcept;
 
-			Vec3 GetVelocity() const noexcept;
-			void SetVelocity(Vec3 newVelocity) noexcept;
+		//Movement Modifiers
+		void ResetMovementModifiers();
 
-			f32 GetForwardModifier() const noexcept;
-			void SetForwardModifier(f32 newForward) noexcept;
+		Vec3 GetVelocity() const noexcept;
+		void SetVelocity(Vec3 newVelocity) noexcept;
 
-			f32 GetRightModifier() const noexcept;
-			void SetRightModifier(f32 newRight) noexcept;
+		f32 GetForwardModifier() const noexcept;
+		void SetForwardModifier(f32 newForward) noexcept;
 
-			f32 GetSpeedModifier() const noexcept;
-			void SetSpeedModifier(f32 newSpeed) noexcept;
+		f32 GetRightModifier() const noexcept;
+		void SetRightModifier(f32 newRight) noexcept;
 
-			//DESTRUCTOR
-			virtual ~AGameObject();
+		f32 GetSpeedModifier() const noexcept;
+		void SetSpeedModifier(f32 newSpeed) noexcept;
 
-		protected:
-			virtual void OnCreate() 
-			{
-			}
-			virtual void OnUpdate(f32 deltaTime) 
-			{
-			}
+		//DESTRUCTOR
+		virtual ~AGameObject();
 
-		private:
-			AComponent* CreateComponentInternal(UniquePtr<AComponent>& component);
-			AComponent* GetComponentInternal(size_t ID);
+	protected:
+		virtual void OnCreate()
+		{
+		}
+		virtual void OnUpdate(f32 deltaTime)
+		{
+		}
 
-		private:
-			std::unordered_map<size_t, UniquePtr<AComponent>> m_components{};
-			
-			// COMPONENTS SHARED BY ALL GAME OBJECTS
-			TransformComponent* m_transform{};
-			MaterialComponent* m_material{};
+	private:
+		AComponent* CreateComponentInternal(UniquePtr<AComponent>& component);
+		AComponent* GetComponentInternal(size_t ID);
 
-			GameContext m_gameContext;
-			World& m_world;
-			const WorldRenderer& m_worldRenderer;
+	private:
+		std::unordered_map<size_t, UniquePtr<AComponent>> m_components{};
 
-		protected:
-			// COUNTERS
-			//ui32 m_vertexOffset = 0;
-			//ui32 m_indexLocation = 0;
+		// COMPONENTS SHARED BY ALL GAME OBJECTS
+		TransformComponent* m_transform{};
+		MaterialComponent* m_material{};
 
-			// VELOCITY
-			Vec3 m_velocity{ 0.0f };
+		GameContext m_gameContext;
+		World& m_world;
+		const WorldRenderer& m_worldRenderer;
 
-			// MODIFIERS FOR MOVEMENT
-			f32 forwardModifier, rightModifier = 0.0f;
-			f32 speedModifier = 3.0f;
+	protected:
+		// COUNTERS
+		ui32 m_vertexOffset = 0;
+		ui32 m_indexLocation = 0;
+
+		// VELOCITY
+		Vec3 m_velocity{ 0.0f };
+
+		// MODIFIERS FOR MOVEMENT
+		f32 forwardModifier, rightModifier = 0.0f;
+		f32 speedModifier = 3.0f;
 
 		friend class World;
 	};

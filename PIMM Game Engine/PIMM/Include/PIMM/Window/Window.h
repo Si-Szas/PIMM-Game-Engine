@@ -1,4 +1,5 @@
 #pragma once
+#define NOMINMAX
 #include <PIMM/Core/Base.h>
 #include <PIMM/Core/Common.h>
 

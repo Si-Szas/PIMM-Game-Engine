@@ -1,0 +1,65 @@
+#pragma once
+#include <PIMM/Core/Common.h>
+#include <PIMM/Core/Base.h>
+#include <PIMM/AComponent/AComponent.h>
+#include <PIMM/Math/Vec3.h>
+
+#include <reactphysics3d/reactphysics3d.h>
+
+namespace pimm
+{
+	enum class BodyType
+	{
+		Static = 0,
+		Kinematic,
+		Dynamic
+	};
+
+	class RigidBodyComponent final : public AComponent
+	{
+		pimm_typeid(RigidBodyComponent)
+
+	public:
+		//CONSTRUCTOR
+		explicit RigidBodyComponent(const AComponentDescriptor& descriptor);
+
+		//BODY TYPE / MASS
+		void SetBodyType(BodyType type) noexcept;
+		BodyType GetBodyType() const noexcept;
+
+		void SetMass(f32 mass) noexcept;
+		f32 GetMass() const noexcept;
+
+		void EnableGravity(bool enabled) noexcept;
+
+		//COLLIDERS - halfExtents/radius are WORLD units, not affected by TransformComponent scale
+		void AddBoxCollider(const Vec3& halfExtents);
+		void AddSphereCollider(f32 radius);
+		void AddCapsuleCollider(f32 radius, f32 height);
+
+		//FORCES
+		void ApplyForce(const Vec3& worldForce);
+		void ApplyTorque(const Vec3& worldTorque);
+
+		void SetLinearVelocity(const Vec3& velocity);
+		Vec3 GetLinearVelocity() const noexcept;
+
+		void SetAngularVelocity(const Vec3& velocity);
+		Vec3 GetAngularVelocity() const noexcept;
+
+		//SYNC
+		//Called automatically every frame by World after stepping the physics simulation
+		void SyncTransformFromPhysics();
+		//Call manually if you teleport the object via TransformComponent and want physics to match
+		void SyncPhysicsFromTransform();
+
+		rp3d::RigidBody* GetNativeBody() noexcept;
+
+		//DESTRUCTOR
+		~RigidBodyComponent();
+
+	private:
+		rp3d::RigidBody* m_rigidBody{};
+		BodyType m_bodyType{ BodyType::Dynamic };
+	};
+}

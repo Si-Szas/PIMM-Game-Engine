@@ -399,3 +399,10 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Track all Lib folders
+!**/Lib/
+!**/Lib/**
+
+# If *.lib files are ignored elsewhere
+!**/Lib/*.lib
