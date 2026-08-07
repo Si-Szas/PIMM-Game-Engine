@@ -269,3 +269,12 @@ void pimm::WorldRenderer::SetSceneViewSize(pimm::Rect size) noexcept
 pimm::WorldRenderer::~WorldRenderer()
 {
 }
+std::vector<pimm::RefPtr<pimm::VertexBuffer>>& pimm::WorldRenderer::GetVertexBuffer() noexcept
+{
+	return m_vertexBuffer;
+}
+
+std::vector<pimm::RefPtr<pimm::IndexBuffer>>& pimm::WorldRenderer::GetIndexBuffer() noexcept
+{
+	return m_indexBuffer;
+}
