@@ -205,6 +205,7 @@
     <ClCompile Include="PIMM\Source\PIMM\Graphics\Sampler\Sampler.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\UI\DebugPanel.h" />
     <ClInclude Include="Game\UI\ScenePanel.h" />
     <ClInclude Include="PIMM\Include\PIMM\AGameObject\MeshObject.h" />
     <ClInclude Include="PIMM\Include\PIMM\AComponent\MeshComponent.h" />
