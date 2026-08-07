@@ -10,18 +10,26 @@ struct VS_OUTPUT
     float2 texcoord : TEXCOORD0;
 };
 
-#define NUMBER_CONTROL_POINTS 4
+/// QUAD PATCHES ///
+#define QUAD_CONTROL_POINTS 4
+struct HS_CONSTANT_QUAD_OUTPUT
+{
+    float edgeTessFactor[4] : SV_TessFactor;
+    float insideTessFactor[2] : SV_InsideTessFactor;
+};
+
+/// TRI PATCHES ///
+#define TRI_CONTROL_POINTS 3
+struct HS_CONSTANT_TRI_OUTPUT
+{
+    float edgeTessFactor[3]  : SV_TessFactor;
+    float insideTessFactor   : SV_InsideTessFactor;
+};
 
 struct HS_INPUT
 {
     float3 position : POSITION0;
     float2 texcoord : TEXCOORD0;
-};
-
-struct HS_CONSTANT_DATA_OUTPUT
-{
-    float edgeTessFactor[4] : SV_TessFactor;
-    float insideTessFactor[2] : SV_InsideTessFactor;
 };
 
 struct HS_OUTPUT

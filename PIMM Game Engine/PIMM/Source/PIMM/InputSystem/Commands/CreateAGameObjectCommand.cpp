@@ -46,7 +46,7 @@ void pimm::CreateAGameObjectCommand::ExecuteCommand(AGameObject& gameObject, Wor
 	static std::mt19937 generator(randDevice());
 	std::uniform_real_distribution<f32> dis(-5.0f, 5.0f);
 
-	auto basicMaterial = resourceManager.CreateResourceFromFile<pimm::MaterialResource>(L"Game/Assets/Shaders/Basic.hlsl");
+	auto basicMaterial = resourceManager.CreateResourceFromFile<pimm::MaterialResource>(L"Game/Assets/Shaders/BasicFourPoint.hlsl");
 	if (basicMaterial)
 	{
 		auto materialData = pimm::Vec3(1.0f);

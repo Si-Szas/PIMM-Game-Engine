@@ -143,9 +143,24 @@ void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 d
 			{
 				auto object = gameObjects[i];
 				if (!object) continue;
+
 				auto& transform = object->GetTransform();
 				size_t objectType = object->GetTypeID();
-				auto material = object->GetMaterialComponent().GetMaterial();
+				//auto material = object->GetMaterialComponent().GetMaterial();
+
+				//TO BE FIXED
+				// Issue is material on the mesh does not want to load properly, even if the texture can load on the other objs
+				// Get material at index 0 for now since still figuring out how to render it
+				pimm::MaterialResource* material = nullptr;
+				if (objectType == pimm::MeshObject::getTypeId())
+				{
+					auto meshComp = object->GetComponent<pimm::MeshComponent>();
+					if (meshComp) material = meshComp->GetMaterial(0);
+				}
+				
+				//For primitives (or non meshes wtvr), get the material assigned to it
+				if (!material) material = object->GetMaterialComponent().GetMaterial();
+				//END OF TO BE FIXED
 
 				if (material)
 				{
@@ -170,36 +185,36 @@ void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 d
 					{
 						context.SetVertexBuffer(object->GetComponent<QuadComponent>()->GetVertexBuffer());
 						context.SetIndexBuffer(object->GetComponent<QuadComponent>()->GetIndexBuffer());
+						context.Draw4PatchIndexedTriangleList(object->GetComponent<QuadComponent>()->GetIndexBuffer().GetIndexListSize(), 0u, 0u);
 					}
 					else if (objectType == pimm::Cube::getTypeId())
 					{
 						context.SetVertexBuffer(object->GetComponent<CubeComponent>()->GetVertexBuffer());
 						context.SetIndexBuffer(object->GetComponent<CubeComponent>()->GetIndexBuffer());
+						context.Draw4PatchIndexedTriangleList(object->GetComponent<CubeComponent>()->GetIndexBuffer().GetIndexListSize(), 0u, 0u);
 					}
 					else if (objectType == pimm::Sphere::getTypeId())
 					{
 						context.SetVertexBuffer(object->GetComponent<SphereComponent>()->GetVertexBuffer());
 						context.SetIndexBuffer(object->GetComponent<SphereComponent>()->GetIndexBuffer());
+						context.Draw4PatchIndexedTriangleList(object->GetComponent<SphereComponent>()->GetIndexBuffer().GetIndexListSize(), 0u, 0u);
 					}
 					else if (objectType == pimm::Cylinder::getTypeId()) {
 						context.SetVertexBuffer(object->GetComponent<CylinderComponent>()->GetVertexBuffer());
 						context.SetIndexBuffer(object->GetComponent<CylinderComponent>()->GetIndexBuffer());
+						context.Draw4PatchIndexedTriangleList(object->GetComponent<CylinderComponent>()->GetIndexBuffer().GetIndexListSize(), 0u, 0u);
 					}
 					else if (objectType == pimm::Capsule::getTypeId()) {
 						context.SetVertexBuffer(object->GetComponent<CapsuleComponent>()->GetVertexBuffer());
 						context.SetIndexBuffer(object->GetComponent<CapsuleComponent>()->GetIndexBuffer());
+						context.Draw4PatchIndexedTriangleList(object->GetComponent<CapsuleComponent>()->GetIndexBuffer().GetIndexListSize(), 0u, 0u);
 					}
 					else if (objectType == pimm::MeshObject::getTypeId()) {
 						context.SetVertexBuffer(object->GetComponent<MeshComponent>()->GetMesh()->GetVertexBuffer());
 						context.SetIndexBuffer(object->GetComponent<MeshComponent>()->GetMesh()->GetIndexBuffer());
+						context.Draw4PatchIndexedTriangleList(object->GetComponent<MeshComponent>()->GetMesh()->GetIndexBuffer().GetIndexListSize(), 0u, 0u);
 					}
 					
-					if (objectType == pimm::Quad::getTypeId()) context.Draw4PatchIndexedTriangleList(object->GetComponent<QuadComponent>()->GetIndexBuffer().GetIndexListSize(), 0u, 0u);
-					else if (objectType == pimm::Cube::getTypeId()) context.Draw4PatchIndexedTriangleList(object->GetComponent<CubeComponent>()->GetIndexBuffer().GetIndexListSize(), 0u, 0u);
-					else if (objectType == pimm::Sphere::getTypeId()) context.Draw4PatchIndexedTriangleList(object->GetComponent<SphereComponent>()->GetIndexBuffer().GetIndexListSize(), 0u, 0u);
-					else if (objectType == pimm::Cylinder::getTypeId()) context.Draw4PatchIndexedTriangleList(object->GetComponent<CylinderComponent>()->GetIndexBuffer().GetIndexListSize(), 0u, 0u);
-					else if (objectType == pimm::Capsule::getTypeId()) context.Draw4PatchIndexedTriangleList(object->GetComponent<CapsuleComponent>()->GetIndexBuffer().GetIndexListSize(), 0u, 0u);
-					else if (objectType == pimm::MeshObject::getTypeId()) context.Draw4PatchIndexedTriangleList(object->GetComponent<MeshComponent>()->GetMesh()->GetIndexBuffer().GetIndexListSize(), 0u, 0u);
 				}
 			}
 		}
