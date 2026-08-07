@@ -2,14 +2,27 @@
 #include <PIMM/AGameObject/AGameObject.h>
 #include <PIMM/AComponent/AComponent.h>
 #include <PIMM/AComponent/TransformComponent.h>
+#include <PIMM/AComponent/RigidBodyComponent.h>
 
+#include <algorithm>
 #include <span>
 
 pimm::World::World(const WorldDescriptor& descriptor) : Base(descriptor.base),
 	m_gameContext(descriptor.gameContext),
 	m_worldRenderer(descriptor.worldRenderer)
 {
+	m_physicsWorld = m_physicsCommon.createPhysicsWorld();
+}
 
+pimm::World::~World()
+{
+	DeleteAllAGameObjects();
+
+	if (m_physicsWorld)
+	{
+		m_physicsCommon.destroyPhysicsWorld(m_physicsWorld);
+		m_physicsWorld = nullptr;
+	}
 }
 
 void pimm::World::Update(f32 deltaTime)
@@ -18,7 +31,7 @@ void pimm::World::Update(f32 deltaTime)
 	{
 		std::swap(m_events, m_eventsSwapBuffer);
 		std::swap(m_pendingObjects, m_pendingObjectsSwapBuffer);
-		
+
 		for (auto& gameObjEvent : m_eventsSwapBuffer)
 		{
 			//Delete all game objects
@@ -71,11 +84,29 @@ void pimm::World::Update(f32 deltaTime)
 	//Clear the list of dirty component to ensure that they don't get included in next update
 	m_dirtyTransforms.clear();
 
+	//Step the physics simulation on a fixed timestep
+	constexpr f32 physicsTimeStep = 1.0f / 60.0f;
+	m_physicsAccumulator += deltaTime;
+	while (m_physicsAccumulator >= physicsTimeStep)
+	{
+		m_physicsWorld->update(physicsTimeStep);
+		m_physicsAccumulator -= physicsTimeStep;
+	}
+
+	//Sync every rigid body's simulated transform back into its TransformComponent
+	auto rigidBodyIt = m_components.find(RigidBodyComponent::getTypeId());
+	if (rigidBodyIt != m_components.end())
+	{
+		for (AComponent* component : rigidBodyIt->second)
+		{
+			static_cast<RigidBodyComponent*>(component)->SyncTransformFromPhysics();
+		}
+	}
 }
 
 pimm::AGameObject* pimm::World::CreateAGameObjectInternal(UniquePtr<pimm::AGameObject>& object)
 {
-	if (object) 
+	if (object)
 	{
 
 		auto pointer = object.get();
@@ -171,6 +202,19 @@ void pimm::World::DestroyAGameObject(AGameObject* object)
 		if (remainingObjects->GetIndexLocation() > indexLocation) remainingObjects->SetIndexLocation(remainingObjects->GetIndexLocation() - 1);
 	}
 
+	//Remove this object's components from the World's component registry.
+	//m_components stores raw pointers, so without this they'd dangle once the
+	//unique_ptr<AComponent> entries inside the object are destroyed below.
+	for (auto& [typeID, component] : object->m_components)
+	{
+		auto& componentList = m_components[typeID];
+		auto componentIt = std::find(componentList.begin(), componentList.end(), component.get());
+		if (componentIt != componentList.end())
+		{
+			componentList.erase(componentIt);
+		}
+	}
+
 	//Get the type ID of the object to be deleted, and find it within m_objects
 	size_t objectTypeID = object->GetTypeID();
 	auto objectMap = m_objects.find(objectTypeID);
@@ -205,6 +249,13 @@ void pimm::World::DeleteAllAGameObjects()
 	m_worldRenderer.GetIndexBuffer().clear();
 
 	m_components.clear();
+
+	m_pendingObjects.clear();
+	m_pendingObjectsSwapBuffer.clear();
+
+	m_events.clear();
+	m_eventsSwapBuffer.clear();
+
 	m_objects.clear();
 }
 
