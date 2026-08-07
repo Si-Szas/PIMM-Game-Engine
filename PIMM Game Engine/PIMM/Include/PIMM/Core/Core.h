@@ -60,6 +60,7 @@ namespace pimm {
 		class MaterialComponent;
 		class MeshComponent;
 
+		class RigidBodyComponent;
 	// ui //
 
 	class UIManager;

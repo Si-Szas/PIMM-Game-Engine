@@ -52,10 +52,10 @@ namespace pimm
 			UniquePtr<UIManager> m_uiManager{};
 			//Unique pointer to resource manager
 			UniquePtr<ResourceManager> m_resourceManager{};
-			//Unique pointer to the world
-			UniquePtr<World> m_world{};
 			//World Renderer
 			UniquePtr<WorldRenderer> m_worldRenderer{};
+			//Unique pointer to the world
+			UniquePtr<World> m_world{};
 			//Game loop is running
 			bool m_isRunning{ true };
 	};

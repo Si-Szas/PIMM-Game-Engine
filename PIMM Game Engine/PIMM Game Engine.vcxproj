@@ -74,6 +74,7 @@
     <OutDir>Bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>Intermediate\$(Platform)\$(Configuration)\</IntDir>
     <IncludePath>PIMM/Include;PIMM/Source;PIMM/Vendor/stb-image/include/;PIMM/Vendor/tinyobjloader/include/;$(IncludePath)</IncludePath>
+    <IncludePath>PIMM/Include;PIMM/Source;PIMM/Vendor/stb-image/include/;PIMM/Vendor/ReactPhysics3D/include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>Bin\$(Platform)\$(Configuration)\</OutDir>
@@ -119,7 +120,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;reactphysics3d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>PIMM/Vendor/ReactPhysics3D/lib/Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -138,12 +140,14 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>d3d11.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>PIMM/Vendor/ReactPhysics3D/lib/Release</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="PIMM\Source\PIMM\AGameObject\MeshObject.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\AComponent\MeshComponent.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Resource\MeshResource.cpp" />
+    <ClCompile Include="PIMM\Source\PIMM\AComponent\RigidBodyComponent.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Graphics\FrameBuffer\FrameBuffer.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\AComponent\MaterialComponent.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Resource\MaterialResource.cpp" />
@@ -209,6 +213,8 @@
     <ClInclude Include="PIMM\Include\PIMM\AGameObject\MeshObject.h" />
     <ClInclude Include="PIMM\Include\PIMM\AComponent\MeshComponent.h" />
     <ClInclude Include="PIMM\Include\PIMM\Resource\MeshResource.h" />
+    <ClInclude Include="Game\UI\TopbarPanel.h" />
+    <ClInclude Include="PIMM\Include\PIMM\AComponent\RigidBodyComponent.h" />
     <ClInclude Include="PIMM\Source\PIMM\Graphics\FrameBuffer\FrameBuffer.h" />
     <ClInclude Include="Game\UI\AssetsPanel.h" />
     <ClInclude Include="Game\UI\HierarchyPanel.h" />
