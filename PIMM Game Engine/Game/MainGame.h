@@ -22,6 +22,7 @@ class MainGame : public pimm::Game
 		//MATERIALS
 		std::shared_ptr<pimm::MaterialResource> m_woodMaterial{};
 		std::shared_ptr<pimm::MaterialResource> m_stoneMaterial{};
+		std::shared_ptr<pimm::MaterialResource> m_brickMaterial{};
 		std::shared_ptr<pimm::MaterialResource> m_basicMaterial{};
 		std::shared_ptr<pimm::MaterialResource> m_purpleMaterial{};
 };
