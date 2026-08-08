@@ -31,10 +31,12 @@ namespace pimm
 			void UpdateWorldMatrix() noexcept;
 			Matrix4x4 GetAffineWorldMatrix() noexcept;
 			Matrix4x4 GetRigidWorldMatrix() noexcept;
-
-		private:
+			
 			//We mark components as "dirty" when it needs to be updated
 			void MarkAsDirty();
+		private:
+			Matrix4x4 GetLocalAffineMatrix() noexcept;
+			Matrix4x4 GetLocalRigidMatrix() noexcept;
 
 		private:
 			Vec3 m_position{0.0f};
@@ -43,6 +45,7 @@ namespace pimm
 
 			Matrix4x4 m_affineWorldMatrix{};
 			Matrix4x4 m_rigidWorldMatrix{};
+
 
 			bool m_isDirty{};
 	};
