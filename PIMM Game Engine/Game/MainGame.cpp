@@ -111,7 +111,7 @@ void MainGame::OnCreate()
 
 	auto* uiManager = GetUIManager();
 	uiManager->RegisterPanel(std::make_unique<HierarchyPanel>(world));
-	uiManager->RegisterPanel(std::make_unique<InspectorPanel>(*player));
+	uiManager->RegisterPanel(std::make_unique<InspectorPanel>(world));
 	uiManager->RegisterPanel(std::make_unique<AssetsPanel>());
 	uiManager->RegisterPanel(std::make_unique<ScenePanel>(GetWorldRenderer()));
 	uiManager->RegisterPanel(std::make_unique<DebugPanel>(GetLogger()));

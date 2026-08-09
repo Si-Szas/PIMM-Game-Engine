@@ -46,6 +46,11 @@ pimm::AComponent* pimm::AGameObject::GetComponentInternal(size_t ID)
 	return {};
 }
 
+const std::unordered_map<size_t, pimm::UniquePtr<pimm::AComponent>>& pimm::AGameObject::GetAllComponents() const noexcept
+{
+	return m_components;
+}
+
 //pimm::ui32 pimm::AGameObject::GetVertexOffset() noexcept
 //{
 //	return m_vertexOffset;
@@ -140,6 +145,17 @@ pimm::f32 pimm::AGameObject::GetSpeedModifier() const noexcept
 void pimm::AGameObject::SetSpeedModifier(f32 newSpeed) noexcept
 {
 	speedModifier = newSpeed;
+}
+
+const std::string& pimm::AGameObject::GetObjectName() noexcept
+{
+	return m_name;
+}
+
+const char* pimm::AGameObject::GetObjectLabel(AGameObject* object)
+{
+	if (!object) return "Game Object";
+	return object->m_name.c_str();
 }
 
 //size_t pimm::AGameObject::GetWorldIndex() const noexcept

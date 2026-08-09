@@ -4,6 +4,8 @@
 #include <PIMM/AComponent/QuadComponent.h>
 #include <PIMM/AComponent/MaterialComponent.h>
 
+#include <string>
+
 namespace pimm
 {
 	class Quad final : public AGameObject

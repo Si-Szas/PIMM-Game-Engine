@@ -7,6 +7,7 @@ pimm::Quad::Quad(const AGameObjectDescriptor& descriptor) :
 
 void pimm::Quad::OnCreate() 
 {
+	m_name = "Quad";
 	m_quadComponent = CreateOrGetComponent<QuadComponent>();
 	//m_materialComponent = CreateOrGetComponent<MaterialComponent>();
 }

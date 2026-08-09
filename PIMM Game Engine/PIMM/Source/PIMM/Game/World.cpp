@@ -27,6 +27,8 @@ pimm::World::~World()
 
 void pimm::World::Update(f32 deltaTime)
 {
+
+
 	if (m_events.size())
 	{
 		std::swap(m_events, m_eventsSwapBuffer);
@@ -102,6 +104,25 @@ void pimm::World::Update(f32 deltaTime)
 			static_cast<RigidBodyComponent*>(component)->SyncTransformFromPhysics();
 		}
 	}
+}
+
+void pimm::World::SetSelectedObjectIndex(ui32 newIndex)
+{
+	m_selectedObjectIndex = newIndex;
+
+	auto gameObjects = GetAllGameObjects();
+
+	m_selectedGameObject = gameObjects[newIndex];
+}
+
+pimm::ui32 pimm::World::GetSelectedObjectIndex()
+{
+	return m_selectedObjectIndex;
+}
+
+pimm::AGameObject* pimm::World::GetSelectedGameObject()
+{
+	return m_selectedGameObject;
 }
 
 pimm::AGameObject* pimm::World::CreateAGameObjectInternal(UniquePtr<pimm::AGameObject>& object)
