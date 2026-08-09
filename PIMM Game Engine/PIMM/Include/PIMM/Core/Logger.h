@@ -27,8 +27,9 @@ namespace pimm{
 			{
 				auto str = std::format(fmt, std::forward<Args>(args)...);
 				_Log(level, str.c_str());
-				logMessages.push_back(str);
 				debugLogLevel = level;
+				std::string logStr = convertDebugLogLevelToString(level) + str;
+				logMessages.push_back(logStr);
 			}
 
 			std::vector<std::string> getLogMessages();
@@ -39,6 +40,7 @@ namespace pimm{
 
 		private:
 			void _Log(LogLevel level, const char* message) const;
+			std::string convertDebugLogLevelToString(LogLevel level);
 
 		private:
 			LogLevel m_logLevel = LogLevel::Error;

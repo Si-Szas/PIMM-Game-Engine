@@ -24,6 +24,17 @@ void pimm::Logger::_Log(LogLevel level, const char* message) const
 	std::clog << "[PIMM " << logLevelToString(level) << "]: " << message << "\n";
 }
 
+std::string pimm::Logger::convertDebugLogLevelToString(LogLevel level)
+{
+	switch (level)
+	{
+	case LogLevel::Error: return "[PIMM Engine] ERROR : ";
+	case LogLevel::Warning: return "[PIMM Engine] WARNING : ";
+	case LogLevel::Information: return "[PIMM Engine] INFO : ";
+	default: return "[PIMM Engine] UNKNOWN : ";
+	}
+}
+
 std::vector<std::string> pimm::Logger::getLogMessages()
 {
 	return logMessages;

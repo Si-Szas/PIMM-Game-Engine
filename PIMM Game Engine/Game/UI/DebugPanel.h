@@ -17,11 +17,14 @@ public:
 		//Foreach loop to print log messages from the logger to the panel
 		for (const auto& log : m_logger.getLogMessages())
 		{
-			//ImGui::Text(log.c_str());
+			// Switch case for color coding log messages based on log level
 			switch (m_logger.getDebugLogLevel())
 			{
+				// Error : Red
 			case pimm::Logger::LogLevel::Error: ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), log.c_str()); break;
+				// Warning : Yellow
 			case pimm::Logger::LogLevel::Warning: ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), log.c_str()); break;
+				//Information : White
 			case pimm::Logger::LogLevel::Information: ImGui::Text(log.c_str()); break;
 			}
 		}
