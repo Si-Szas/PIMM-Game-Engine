@@ -88,14 +88,13 @@ void pimm::MaterialResource::SetData(const std::span<const std::byte>& data)
 		PIMMLogWarning("Material data size ({} bytes) exceeds the maximum allowed size of {} bytes. Data will be truncated.", data.size(), MaxDataSize)
 	}
 
-	auto size = std::min(data.size(), MaxDataSize);
-	memcpy(m_data, data.data(), size);
-	m_dataSize = size;
+	m_dataSize = std::min(data.size(), MaxDataSize);
+	std::memcpy(m_data, data.data(), m_dataSize);
 }
 
 const std::span<const std::byte> pimm::MaterialResource::GetData() const noexcept
 {
-	return m_data;
+	return std::span<const std::byte>(m_data, m_dataSize);
 }
 
 

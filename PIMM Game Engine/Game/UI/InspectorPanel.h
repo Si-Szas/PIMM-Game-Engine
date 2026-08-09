@@ -3,8 +3,14 @@
 #include <PIMM/Game/World.h>
 #include <PIMM/ImGui/imgui.h>
 #include "../Player/Player.h"
+
+//COMPONENTS
 #include <PIMM/AComponent/TransformComponent.h>
 #include <PIMM/AComponent/RigidBodyComponent.h>
+#include <PIMM/AComponent/CameraComponent.h>
+#include <PIMM/AComponent/MaterialComponent.h>
+#include <PIMM/Resource/MaterialResource.h>
+
 namespace pimm
 {
 	class InspectorPanel final : public APanel
@@ -65,8 +71,28 @@ namespace pimm
 							ImGui::Text("Material");
 							ImGui::NewLine();
 
-							static float color[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-							ImGui::ColorEdit4("Color", color);
+							//Get the material component and resource
+							auto& material = gameObject->GetMaterialComponent();
+							auto* materialResource = material.GetMaterial();
+							//Ensure material data exists
+							if (materialResource != nullptr)
+							{
+								auto materialData = materialResource->GetData();
+
+								if (materialData.size() >= sizeof(pimm::Vec3))
+								{
+									const pimm::Vec3* colorVector = reinterpret_cast<const pimm::Vec3*>(materialData.data());
+
+									float color[3] = {colorVector->x, colorVector->y, colorVector->z};
+
+									//Display the colors of the material, but also allow the user to control the color if they wanted to
+									if (ImGui::ColorEdit3("Material Color", color))
+									{
+										pimm::Vec3 updatedColor(color[0], color[1], color[2]);
+										materialResource->SetData(std::as_bytes(std::span{ &updatedColor, 1}));
+									}
+								}
+							}
 						}
 
 						//Rigid Body Component
