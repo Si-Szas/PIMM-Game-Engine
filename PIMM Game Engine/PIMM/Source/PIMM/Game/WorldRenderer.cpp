@@ -212,7 +212,7 @@ void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 d
 					else if (objectType == pimm::MeshObject::getTypeId()) {
 						context.SetVertexBuffer(object->GetComponent<MeshComponent>()->GetMesh()->GetVertexBuffer());
 						context.SetIndexBuffer(object->GetComponent<MeshComponent>()->GetMesh()->GetIndexBuffer());
-						context.Draw4PatchIndexedTriangleList(object->GetComponent<MeshComponent>()->GetMesh()->GetIndexBuffer().GetIndexListSize(), 0u, 0u);
+						context.Draw3PatchIndexedTriangleList(object->GetComponent<MeshComponent>()->GetMesh()->GetIndexBuffer().GetIndexListSize(), 0u, 0u);
 					}
 					
 				}
