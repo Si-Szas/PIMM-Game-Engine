@@ -47,6 +47,9 @@ namespace pimm
 		ui32 GetIndexLocation() noexcept;
 		void SetIndexLocation(ui32 newLocation) noexcept;
 
+		//Get all components
+		const std::unordered_map<size_t, UniquePtr<AComponent>>& GetAllComponents() const noexcept;
+
 		//Get the transform component
 		TransformComponent& GetTransform() noexcept;
 		World& GetWorld() noexcept;

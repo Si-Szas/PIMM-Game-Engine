@@ -4,6 +4,7 @@
 #include <PIMM/ImGui/imgui.h>
 #include "../Player/Player.h"
 #include <PIMM/AComponent/TransformComponent.h>
+#include <PIMM/AComponent/RigidBodyComponent.h>
 namespace pimm
 {
 	class InspectorPanel final : public APanel
@@ -22,32 +23,61 @@ namespace pimm
 
 				///////////COMPONENTS///////////
 				// TRANSFORM
-				ImGui::Text("Transform");
 
-				auto& transform = gameObject->GetTransform();
+				const auto& components = gameObject->GetAllComponents();
 
-				Vec3 position = transform.GetPosition();
-				Vec3 rotation = transform.GetRotation();
-				Vec3 scale = transform.GetScale();
+				for (const auto& [componentId, componentPtr] : components)
+				{
+					// Make sure the component exists first
+					if (componentPtr)
+					{
+						//Transform Component
+						if (componentId == pimm::TransformComponent::getTypeId())
+						{
+							ImGui::Separator();
+							ImGui::Text("Transform");
+							ImGui::NewLine();
 
-				float positionArr[3] = { position.x, position.y, position.z };
-				float rotationArr[3] = { rotation.x, rotation.y, rotation.z };
-				float scaleArr[3] = { scale.x, scale.y, scale.z };
+							auto& transform = gameObject->GetTransform();
 
-				if (ImGui::DragFloat3("Position", positionArr, 0.1f))
-					transform.SetPosition({ positionArr[0], positionArr[1], positionArr[2] });
+							Vec3 position = transform.GetPosition();
+							Vec3 rotation = transform.GetRotation();
+							Vec3 scale = transform.GetScale();
 
-				if (ImGui::DragFloat3("Rotation", rotationArr, 0.1f))
-					transform.SetRotation({ rotationArr[0], rotationArr[1], rotationArr[2] });
+							float positionArr[3] = { position.x, position.y, position.z };
+							float rotationArr[3] = { rotation.x, rotation.y, rotation.z };
+							float scaleArr[3] = { scale.x, scale.y, scale.z };
 
-				if (ImGui::DragFloat3("Scale", scaleArr, 0.1f))
-					transform.SetScale({ scaleArr[0], scaleArr[1], scaleArr[2] });
+							if (ImGui::DragFloat3("Position", positionArr, 0.1f))
+								transform.SetPosition({ positionArr[0], positionArr[1], positionArr[2] });
 
-				//
-				ImGui::Separator();
-				ImGui::Text("Material");
-				static float color[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-				ImGui::ColorEdit4("Color", color);
+							if (ImGui::DragFloat3("Rotation", rotationArr, 0.1f))
+								transform.SetRotation({ rotationArr[0], rotationArr[1], rotationArr[2] });
+
+							if (ImGui::DragFloat3("Scale", scaleArr, 0.1f))
+								transform.SetScale({ scaleArr[0], scaleArr[1], scaleArr[2] });
+						}
+
+						//Material Component
+						if (componentId == pimm::MaterialComponent::getTypeId())
+						{
+							ImGui::Separator();
+							ImGui::Text("Material");
+							ImGui::NewLine();
+
+							static float color[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+							ImGui::ColorEdit4("Color", color);
+						}
+
+						//Rigid Body Component
+						if (componentId == pimm::RigidBodyComponent::getTypeId())
+						{
+							ImGui::Separator();
+							ImGui::Text("RigidBody");
+							ImGui::NewLine();
+						}
+					}
+				}
 			}
 			ImGui::End();
 		}

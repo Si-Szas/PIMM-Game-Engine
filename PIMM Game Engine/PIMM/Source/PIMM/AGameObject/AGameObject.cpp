@@ -46,6 +46,11 @@ pimm::AComponent* pimm::AGameObject::GetComponentInternal(size_t ID)
 	return {};
 }
 
+const std::unordered_map<size_t, pimm::UniquePtr<pimm::AComponent>>& pimm::AGameObject::GetAllComponents() const noexcept
+{
+	return m_components;
+}
+
 //pimm::ui32 pimm::AGameObject::GetVertexOffset() noexcept
 //{
 //	return m_vertexOffset;
