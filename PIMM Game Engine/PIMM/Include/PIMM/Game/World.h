@@ -63,6 +63,12 @@ namespace pimm
 		void DestroyAllAGameObjectsInternal();
 		void Update(f32 deltaTime);
 
+		//INSPECTOR PANEL
+		void SetSelectedObjectIndex(ui32 newIndex);
+		ui32 GetSelectedObjectIndex();
+
+		AGameObject* GetSelectedGameObject();
+
 		//PHYSICS
 		rp3d::PhysicsWorld& GetPhysicsWorld() noexcept { return *m_physicsWorld; }
 		rp3d::PhysicsCommon& GetPhysicsCommon() noexcept { return m_physicsCommon; }
@@ -92,6 +98,10 @@ namespace pimm
 		std::vector<AGameObjectEvent> m_eventsSwapBuffer{};
 		GameContext m_gameContext;
 		WorldRenderer& m_worldRenderer;
+
+		//INSPECTOR PANEL
+		AGameObject* m_selectedGameObject{};
+		ui32 m_selectedObjectIndex = 0;
 
 		//PHYSICS
 		rp3d::PhysicsCommon m_physicsCommon;

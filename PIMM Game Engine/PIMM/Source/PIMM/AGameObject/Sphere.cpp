@@ -13,6 +13,7 @@ pimm::Sphere::Sphere(const AGameObjectDescriptor& descriptor) :
 
 void pimm::Sphere::OnCreate()
 {
+	m_name = "Sphere";
 	m_sphereComponent = CreateOrGetComponent<SphereComponent>();
 	//m_materialComponent = CreateOrGetComponent<MaterialComponent>();
 }

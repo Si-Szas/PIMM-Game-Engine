@@ -7,6 +7,7 @@ pimm::Cylinder::Cylinder(const AGameObjectDescriptor& descriptor) :
 
 void pimm::Cylinder::OnCreate()
 {
+    m_name = "Cylinder";
     m_cylinderComponent = CreateOrGetComponent<CylinderComponent>();
     //m_materialComponent = CreateOrGetComponent<MaterialComponent>();
 }

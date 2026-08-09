@@ -7,6 +7,7 @@ pimm::Cube::Cube(const AGameObjectDescriptor& descriptor) :
 
 void pimm::Cube::OnCreate() 
 {
+	m_name = "Cube";
 	m_cubeComponent = CreateOrGetComponent<CubeComponent>();
 	//m_materialComponent = CreateOrGetComponent<MaterialComponent>();
 }

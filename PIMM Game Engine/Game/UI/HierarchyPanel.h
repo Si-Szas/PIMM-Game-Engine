@@ -26,12 +26,25 @@ public:
         ImGui::Begin("Hierarchy");
 
             auto gameObjects = m_world.GetAllGameObjects();
-            for (auto* object : gameObjects)
+
+            for (pimm::ui32 i = 0; i < gameObjects.size(); i++)
             {
-                if (!object) continue;
-                if (object->GetParent() != nullptr) continue; 
-                RenderNode(object);
+                //So the scene camera isnt rendered in the hierarchy panel
+                if(i > 0){
+                    auto* object = gameObjects[i];
+
+                    if (!object) continue;
+                    if (object->GetParent() != nullptr) continue;
+                    RenderNode(object, i);
+                }
             }
+
+            //for (auto* object : gameObjects)
+            //{
+            //    if (!object) continue;
+            //    if (object->GetParent() != nullptr) continue; 
+            //    RenderNode(object);
+            //}
 
             // "Unparenting area"
             ImGui::InvisibleButton("##HierarchyDropRoot", ImGui::GetContentRegionAvail());
@@ -49,19 +62,7 @@ public:
         }
 
     private:
-        static const char* GetObjectLabel(pimm::AGameObject* object)
-        {
-            if (object->GetTypeID() == pimm::Quad::getTypeId()) return "Floor";
-            if (object->GetTypeID() == pimm::Cube::getTypeId()) return "Cube";
-            if (object->GetTypeID() == pimm::Sphere::getTypeId()) return "Sphere";
-            if (object->GetTypeID() == pimm::Cylinder::getTypeId()) return "Cylinder";
-            if (object->GetTypeID() == pimm::Capsule::getTypeId()) return "Capsule";
-            if (object->GetTypeID() == pimm::Player::getTypeId()) return "Player";
-            if (object->GetTypeID() == pimm::MeshObject::getTypeId()) return "Mesh";
-            return "GameObject";
-        }
-
-        void RenderNode(pimm::AGameObject* object)
+        void RenderNode(pimm::AGameObject* object, pimm::ui32 index)
         {
             ImGui::PushID(object);
 
@@ -70,17 +71,18 @@ public:
             if (!hasChildren) flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_Bullet;
             if (object == m_selected) flags |= ImGuiTreeNodeFlags_Selected;
 
-            bool open = ImGui::TreeNodeEx(GetObjectLabel(object), flags);
+            bool open = ImGui::TreeNodeEx(object->GetObjectLabel(object), flags);
 
             if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
             {
                 m_selected = object;
+                m_world.SetSelectedObjectIndex(index);
             }
 
             if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
             {
                 ImGui::SetDragDropPayload("HIERARCHY_ITEM", &object, sizeof(pimm::AGameObject*));
-                ImGui::Text("%s", GetObjectLabel(object));
+                ImGui::Text("%s", object->GetObjectLabel(object));
                 ImGui::EndDragDropSource();
             }
 
@@ -115,7 +117,7 @@ public:
                 {
                     for (auto* child : object->GetChildren())
                     {
-                        RenderNode(child);
+                        RenderNode(child, index);
                     }
                 }
                 ImGui::TreePop();

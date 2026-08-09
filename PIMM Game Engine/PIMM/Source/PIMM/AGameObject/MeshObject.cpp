@@ -7,6 +7,7 @@ pimm::MeshObject::MeshObject(const AGameObjectDescriptor& descriptor) :
 
 void pimm::MeshObject::OnCreate()
 {
+	m_name = "Mesh";
 	m_meshComponent = CreateOrGetComponent<MeshComponent>();
 	//m_materialComponent = CreateOrGetComponent<MaterialComponent>();
 }

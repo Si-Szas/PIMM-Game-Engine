@@ -22,6 +22,7 @@ pimm::Player::Player(const AGameObjectDescriptor& descriptor) :
 
 void pimm::Player::OnCreate()
 {
+	m_name = "Player";
 	m_camera = CreateOrGetComponent<CameraComponent>();
 }
 

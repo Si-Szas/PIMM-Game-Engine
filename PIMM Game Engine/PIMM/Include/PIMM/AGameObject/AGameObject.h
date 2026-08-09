@@ -36,6 +36,10 @@ namespace pimm
 			return static_cast<Type*>(GetComponentInternal(Type::getTypeId()));
 		}
 
+		//Get name
+		const std::string& GetObjectName() noexcept;
+		static const char* GetObjectLabel(AGameObject* object);
+
 		//Get offset
 		ui32 GetVertexOffset() noexcept;
 		void SetVertexOffset(ui32 newOffset) noexcept;
@@ -113,6 +117,8 @@ namespace pimm
 		// MODIFIERS FOR MOVEMENT
 		f32 forwardModifier, rightModifier = 0.0f;
 		f32 speedModifier = 3.0f;
+
+		std::string m_name;
 
 		AGameObject* m_parent{ nullptr };
 		std::vector<AGameObject*> m_children{};

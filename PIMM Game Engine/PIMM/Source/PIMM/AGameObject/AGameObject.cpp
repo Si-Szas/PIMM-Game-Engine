@@ -142,6 +142,17 @@ void pimm::AGameObject::SetSpeedModifier(f32 newSpeed) noexcept
 	speedModifier = newSpeed;
 }
 
+const std::string& pimm::AGameObject::GetObjectName() noexcept
+{
+	return m_name;
+}
+
+const char* pimm::AGameObject::GetObjectLabel(AGameObject* object)
+{
+	if (!object) return "Game Object";
+	return object->m_name.c_str();
+}
+
 //size_t pimm::AGameObject::GetWorldIndex() const noexcept
 //{
 //	return m_worldIndex;

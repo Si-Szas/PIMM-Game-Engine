@@ -7,6 +7,7 @@ pimm::Capsule::Capsule(const AGameObjectDescriptor& descriptor) :
 
 void pimm::Capsule::OnCreate()
 {
+    m_name = "Capsule";
     m_capsuleComponent = CreateOrGetComponent<CapsuleComponent>();
     //m_materialComponent = CreateOrGetComponent<MaterialComponent>();
 }
