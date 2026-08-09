@@ -122,10 +122,6 @@ void MainGame::OnCreate()
 void MainGame::OnUpdate(f32 deltaTime)
 {
 	Game::OnUpdate(deltaTime);
-
-	auto& world = GetWorld();
-
-	//std::cout << "Selected Index: " << world.GetSelectedObjectIndex() << std::endl;
 }
 
 void MainGame::OnUIRender()

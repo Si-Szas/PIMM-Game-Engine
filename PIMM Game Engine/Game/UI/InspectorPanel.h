@@ -76,6 +76,14 @@ namespace pimm
 							ImGui::Text("RigidBody");
 							ImGui::NewLine();
 						}
+
+						//Camera Component
+						if (componentId == pimm::RigidBodyComponent::getTypeId())
+						{
+							ImGui::Separator();
+							ImGui::Text("Camera");
+							ImGui::NewLine();
+						}
 					}
 				}
 			}
