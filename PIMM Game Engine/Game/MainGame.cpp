@@ -138,61 +138,75 @@ void MainGame::SpawnObject(pimm::SpawnObjectType type, bool withPhysics)
 
 	switch (type)
 	{
-	case pimm::SpawnObjectType::Cube:
-	{
-		auto cube = world.CreateAGameObject<pimm::Cube>();
-		cube->GetTransform().SetScale({ 1.0f });
-		cube->GetTransform().SetPosition(spawnPosition);
-		cube->GetMaterialComponent().SetMaterial(m_woodMaterial);
-		if (withPhysics)
+		case pimm::SpawnObjectType::Cube:
 		{
-			auto* body = cube->CreateOrGetComponent<pimm::RigidBodyComponent>();
-			body->AddBoxCollider(cube->GetTransform().GetScale() * 0.5f);
-			body->SetMass(1.0f);
+			auto cube = world.CreateAGameObject<pimm::Cube>();
+			cube->GetTransform().SetScale({ 1.0f });
+			cube->GetTransform().SetPosition(spawnPosition);
+			cube->GetMaterialComponent().SetMaterial(m_woodMaterial);
+			if (withPhysics)
+			{
+				auto* body = cube->CreateOrGetComponent<pimm::RigidBodyComponent>();
+				body->AddBoxCollider(cube->GetTransform().GetScale() * 0.5f);
+				body->SetMass(1.0f);
+			}
+			break;
 		}
-		break;
-	}
-	case pimm::SpawnObjectType::Sphere:
-	{
-		auto sphere = world.CreateAGameObject<pimm::Sphere>();
-		sphere->GetTransform().SetScale({ 1.0f });
-		sphere->GetTransform().SetPosition(spawnPosition);
-		sphere->GetMaterialComponent().SetMaterial(m_basicMaterial);
-		if (withPhysics)
+		case pimm::SpawnObjectType::Sphere:
 		{
-			auto* body = sphere->CreateOrGetComponent<pimm::RigidBodyComponent>();
-			body->AddSphereCollider(0.5f);
-			body->SetMass(1.0f);
+			auto sphere = world.CreateAGameObject<pimm::Sphere>();
+			sphere->GetTransform().SetScale({ 1.0f });
+			sphere->GetTransform().SetPosition(spawnPosition);
+			sphere->GetMaterialComponent().SetMaterial(m_basicMaterial);
+			if (withPhysics)
+			{
+				auto* body = sphere->CreateOrGetComponent<pimm::RigidBodyComponent>();
+				body->AddSphereCollider(0.5f);
+				body->SetMass(1.0f);
+			}
+			break;
 		}
-		break;
-	}
-	case pimm::SpawnObjectType::Cylinder:
-	{
-		auto cylinder = world.CreateAGameObject<pimm::Cylinder>();
-		cylinder->GetTransform().SetScale({ 1.0f });
-		cylinder->GetTransform().SetPosition(spawnPosition);
-		cylinder->GetMaterialComponent().SetMaterial(m_purpleMaterial);
-		if (withPhysics)
+		case pimm::SpawnObjectType::Cylinder:
 		{
-			auto* body = cylinder->CreateOrGetComponent<pimm::RigidBodyComponent>();
-			body->AddCapsuleCollider(0.5f, 1.0f);
-			body->SetMass(1.0f);
+			auto cylinder = world.CreateAGameObject<pimm::Cylinder>();
+			cylinder->GetTransform().SetScale({ 1.0f });
+			cylinder->GetTransform().SetPosition(spawnPosition);
+			cylinder->GetMaterialComponent().SetMaterial(m_purpleMaterial);
+			if (withPhysics)
+			{
+				auto* body = cylinder->CreateOrGetComponent<pimm::RigidBodyComponent>();
+				body->AddCapsuleCollider(0.5f, 1.0f);
+				body->SetMass(1.0f);
+			}
+			break;
 		}
-		break;
-	}
-	case pimm::SpawnObjectType::Capsule:
-	{
-		auto capsule = world.CreateAGameObject<pimm::Capsule>();
-		capsule->GetTransform().SetScale({ 1.0f });
-		capsule->GetTransform().SetPosition(spawnPosition);
-		capsule->GetMaterialComponent().SetMaterial(m_woodMaterial);
-		if (withPhysics)
+		case pimm::SpawnObjectType::Capsule:
 		{
-			auto* body = capsule->CreateOrGetComponent<pimm::RigidBodyComponent>();
-			body->AddCapsuleCollider(0.5f, 1.0f);
-			body->SetMass(1.0f);
+			auto capsule = world.CreateAGameObject<pimm::Capsule>();
+			capsule->GetTransform().SetScale({ 1.0f });
+			capsule->GetTransform().SetPosition(spawnPosition);
+			capsule->GetMaterialComponent().SetMaterial(m_woodMaterial);
+			if (withPhysics)
+			{
+				auto* body = capsule->CreateOrGetComponent<pimm::RigidBodyComponent>();
+				body->AddCapsuleCollider(0.5f, 1.0f);
+				body->SetMass(1.0f);
+			}
+			break;
 		}
-		break;
-	}
+		case pimm::SpawnObjectType::Quad:
+		{
+			auto cube = world.CreateAGameObject<pimm::Quad>();
+			cube->GetTransform().SetScale({ 1.0f });
+			cube->GetTransform().SetPosition(spawnPosition);
+			cube->GetMaterialComponent().SetMaterial(m_woodMaterial);
+			if (withPhysics)
+			{
+				auto* body = cube->CreateOrGetComponent<pimm::RigidBodyComponent>();
+				body->AddBoxCollider(cube->GetTransform().GetScale() * 0.5f);
+				body->SetMass(1.0f);
+			}
+			break;
+		}	
 	}
 }

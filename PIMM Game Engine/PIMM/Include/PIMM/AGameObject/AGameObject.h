@@ -68,6 +68,12 @@ namespace pimm
 		f32 GetSpeedModifier() const noexcept;
 		void SetSpeedModifier(f32 newSpeed) noexcept;
 
+		// Parenting
+		AGameObject* GetParent() const noexcept;
+		const std::vector<AGameObject*>& GetChildren() const noexcept;
+
+		void SetParent(AGameObject* parent);
+
 		//DESTRUCTOR
 		virtual ~AGameObject();
 
@@ -82,6 +88,8 @@ namespace pimm
 	private:
 		AComponent* CreateComponentInternal(UniquePtr<AComponent>& component);
 		AComponent* GetComponentInternal(size_t ID);
+		void AddChildInternal(AGameObject* child);
+		void RemoveChildInternal(AGameObject* child);
 
 	private:
 		std::unordered_map<size_t, UniquePtr<AComponent>> m_components{};
@@ -105,6 +113,9 @@ namespace pimm
 		// MODIFIERS FOR MOVEMENT
 		f32 forwardModifier, rightModifier = 0.0f;
 		f32 speedModifier = 3.0f;
+
+		AGameObject* m_parent{ nullptr };
+		std::vector<AGameObject*> m_children{};
 
 		friend class World;
 	};
