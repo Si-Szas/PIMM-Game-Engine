@@ -20,8 +20,8 @@ namespace pimm
 				ImGui::Text(gameObject->GetObjectLabel(gameObject));
 				ImGui::NewLine();
 
-				//COMPONENTS
-
+				///////////COMPONENTS///////////
+				// TRANSFORM
 				ImGui::Text("Transform");
 
 				auto& transform = gameObject->GetTransform();
@@ -43,6 +43,7 @@ namespace pimm
 				if (ImGui::DragFloat3("Scale", scaleArr, 0.1f))
 					transform.SetScale({ scaleArr[0], scaleArr[1], scaleArr[2] });
 
+				//
 				ImGui::Separator();
 				ImGui::Text("Material");
 				static float color[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
