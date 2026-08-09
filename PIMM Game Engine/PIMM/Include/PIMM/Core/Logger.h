@@ -2,6 +2,7 @@
 
 #include <PIMM/Core/Core.h>
 #include <format>
+#include <vector>
 
 namespace pimm{
 	class Logger final
@@ -26,16 +27,28 @@ namespace pimm{
 			{
 				auto str = std::format(fmt, std::forward<Args>(args)...);
 				_Log(level, str.c_str());
+				debugLogLevel = level;
+				std::string logStr = convertDebugLogLevelToString(level) + str;
+				logMessages.push_back(logStr);
 			}
+
+			std::vector<std::string> getLogMessages();
+			LogLevel getDebugLogLevel();
 
 			//DESTRUCTOR
 			~Logger();
 
 		private:
-			void _Log(LogLevel level, const char* message);
+			void _Log(LogLevel level, const char* message) const;
+			std::string convertDebugLogLevelToString(LogLevel level);
 
 		private:
 			LogLevel m_logLevel = LogLevel::Error;
+			LogLevel debugLogLevel;
+
+			// A vector of log messages for printing in the debug panel
+			std::vector<std::string> logMessages;
+
 	
 	};
 }

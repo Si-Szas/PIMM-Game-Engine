@@ -4,6 +4,8 @@
 #include <PIMM/Graphics/FrameBuffer/FrameBuffer.h>
 #include <PIMM/AComponent/RigidBodyComponent.h>
 
+#include "UI/DebugPanel.h"
+
 using namespace pimm;
 
 MainGame::MainGame(const GameDescriptor& descriptor) :
@@ -112,6 +114,8 @@ void MainGame::OnCreate()
 	uiManager->RegisterPanel(std::make_unique<InspectorPanel>(*player));
 	uiManager->RegisterPanel(std::make_unique<AssetsPanel>());
 	uiManager->RegisterPanel(std::make_unique<ScenePanel>(GetWorldRenderer()));
+	uiManager->RegisterPanel(std::make_unique<DebugPanel>(GetLogger()));
+
 	uiManager->RegisterPanel(std::make_unique<TopbarPanel>(
 		[this](pimm::SpawnObjectType type, bool withPhysics)
 		{
