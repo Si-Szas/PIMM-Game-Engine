@@ -29,6 +29,11 @@ std::vector<std::string> pimm::Logger::getLogMessages()
 	return logMessages;
 }
 
+pimm::Logger::LogLevel pimm::Logger::getDebugLogLevel()
+{
+	return debugLogLevel;
+}
+
 pimm::Logger::~Logger()
 {
 }
