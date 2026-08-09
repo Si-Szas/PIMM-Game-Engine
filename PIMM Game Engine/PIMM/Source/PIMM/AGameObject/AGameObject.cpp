@@ -170,3 +170,50 @@ void pimm::AGameObject::SetIndexLocation(ui32 newLocation) noexcept
 {
 	m_indexLocation = newLocation;
 }
+
+pimm::AGameObject* pimm::AGameObject::GetParent() const noexcept
+{
+	return m_parent;
+}
+
+const std::vector<pimm::AGameObject*>& pimm::AGameObject::GetChildren() const noexcept
+{
+	return m_children;
+}
+
+void pimm::AGameObject::SetParent(AGameObject* newParent)
+{
+	if (newParent == this) return;
+	if (newParent == m_parent) return;
+
+	// Prevent cycles: newParent can't be `this` or a descendant of `this`.
+	for (AGameObject* p = newParent; p != nullptr; p = p->GetParent())
+	{
+		if (p == this) return;
+	}
+
+	if (m_parent)
+	{
+		m_parent->RemoveChildInternal(this);
+	}
+
+	m_parent = newParent;
+
+	if (m_parent)
+	{
+		m_parent->AddChildInternal(this);
+	}
+
+	// World matrix now depends on a different parent chain.
+	GetTransform().MarkAsDirty();
+}
+
+void pimm::AGameObject::AddChildInternal(AGameObject* child)
+{
+	m_children.push_back(child);
+}
+
+void pimm::AGameObject::RemoveChildInternal(AGameObject* child)
+{
+	std::erase(m_children, child); // C++20; use erase-remove idiom if not available
+}

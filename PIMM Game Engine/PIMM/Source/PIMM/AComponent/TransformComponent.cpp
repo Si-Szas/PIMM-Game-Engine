@@ -81,13 +81,33 @@ void pimm::TransformComponent::UpdateWorldMatrix() noexcept
 	}
 }
 
-Matrix4x4 pimm::TransformComponent::GetAffineWorldMatrix() noexcept
+Matrix4x4 TransformComponent::GetAffineWorldMatrix() noexcept
+{
+	Matrix4x4 local = GetLocalAffineMatrix();
+	if (AGameObject* parent = m_object.GetParent())
+	{
+		return local * parent->GetTransform().GetAffineWorldMatrix();
+	}
+	return local;
+}
+
+Matrix4x4 TransformComponent::GetRigidWorldMatrix() noexcept
+{
+	Matrix4x4 local = GetLocalRigidMatrix(); 
+	if (AGameObject* parent = m_object.GetParent())
+	{
+		return local * parent->GetTransform().GetRigidWorldMatrix();
+	}
+	return local;
+}
+
+Matrix4x4 TransformComponent::GetLocalAffineMatrix() noexcept
 {
 	UpdateWorldMatrix();
 	return m_affineWorldMatrix;
 }
 
-Matrix4x4 pimm::TransformComponent::GetRigidWorldMatrix() noexcept
+Matrix4x4 TransformComponent::GetLocalRigidMatrix() noexcept
 {
 	UpdateWorldMatrix();
 	return m_rigidWorldMatrix;
