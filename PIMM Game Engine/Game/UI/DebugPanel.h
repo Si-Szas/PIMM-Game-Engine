@@ -3,6 +3,7 @@
 #include <PIMM/Core/Logger.h>
 
 #include <PIMM/ImGui/imgui.h>
+#include <vector>
 
 class DebugPanel final : public pimm::APanel
 {
@@ -14,11 +15,12 @@ public:
 	{
 		ImGui::Begin("Debug");
 
-		
+		ImGui::Text(m_logger.getLogMessage().c_str());
 
 		ImGui::End();
 	}
 
 private:
 	pimm::Logger& m_logger;
+	std::vector<std::string> m_logMessages;
 };

@@ -1,11 +1,12 @@
 #include <PIMM/Core/Logger.h>
 #include <iostream>
+#include <string>
 
 pimm::Logger::Logger(LogLevel logLevel): m_logLevel(logLevel)
 {
 }
 
-void pimm::Logger::_Log(LogLevel level, const char* message)
+void pimm::Logger::_Log(LogLevel level, const char* message) const
 {
 	//Lambda function to convert log level to string
 	auto logLevelToString = [](LogLevel level) {
@@ -21,6 +22,14 @@ void pimm::Logger::_Log(LogLevel level, const char* message)
 	//Information should get all types of messages
 	if (level > m_logLevel) return;
 	std::clog << "[PIMM " << logLevelToString(level) << "]: " << message << "\n";
+
+
+	//std::string _message = std::format("[PIMM {}]: {}",  logLevelToString(level), message);
+}
+
+std::string pimm::Logger::getLogMessage()
+{
+	return logMessage;
 }
 
 pimm::Logger::~Logger()

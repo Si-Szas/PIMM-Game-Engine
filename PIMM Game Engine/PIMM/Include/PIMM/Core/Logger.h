@@ -3,6 +3,7 @@
 #include <PIMM/Core/Core.h>
 #include <format>
 
+
 namespace pimm{
 	class Logger final
 	{
@@ -26,16 +27,21 @@ namespace pimm{
 			{
 				auto str = std::format(fmt, std::forward<Args>(args)...);
 				_Log(level, str.c_str());
+				logMessage = str;
 			}
+
+			std::string getLogMessage();
 
 			//DESTRUCTOR
 			~Logger();
 
 		private:
-			void _Log(LogLevel level, const char* message);
+			void _Log(LogLevel level, const char* message) const;
 
 		private:
 			LogLevel m_logLevel = LogLevel::Error;
+			std::string logMessage;
+
 	
 	};
 }
