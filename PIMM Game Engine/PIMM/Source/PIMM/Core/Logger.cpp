@@ -22,14 +22,11 @@ void pimm::Logger::_Log(LogLevel level, const char* message) const
 	//Information should get all types of messages
 	if (level > m_logLevel) return;
 	std::clog << "[PIMM " << logLevelToString(level) << "]: " << message << "\n";
-
-
-	//std::string _message = std::format("[PIMM {}]: {}",  logLevelToString(level), message);
 }
 
-std::string pimm::Logger::getLogMessage()
+std::vector<std::string> pimm::Logger::getLogMessages()
 {
-	return logMessage;
+	return logMessages;
 }
 
 pimm::Logger::~Logger()
