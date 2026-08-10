@@ -15,6 +15,8 @@ pimm::RefPtr<pimm::Resource> pimm::ResourceManager::CreateResourceFromFileConcre
 	//Get the file path
 	std::filesystem::path resourcePath{ file_path };
 
+	PIMMLogInformation("Creating resource from file {}", resourcePath.string().c_str());
+
 	auto extension = resourcePath.extension();
 
 	auto it = m_resources.find(file_path);
@@ -54,6 +56,9 @@ pimm::RefPtr<pimm::Resource> pimm::ResourceManager::CreateResourceFromFileConcre
 	if (resourcePtr)
 	{
 		m_resources.emplace(file_path, resourcePtr);
+
+		PIMMLogInformation("Successfully created resource from file {}", resourcePath.string().c_str());
+
 		return resourcePtr;
 	}
 
