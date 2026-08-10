@@ -10,7 +10,8 @@ namespace pimm
 		public:
 			//CONSTRUCTOR
 			explicit Resource(const ResourceDescriptor& descriptor);
-		
+			//GETTER
+			const std::wstring& GetPath() const noexcept { return m_path; }
 		protected:
 			std::wstring m_path{};
 			ResourceManager& m_manager;

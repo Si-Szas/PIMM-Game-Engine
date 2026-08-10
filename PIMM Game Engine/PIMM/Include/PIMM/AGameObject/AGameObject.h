@@ -56,6 +56,7 @@ namespace pimm
 		InputSystem& GetInputSystem() noexcept;
 		const WorldRenderer& GetWorldRenderer() noexcept;
 		ResourceManager& GetResourceManager() noexcept;
+		GraphicsDevice& GetGraphicsDevice() noexcept;
 
 		//Get the material component
 		MaterialComponent& GetMaterialComponent() noexcept;

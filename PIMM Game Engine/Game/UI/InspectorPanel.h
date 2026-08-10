@@ -12,7 +12,14 @@
 #include <PIMM/AComponent/MeshComponent.h>
 #include <PIMM/Resource/MeshResource.h>
 #include <PIMM/Resource/MaterialResource.h>
+#include <PIMM/Resource/TextureResource.h>
+#include <PIMM/Resource/ResourceManager.h>
 #include <PIMM/AGameObject/MeshObject.h>
+
+#include <filesystem>
+#include <vector>
+#include <string>
+#include <functional>
 
 namespace pimm
 {
@@ -99,6 +106,13 @@ namespace pimm
 											materialResource->SetData(std::as_bytes(std::span{ &updatedColor, 1 }));
 										}
 									}
+
+
+									DrawTextureSlots(gameObject, materialResource,
+										[&material](const RefPtr<MaterialResource>& cloned)
+										{
+											material.SetMaterial(cloned);
+										});
 								}
 							}
 						} //Means the game object is a mesh object
@@ -135,6 +149,16 @@ namespace pimm
 													materialResource->SetData(std::as_bytes(std::span{ &updatedColor, 1 }));
 												}
 											}
+
+											ImGui::PushID(static_cast<int>(i));
+
+											ui32 slotIndex = static_cast<ui32>(i);
+											DrawTextureSlots(gameObject, materialResource,
+												[meshComponent, slotIndex](const RefPtr<MaterialResource>& cloned)
+												{
+													meshComponent->SetMaterial(slotIndex, cloned);
+												});
+											ImGui::PopID();
 										}
 									}
 								}
@@ -160,6 +184,104 @@ namespace pimm
 				}
 			}
 			ImGui::End();
+		}
+
+	private:
+
+		struct TextureEntry
+		{
+			std::string displayName;
+			std::wstring fullPath;
+		};
+
+		const std::vector<TextureEntry>& GetAvailableTextures()
+		{
+			static std::vector<TextureEntry> cachedTextures = []
+				{
+					std::vector<TextureEntry> result;
+					std::filesystem::path texturesDir = L"Game/Assets/Textures";
+
+					if (std::filesystem::exists(texturesDir) && std::filesystem::is_directory(texturesDir))
+					{
+						for (const auto& entry : std::filesystem::directory_iterator(texturesDir))
+						{
+							if (!entry.is_regular_file()) continue;
+							result.push_back(TextureEntry{
+								entry.path().filename().string(),
+								entry.path().wstring()
+								});
+						}
+					}
+
+					return result;
+				}();
+
+			return cachedTextures;
+		}
+
+		void DrawTextureSlots(pimm::AGameObject* gameObject, pimm::MaterialResource*& materialResource,
+			const std::function<void(const RefPtr<MaterialResource>&)>& reassign)
+		{
+			const auto& availableTextures = GetAvailableTextures();
+			size_t textureSlots = materialResource->GetNumberOfTextures();
+
+			for (size_t slot = 0; slot < textureSlots; ++slot)
+			{
+				ImGui::PushID(static_cast<int>(slot));
+
+				pimm::TextureResource* currentTexture = materialResource->GetTexture(slot);
+				std::string currentLabel = "None";
+				if (currentTexture)
+				{
+					currentLabel = std::filesystem::path(currentTexture->GetPath()).filename().string();
+				}
+
+				std::string comboLabel = "Texture Slot " + std::to_string(slot);
+
+				if (ImGui::BeginCombo(comboLabel.c_str(), currentLabel.c_str()))
+				{
+					bool noneSelected = (currentTexture == nullptr);
+					if (ImGui::Selectable("None", noneSelected))
+					{
+						auto clonedMaterial = CloneMaterialForObject(gameObject, materialResource);
+						clonedMaterial->SetTexture(slot, nullptr);
+						reassign(clonedMaterial);
+						materialResource = clonedMaterial.get();
+					}
+
+					for (const auto& textureEntry : availableTextures)
+					{
+						bool isSelected = (currentTexture != nullptr && currentLabel == textureEntry.displayName);
+						if (ImGui::Selectable(textureEntry.displayName.c_str(), isSelected))
+						{
+							auto& resourceManager = gameObject->GetResourceManager();
+							auto newTexture = resourceManager.CreateResourceFromFile<pimm::TextureResource>(textureEntry.fullPath.c_str());
+
+							auto clonedMaterial = CloneMaterialForObject(gameObject, materialResource);
+							clonedMaterial->SetTexture(slot, newTexture);
+							reassign(clonedMaterial);
+							materialResource = clonedMaterial.get();
+						}
+						if (isSelected)
+						{
+							ImGui::SetItemDefaultFocus();
+						}
+					}
+
+					ImGui::EndCombo();
+				}
+
+				ImGui::PopID();
+			}
+		}
+
+		RefPtr<MaterialResource> CloneMaterialForObject(pimm::AGameObject* gameObject, pimm::MaterialResource* source)
+		{
+			MaterialResourceDescriptor descriptor{
+				{ { gameObject->GetLogger() }, L"", gameObject->GetResourceManager() },
+				gameObject->GetGraphicsDevice()
+			};
+			return std::make_shared<MaterialResource>(*source, descriptor);
 		}
 
 	private:
