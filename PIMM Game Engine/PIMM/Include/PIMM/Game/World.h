@@ -73,6 +73,11 @@ namespace pimm
 		rp3d::PhysicsWorld& GetPhysicsWorld() noexcept { return *m_physicsWorld; }
 		rp3d::PhysicsCommon& GetPhysicsCommon() noexcept { return m_physicsCommon; }
 
+		void SetPhysicsEnabled(bool enabled) noexcept;
+		void ResetPhysicsAccumulator() noexcept;
+		void StepPhysicsFrame();
+		bool IsPhysicsEnabled() const noexcept { return m_physicsEnabled; }
+
 	private:
 		enum class EventType
 		{
@@ -107,6 +112,7 @@ namespace pimm
 		rp3d::PhysicsCommon m_physicsCommon;
 		rp3d::PhysicsWorld* m_physicsWorld{};
 		f32 m_physicsAccumulator{};
+		bool m_physicsEnabled = false;
 
 		friend class AGameObject;
 		friend class AComponent;

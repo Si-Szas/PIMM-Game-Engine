@@ -1,5 +1,6 @@
 #pragma once
 #include <PIMM/Core/Core.h>
+#include <cmath>
 
 namespace pimm
 {

@@ -181,6 +181,8 @@
     <ClCompile Include="PIMM\Source\PIMM\AComponent\CubeComponent.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\AComponent\AComponent.cpp" />
     <ClCompile Include="Game\MainGame.cpp" />
+    <ClCompile Include="Game\Editor\SceneModeManager.cpp" />
+    <ClCompile Include="Game\Editor\SceneSerializer.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Game\World.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Graphics\IndexBuffer\IndexBuffer.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\AGameObject\AGameObject.cpp" />
@@ -215,6 +217,10 @@
     <ClInclude Include="PIMM\Include\PIMM\AComponent\MeshComponent.h" />
     <ClInclude Include="PIMM\Include\PIMM\Resource\MeshResource.h" />
     <ClInclude Include="Game\UI\TopbarPanel.h" />
+    <ClInclude Include="Game\Editor\SceneMode.h" />
+    <ClInclude Include="Game\Editor\SceneModeManager.h" />
+    <ClInclude Include="Game\Editor\SceneFormat.h" />
+    <ClInclude Include="Game\Editor\SceneSerializer.h" />
     <ClInclude Include="PIMM\Include\PIMM\AComponent\RigidBodyComponent.h" />
     <ClInclude Include="PIMM\Source\PIMM\Graphics\FrameBuffer\FrameBuffer.h" />
     <ClInclude Include="Game\UI\AssetsPanel.h" />

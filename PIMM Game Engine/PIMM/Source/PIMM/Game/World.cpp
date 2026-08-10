@@ -86,16 +86,42 @@ void pimm::World::Update(f32 deltaTime)
 	//Clear the list of dirty component to ensure that they don't get included in next update
 	m_dirtyTransforms.clear();
 
-	//Step the physics simulation on a fixed timestep
-	constexpr f32 physicsTimeStep = 1.0f / 60.0f;
-	m_physicsAccumulator += deltaTime;
-	while (m_physicsAccumulator >= physicsTimeStep)
+	if (m_physicsEnabled)
 	{
-		m_physicsWorld->update(physicsTimeStep);
-		m_physicsAccumulator -= physicsTimeStep;
-	}
+		constexpr f32 physicsTimeStep = 1.0f / 60.0f;
+		m_physicsAccumulator += deltaTime;
+		while (m_physicsAccumulator >= physicsTimeStep)
+		{
+			m_physicsWorld->update(physicsTimeStep);
+			m_physicsAccumulator -= physicsTimeStep;
+		}
 
-	//Sync every rigid body's simulated transform back into its TransformComponent
+		auto rigidBodyIt = m_components.find(RigidBodyComponent::getTypeId());
+		if (rigidBodyIt != m_components.end())
+		{
+			for (AComponent* component : rigidBodyIt->second)
+			{
+				static_cast<RigidBodyComponent*>(component)->SyncTransformFromPhysics();
+			}
+		}
+	}
+}
+
+void pimm::World::SetPhysicsEnabled(bool enabled) noexcept
+{
+	m_physicsEnabled = enabled;
+}
+
+void pimm::World::ResetPhysicsAccumulator() noexcept
+{
+	m_physicsAccumulator = 0.0f;
+}
+
+void pimm::World::StepPhysicsFrame()
+{
+	constexpr f32 physicsTimeStep = 1.0f / 60.0f;
+	m_physicsWorld->update(physicsTimeStep);
+
 	auto rigidBodyIt = m_components.find(RigidBodyComponent::getTypeId());
 	if (rigidBodyIt != m_components.end())
 	{

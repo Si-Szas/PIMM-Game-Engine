@@ -8,9 +8,10 @@ namespace pimm
 	class Resource : public Base
 	{
 		public:
-			//CONSTRUCTOR
 			explicit Resource(const ResourceDescriptor& descriptor);
-		
+
+			const std::wstring& GetPath() const noexcept { return m_path; }
+
 		protected:
 			std::wstring m_path{};
 			ResourceManager& m_manager;

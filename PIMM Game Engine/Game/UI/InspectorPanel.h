@@ -3,8 +3,8 @@
 #include <PIMM/Game/World.h>
 #include <PIMM/ImGui/imgui.h>
 #include "../Player/Player.h"
+#include "../Editor/SceneModeManager.h"
 
-//COMPONENTS
 #include <PIMM/AComponent/TransformComponent.h>
 #include <PIMM/AComponent/RigidBodyComponent.h>
 #include <PIMM/AComponent/CameraComponent.h>
@@ -19,12 +19,13 @@ namespace pimm
 	class InspectorPanel final : public APanel
 	{
 	public:
-		explicit InspectorPanel(World& world) : APanel("Inspector"), m_world(world) {}
+		explicit InspectorPanel(World& world, const SceneModeManager& modeManager) : APanel("Inspector"), m_world(world), m_modeManager(modeManager) {}
 
 		void Render() override
 		{
 			ImGui::Begin("Inspector");
 			AGameObject* gameObject = m_world.GetSelectedGameObject();
+			bool isEditMode = m_modeManager.IsEditMode();
 
 			if(gameObject){
 				size_t objectType = gameObject->GetTypeID();
@@ -59,14 +60,23 @@ namespace pimm
 							float rotationArr[3] = { rotation.x, rotation.y, rotation.z };
 							float scaleArr[3] = { scale.x, scale.y, scale.z };
 
-							if (ImGui::DragFloat3("Position", positionArr, 0.1f))
-								transform.SetPosition({ positionArr[0], positionArr[1], positionArr[2] });
+							if (isEditMode)
+							{
+								if (ImGui::DragFloat3("Position", positionArr, 0.1f))
+									transform.SetPosition({ positionArr[0], positionArr[1], positionArr[2] });
 
-							if (ImGui::DragFloat3("Rotation", rotationArr, 0.1f))
-								transform.SetRotation({ rotationArr[0], rotationArr[1], rotationArr[2] });
+								if (ImGui::DragFloat3("Rotation", rotationArr, 0.1f))
+									transform.SetRotation({ rotationArr[0], rotationArr[1], rotationArr[2] });
 
-							if (ImGui::DragFloat3("Scale", scaleArr, 0.1f))
-								transform.SetScale({ scaleArr[0], scaleArr[1], scaleArr[2] });
+								if (ImGui::DragFloat3("Scale", scaleArr, 0.1f))
+									transform.SetScale({ scaleArr[0], scaleArr[1], scaleArr[2] });
+							}
+							else
+							{
+								ImGui::InputFloat3("Position", positionArr, "%.2f", ImGuiInputTextFlags_ReadOnly);
+								ImGui::InputFloat3("Rotation", rotationArr, "%.2f", ImGuiInputTextFlags_ReadOnly);
+								ImGui::InputFloat3("Scale", scaleArr, "%.2f", ImGuiInputTextFlags_ReadOnly);
+							}
 						}
 
 						// Checking if it is a mesh object or not since materials are handled slightly differently
@@ -92,11 +102,19 @@ namespace pimm
 
 										float color[3] = { colorVector->x, colorVector->y, colorVector->z };
 
-										//Display the colors of the material, but also allow the user to control the color if they wanted to
-										if (ImGui::ColorEdit3("Material Color", color))
+										if (isEditMode)
 										{
-											pimm::Vec3 updatedColor(color[0], color[1], color[2]);
-											materialResource->SetData(std::as_bytes(std::span{ &updatedColor, 1 }));
+											if (ImGui::ColorEdit3("Material Color", color))
+											{
+												pimm::Vec3 updatedColor(color[0], color[1], color[2]);
+												materialResource->SetData(std::as_bytes(std::span{ &updatedColor, 1 }));
+											}
+										}
+										else
+										{
+											ImGui::ColorButton("Material Color", ImVec4(color[0], color[1], color[2], 1.0f), ImGuiColorEditFlags_NoTooltip);
+											ImGui::SameLine();
+											ImGui::Text("R:%.2f G:%.2f B:%.2f", color[0], color[1], color[2]);
 										}
 									}
 								}
@@ -129,10 +147,19 @@ namespace pimm
 												const pimm::Vec3* colorVector = reinterpret_cast<const pimm::Vec3*>(materialData.data());
 												float color[3] = { colorVector->x, colorVector->y, colorVector->z };
 
-												if (ImGui::ColorEdit3("Material Color", color))
+												if (isEditMode)
 												{
-													pimm::Vec3 updatedColor(color[0], color[1], color[2]);
-													materialResource->SetData(std::as_bytes(std::span{ &updatedColor, 1 }));
+													if (ImGui::ColorEdit3("Material Color", color))
+													{
+														pimm::Vec3 updatedColor(color[0], color[1], color[2]);
+														materialResource->SetData(std::as_bytes(std::span{ &updatedColor, 1 }));
+													}
+												}
+												else
+												{
+													ImGui::ColorButton("Material Color", ImVec4(color[0], color[1], color[2], 1.0f), ImGuiColorEditFlags_NoTooltip);
+													ImGui::SameLine();
+													ImGui::Text("R:%.2f G:%.2f B:%.2f", color[0], color[1], color[2]);
 												}
 											}
 										}
@@ -163,7 +190,7 @@ namespace pimm
 		}
 
 	private:
-		//Player& m_player;
 		World& m_world;
+		const SceneModeManager& m_modeManager;
 	};
 }

@@ -4,6 +4,7 @@
 #include <PIMM/UIManager/APanel.h>
 #include <PIMM/Game/World.h>
 #include <PIMM/ImGui/imgui.h>
+#include "../Editor/SceneModeManager.h"
 
 #include <../../Game/Player/Player.h>
 #include <PIMM/AGameObject/Quad.h>
@@ -18,18 +19,18 @@
 class HierarchyPanel final : public pimm::APanel
 {
 public:
-    HierarchyPanel(pimm::World& world)
-        : APanel("Hierarchy"), m_world(world) {
+    HierarchyPanel(pimm::World& world, const pimm::SceneModeManager& modeManager)
+        : APanel("Hierarchy"), m_world(world), m_modeManager(modeManager) {
     }
 
     void Render() override {
         ImGui::Begin("Hierarchy");
 
             auto gameObjects = m_world.GetAllGameObjects();
+            bool isEditMode = m_modeManager.IsEditMode();
 
             for (pimm::ui32 i = 0; i < gameObjects.size(); i++)
             {
-                //So the scene camera isnt rendered in the hierarchy panel
                 if(i > 0){
                     auto* object = gameObjects[i];
 
@@ -39,23 +40,18 @@ public:
                 }
             }
 
-            //for (auto* object : gameObjects)
-            //{
-            //    if (!object) continue;
-            //    if (object->GetParent() != nullptr) continue; 
-            //    RenderNode(object);
-            //}
-
-            // "Unparenting area"
-            ImGui::InvisibleButton("##HierarchyDropRoot", ImGui::GetContentRegionAvail());
-            if (ImGui::BeginDragDropTarget())
+            if (isEditMode)
             {
-                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("HIERARCHY_ITEM"))
+                ImGui::InvisibleButton("##HierarchyDropRoot", ImGui::GetContentRegionAvail());
+                if (ImGui::BeginDragDropTarget())
                 {
-                    auto* dropped = *static_cast<pimm::AGameObject* const*>(payload->Data);
-                    dropped->SetParent(nullptr);
+                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("HIERARCHY_ITEM"))
+                    {
+                        auto* dropped = *static_cast<pimm::AGameObject* const*>(payload->Data);
+                        dropped->SetParent(nullptr);
+                    }
+                    ImGui::EndDragDropTarget();
                 }
-                ImGui::EndDragDropTarget();
             }
 
             ImGui::End();
@@ -64,6 +60,7 @@ public:
     private:
         void RenderNode(pimm::AGameObject* object, pimm::ui32 index)
         {
+            bool isEditMode = m_modeManager.IsEditMode();
             ImGui::PushID(object);
 
             const bool hasChildren = !object->GetChildren().empty();
@@ -79,36 +76,39 @@ public:
                 m_world.SetSelectedObjectIndex(index);
             }
 
-            if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+            if (isEditMode)
             {
-                ImGui::SetDragDropPayload("HIERARCHY_ITEM", &object, sizeof(pimm::AGameObject*));
-                ImGui::Text("%s", object->GetObjectLabel(object));
-                ImGui::EndDragDropSource();
-            }
-
-            if (ImGui::BeginDragDropTarget())
-            {
-                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("HIERARCHY_ITEM"))
+                if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
                 {
-                    auto* dropped = *static_cast<pimm::AGameObject* const*>(payload->Data);
-                    if (dropped != object)
-                    {
-                        dropped->SetParent(object);
-                    }
+                    ImGui::SetDragDropPayload("HIERARCHY_ITEM", &object, sizeof(pimm::AGameObject*));
+                    ImGui::Text("%s", object->GetObjectLabel(object));
+                    ImGui::EndDragDropSource();
                 }
-                ImGui::EndDragDropTarget();
-            }
 
-            if (ImGui::BeginPopupContextItem())
-            {
-                if (object->GetParent() != nullptr)
+                if (ImGui::BeginDragDropTarget())
                 {
-                    if (ImGui::MenuItem("Unparent"))
+                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("HIERARCHY_ITEM"))
                     {
-                        object->SetParent(nullptr);
+                        auto* dropped = *static_cast<pimm::AGameObject* const*>(payload->Data);
+                        if (dropped != object)
+                        {
+                            dropped->SetParent(object);
+                        }
                     }
+                    ImGui::EndDragDropTarget();
                 }
-                ImGui::EndPopup();
+
+                if (ImGui::BeginPopupContextItem())
+                {
+                    if (object->GetParent() != nullptr)
+                    {
+                        if (ImGui::MenuItem("Unparent"))
+                        {
+                            object->SetParent(nullptr);
+                        }
+                    }
+                    ImGui::EndPopup();
+                }
             }
 
             if (open)
@@ -128,5 +128,6 @@ public:
 
     private:
         pimm::World& m_world;
+        const pimm::SceneModeManager& m_modeManager;
         pimm::AGameObject* m_selected{ nullptr };
 };
