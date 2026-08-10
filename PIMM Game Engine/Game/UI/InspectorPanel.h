@@ -281,7 +281,15 @@ namespace pimm
 				{ { gameObject->GetLogger() }, L"", gameObject->GetResourceManager() },
 				gameObject->GetGraphicsDevice()
 			};
-			return std::make_shared<MaterialResource>(*source, descriptor);
+			auto cloned = std::make_shared<MaterialResource>(*source, descriptor);
+
+			auto sourceData = source->GetData();
+			if (!sourceData.empty())
+			{
+				cloned->SetData(sourceData);
+			}
+
+			return cloned;
 		}
 
 	private:
