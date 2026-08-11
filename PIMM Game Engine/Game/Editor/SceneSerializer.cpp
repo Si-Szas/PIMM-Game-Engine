@@ -129,42 +129,40 @@ namespace pimm
 		}
 
 		void WriteMeshComponent(std::ofstream& f, MeshComponent& mc)
+	{
+		auto* mesh = mc.GetMesh();
+		if (mesh)
+			f << SceneKey::Mesh << " = \"" << Narrow(mesh->GetPath()) << "\"\n";
+
+		ui32 materialCount = mc.GetMaterialCount();
+
+		for (ui32 i = 0; i < materialCount; ++i)
 		{
-			auto* mesh = mc.GetMesh();
-			if (mesh)
-				f << SceneKey::Mesh << " = \"" << Narrow(mesh->GetPath()) << "\"\n";
+			auto* mat = mc.GetMaterial(i);
+			if (!mat) continue;
 
-			ui32 slotCount = 0;
-			if (mesh)
-				slotCount = mesh->GetNumberOfMaterialSlots();
+			f << SceneKey::MaterialPrefix << i << " = \"" << Narrow(mat->GetPath()) << "\"";
 
-			for (ui32 i = 0; i < slotCount; ++i)
+			auto data = mat->GetData();
+			if (data.size() >= sizeof(Vec3))
 			{
-				auto* mat = mc.GetMaterial(i);
-				if (!mat) continue;
-
-				f << SceneKey::MaterialPrefix << i << " = \"" << Narrow(mat->GetPath()) << "\"";
-
-				auto data = mat->GetData();
-				if (data.size() >= sizeof(Vec3))
-				{
-					const Vec3* color = reinterpret_cast<const Vec3*>(data.data());
-					f << ' ' << color->x << ' ' << color->y << ' ' << color->z;
-				}
-
-				auto* tex = mat->GetTexture(0);
-				if (tex)
-					f << " \"" << Narrow(tex->GetPath()) << '\"';
-
-				f << '\n';
+				const Vec3* color = reinterpret_cast<const Vec3*>(data.data());
+				f << ' ' << color->x << ' ' << color->y << ' ' << color->z;
 			}
-		}
 
-		void WidenPath(std::wstring& out, const std::string& narrow)
-		{
-			out.assign(narrow.begin(), narrow.end());
+			auto* tex = mat->GetTexture(0);
+			if (tex)
+				f << " \"" << Narrow(tex->GetPath()) << '\"';
+
+			f << '\n';
 		}
 	}
+
+	void WidenPath(std::wstring& out, const std::string& narrow)
+	{
+		out.assign(narrow.begin(), narrow.end());
+	}
+}
 
 	std::string SceneSerializer::GetTypeName(size_t typeId)
 	{
