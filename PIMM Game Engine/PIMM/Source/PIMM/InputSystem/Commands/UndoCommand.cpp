@@ -17,7 +17,8 @@ void pimm::UndoCommand::ExecuteCommand()
 
 void pimm::UndoCommand::ExecuteCommand(AGameObject& gameObject, World& world)
 {
-	world.GetSelectedGameObject()->restoreFromSnapshot(*m_snapshot);
+	if (m_snapshot != nullptr)
+		world.GetSelectedGameObject()->restoreFromSnapshot(*m_snapshot);
 }
 
 void pimm::UndoCommand::ExecuteCommand(AGameObject& gameObject, World& world, ResourceManager& resourceManager)
