@@ -126,7 +126,7 @@ void MainGame::OnUIRender()
 void MainGame::SpawnObject(pimm::SpawnObjectType type, bool withPhysics)
 {
 	auto& world = GetWorld();
-	pimm::Vec3 spawnPosition{ 0.0f, 5.0f, 0.0f };
+	pimm::Vec3 spawnPosition{ 0.0f };
 
 	switch (type)
 	{
