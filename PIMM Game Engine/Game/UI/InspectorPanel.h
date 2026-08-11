@@ -298,18 +298,34 @@ namespace pimm
 
 									if (current.type == ColliderType::Box)
 									{
-										float halfExtents[3] = { current.halfExtents.x, current.halfExtents.y, current.halfExtents.z };
+										float halfExtents[3] = {
+											current.halfExtents.x,
+											current.halfExtents.y,
+											current.halfExtents.z
+										};
+
 										if (ImGui::DragFloat3("Half Extents", halfExtents, 0.05f, 0.01f, 1000.0f))
 										{
+											halfExtents[0] = std::max(halfExtents[0], 0.01f);
+											halfExtents[1] = std::max(halfExtents[1], 0.01f);
+											halfExtents[2] = std::max(halfExtents[2], 0.01f);
+
 											rigidBody->RemoveAllColliders();
-											rigidBody->AddBoxCollider({ halfExtents[0], halfExtents[1], halfExtents[2] });
+											rigidBody->AddBoxCollider({
+												halfExtents[0],
+												halfExtents[1],
+												halfExtents[2]
+												});
 										}
 									}
 									else if (current.type == ColliderType::Sphere)
 									{
 										float radius = current.radius;
+
 										if (ImGui::DragFloat("Radius", &radius, 0.05f, 0.01f, 1000.0f))
 										{
+											radius = std::max(radius, 0.01f);
+
 											rigidBody->RemoveAllColliders();
 											rigidBody->AddSphereCollider(radius);
 										}
@@ -318,11 +334,17 @@ namespace pimm
 									{
 										float radius = current.radius;
 										float height = current.height;
+
 										bool changed = false;
+
 										changed |= ImGui::DragFloat("Radius", &radius, 0.05f, 0.01f, 1000.0f);
 										changed |= ImGui::DragFloat("Height", &height, 0.05f, 0.01f, 1000.0f);
+
 										if (changed)
 										{
+											radius = std::max(radius, 0.01f);
+											height = std::max(height, 0.01f);
+
 											rigidBody->RemoveAllColliders();
 											rigidBody->AddCapsuleCollider(radius, height);
 										}
