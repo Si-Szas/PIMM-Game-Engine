@@ -70,6 +70,7 @@ public:
                 auto* object = gameObjects[i];
 
                     if (!object) continue;
+                    if (object->GetTypeID() == pimm::Player::getTypeId()) continue;
                     if (object->GetParent() != nullptr) continue;
                     RenderNode(object, gameObjects);
                 }
