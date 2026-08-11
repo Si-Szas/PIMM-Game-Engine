@@ -78,6 +78,17 @@ pimm::RigidBodyComponent::~RigidBodyComponent()
 
 void pimm::RigidBodyComponent::SetBodyType(BodyType type) noexcept
 {
+
+	if (type != BodyType::Dynamic && m_bodyType == BodyType::Dynamic)
+	{
+		m_savedGravityEnabled = IsGravityEnabled();
+		m_rigidBody->enableGravity(false);
+	}
+	else if (type == BodyType::Dynamic && m_bodyType != BodyType::Dynamic)
+	{
+		m_rigidBody->enableGravity(m_savedGravityEnabled);
+	}
+
 	m_bodyType = type;
 	switch (type)
 	{
@@ -85,8 +96,9 @@ void pimm::RigidBodyComponent::SetBodyType(BodyType type) noexcept
 	case BodyType::Kinematic: m_rigidBody->setType(rp3d::BodyType::KINEMATIC); break;
 	case BodyType::Dynamic: m_rigidBody->setType(rp3d::BodyType::DYNAMIC);   break;
 	}
-}
 
+	SyncPhysicsFromTransform();
+}
 BodyType pimm::RigidBodyComponent::GetBodyType() const noexcept
 {
 	return m_bodyType;
@@ -107,28 +119,73 @@ void pimm::RigidBodyComponent::EnableGravity(bool enabled) noexcept
 	m_rigidBody->enableGravity(enabled);
 }
 
+bool pimm::RigidBodyComponent::IsGravityEnabled() const noexcept
+{
+	return m_rigidBody->isGravityEnabled();
+}
+
 void pimm::RigidBodyComponent::AddBoxCollider(const Vec3& halfExtents)
 {
 	auto* shape = m_world.GetPhysicsCommon().createBoxShape(ToRP3D(halfExtents));
-	m_rigidBody->addCollider(shape, rp3d::Transform::identity());
+	auto* collider = m_rigidBody->addCollider(shape, rp3d::Transform::identity());  
 	m_rigidBody->updateMassPropertiesFromColliders();
 	m_colliders.push_back({ ColliderType::Box, halfExtents, 0.0f, 0.0f });
+	m_colliderShapes.push_back(collider); 
 }
 
 void pimm::RigidBodyComponent::AddSphereCollider(f32 radius)
 {
 	auto* shape = m_world.GetPhysicsCommon().createSphereShape(radius);
-	m_rigidBody->addCollider(shape, rp3d::Transform::identity());
+	auto* collider = m_rigidBody->addCollider(shape, rp3d::Transform::identity());
 	m_rigidBody->updateMassPropertiesFromColliders();
 	m_colliders.push_back({ ColliderType::Sphere, {}, radius, 0.0f });
+	m_colliderShapes.push_back(collider);
 }
 
 void pimm::RigidBodyComponent::AddCapsuleCollider(f32 radius, f32 height)
 {
 	auto* shape = m_world.GetPhysicsCommon().createCapsuleShape(radius, height);
-	m_rigidBody->addCollider(shape, rp3d::Transform::identity());
+	auto* collider = m_rigidBody->addCollider(shape, rp3d::Transform::identity());
 	m_rigidBody->updateMassPropertiesFromColliders();
 	m_colliders.push_back({ ColliderType::Capsule, {}, radius, height });
+	m_colliderShapes.push_back(collider);
+}
+
+void pimm::RigidBodyComponent::RemoveAllColliders()
+{
+	f32 previousMass = m_rigidBody->getMass();
+
+	if (!m_colliders.empty())
+	{
+		m_lastColliderInfo = m_colliders[0];
+		m_hasLastCollider = true;
+	}
+
+	for (auto* collider : m_colliderShapes)
+	{
+		if (collider) m_rigidBody->removeCollider(collider);
+	}
+	m_colliderShapes.clear();
+	m_colliders.clear();
+	m_rigidBody->updateMassPropertiesFromColliders();
+	m_rigidBody->setMass(previousMass);
+}
+
+void pimm::RigidBodyComponent::RestoreLastCollider()
+{
+	if (m_hasLastCollider)
+	{
+		switch (m_lastColliderInfo.type)
+		{
+		case ColliderType::Box: AddBoxCollider(m_lastColliderInfo.halfExtents); break;
+		case ColliderType::Sphere:  AddSphereCollider(m_lastColliderInfo.radius); break;
+		case ColliderType::Capsule: AddCapsuleCollider(m_lastColliderInfo.radius, m_lastColliderInfo.height); break;
+		}
+	}
+	else
+	{
+		AddBoxCollider(Vec3{ 0.5f });
+	}
 }
 
 void pimm::RigidBodyComponent::ApplyForce(const Vec3& worldForce)
