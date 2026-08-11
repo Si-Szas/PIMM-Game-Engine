@@ -8,6 +8,7 @@ namespace pimm
 	enum class SpawnObjectType
 	{
 		Cube = 0,
+		Cubes_100,
 		Sphere,
 		Cylinder,
 		Capsule,
@@ -37,6 +38,7 @@ namespace pimm
 				if (ImGui::BeginMenu("GameObject"))
 				{
 					if (ImGui::MenuItem("Cube") && m_onSpawn) m_onSpawn(SpawnObjectType::Cube, true);
+					if (ImGui::MenuItem("100 Cubes") && m_onSpawn) m_onSpawn(SpawnObjectType::Cubes_100, true);
 					if (ImGui::MenuItem("Sphere") && m_onSpawn) m_onSpawn(SpawnObjectType::Sphere, true);
 					if (ImGui::MenuItem("Cylinder") && m_onSpawn) m_onSpawn(SpawnObjectType::Cylinder, true);
 					if (ImGui::MenuItem("Capsule") && m_onSpawn) m_onSpawn(SpawnObjectType::Capsule, true);
