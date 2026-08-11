@@ -25,6 +25,7 @@ namespace pimm
 		using ModeCallback = std::function<void()>;
 		using FrameStepCallback = std::function<void()>;
 		using SceneFileCallback = std::function<void()>;
+		using UndoCallback = std::function<void()>;
 
 		TopbarPanel(SpawnCallback onSpawn, ModeCallback onPlay, ModeCallback onPause, ModeCallback onStop, FrameStepCallback onFrameStep, SceneFileCallback onSave, SceneFileCallback onLoad)
 			: APanel("Topbar"), m_onSpawn(std::move(onSpawn)), m_onPlay(std::move(onPlay)), m_onPause(std::move(onPause)), m_onStop(std::move(onStop)), m_onFrameStep(std::move(onFrameStep)), m_onSave(std::move(onSave)), m_onLoad(std::move(onLoad)) {
@@ -80,7 +81,12 @@ namespace pimm
 					if (m_onStop) m_onStop();
 				ImGui::EndDisabled();
 
+				ImGui::Separator();
+				if (ImGui::Button("Undo"))
+					if (m_onUndo) m_onUndo();
+
 				ImGui::EndMainMenuBar();
+
 			}
 		}
 	private:
@@ -91,6 +97,7 @@ namespace pimm
 		FrameStepCallback m_onFrameStep;
 		SceneFileCallback m_onSave;
 		SceneFileCallback m_onLoad;
+		UndoCallback m_onUndo;
 		SceneMode m_currentMode = SceneMode::Edit;
 	};
 }

@@ -360,3 +360,8 @@ void MainGame::LoadScene()
 		player->GetTransform().SetRotation({ 20.0f, 0.0f, 0.0f });
 	}
 }
+
+void MainGame::undoAction(pimm::World& world)
+{
+	
+}

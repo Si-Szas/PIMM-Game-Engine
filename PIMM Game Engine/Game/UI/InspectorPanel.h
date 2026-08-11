@@ -21,6 +21,8 @@
 #include <string>
 #include <functional>
 
+#include "PIMM/InputSystem/Commands/UndoCommand.h"
+
 namespace pimm
 {
 	class InspectorPanel final : public APanel
@@ -88,6 +90,8 @@ namespace pimm
 								if (auto* rigidBody = gameObject->GetComponent<RigidBodyComponent>())
 									rigidBody->SyncColliderScale();
 							}
+
+							AGameObject::Snapshot* snapshot = gameObject->saveToSnapshot();
 						}
 
 						// Checking if it is a mesh object or not since materials are handled slightly differently
@@ -376,6 +380,7 @@ namespace pimm
 				}
 
 			}
+			
 
 			ImGui::End();
 		}
