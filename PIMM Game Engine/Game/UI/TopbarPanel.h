@@ -12,7 +12,10 @@ namespace pimm
 		Cylinder,
 		Capsule,
 		Quad,
-		Mesh
+		Armadillo,
+		Bunny,
+		Statue,
+		Teapot
 	};
 	class TopbarPanel final : public pimm::APanel
 	{
@@ -40,7 +43,10 @@ namespace pimm
 					if (ImGui::MenuItem("Cylinder") && m_onSpawn) m_onSpawn(SpawnObjectType::Cylinder, m_spawnWithPhysics);
 					if (ImGui::MenuItem("Capsule") && m_onSpawn) m_onSpawn(SpawnObjectType::Capsule, m_spawnWithPhysics);
 					if (ImGui::MenuItem("Quad") && m_onSpawn) m_onSpawn(SpawnObjectType::Quad, m_spawnWithPhysics);
-					if (ImGui::MenuItem("Mesh") && m_onSpawn) m_onSpawn(SpawnObjectType::Mesh, m_spawnWithPhysics);
+					if (ImGui::MenuItem("Armadillo") && m_onSpawn) m_onSpawn(SpawnObjectType::Armadillo, m_spawnWithPhysics);
+					if (ImGui::MenuItem("Bunny") && m_onSpawn) m_onSpawn(SpawnObjectType::Bunny, m_spawnWithPhysics);
+					if (ImGui::MenuItem("Statue") && m_onSpawn) m_onSpawn(SpawnObjectType::Statue, m_spawnWithPhysics);
+					if (ImGui::MenuItem("Teapot") && m_onSpawn) m_onSpawn(SpawnObjectType::Teapot, m_spawnWithPhysics);
 					ImGui::EndMenu();
 				}
 			if (ImGui::BeginMenu("File"))

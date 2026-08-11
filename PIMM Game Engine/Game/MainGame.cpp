@@ -22,47 +22,24 @@ void MainGame::OnCreate()
 	Game::OnCreate();
 	auto& world = GetWorld();
 
-	auto woodTexture = GetResourceManager().CreateResourceFromFile<pimm::TextureResource>(L"Game/Assets/Textures/wood.jpg");
-	auto stoneTexture = GetResourceManager().CreateResourceFromFile<pimm::TextureResource>(L"Game/Assets/Textures/stone.jpg");
-	auto brickTexture = GetResourceManager().CreateResourceFromFile<pimm::TextureResource>(L"Game/Assets/Textures/red_brick.jpg");
-
-	m_basicMaterial = GetResourceManager().CreateResourceFromFile<pimm::MaterialResource>(L"Game/Assets/Shaders/BasicFourPoint.hlsl");
-	if (m_basicMaterial)
+	m_basicThreePointMaterial = GetResourceManager().CreateResourceFromFile<pimm::MaterialResource>(L"Game/Assets/Shaders/BasicThreePoint.hlsl");
+	if (m_basicThreePointMaterial)
 	{
 		auto materialData = pimm::Vec3(1.0f);
-		m_basicMaterial->SetData(std::as_bytes(std::span{ &materialData, 1 }));
+		m_basicThreePointMaterial->SetData(std::as_bytes(std::span{ &materialData, 1 }));
 	}
 
-	m_purpleMaterial = GetResourceManager().CreateResourceFromFile<pimm::MaterialResource>(L"Game/Assets/Shaders/BasicFourPoint.hlsl");
-	if (m_purpleMaterial)
-	{
-		auto materialData = pimm::Vec3(1.0f, 1.0f, 0.0f);
-		m_purpleMaterial->SetData(std::as_bytes(std::span{ &materialData, 1 }));
-	}
-
-	m_stoneMaterial = GetResourceManager().CreateResourceFromFile<pimm::MaterialResource>(L"Game/Assets/Shaders/BasicFourPoint.hlsl");
-	if (m_stoneMaterial)
+	m_basicFourPointMaterial = GetResourceManager().CreateResourceFromFile<pimm::MaterialResource>(L"Game/Assets/Shaders/BasicFourPoint.hlsl");
+	if (m_basicFourPointMaterial)
 	{
 		auto materialData = pimm::Vec3(1.0f);
-		m_stoneMaterial->SetData(std::as_bytes(std::span{ &materialData, 1 }));
-		m_stoneMaterial->SetTexture(0, stoneTexture);
+		m_basicFourPointMaterial->SetData(std::as_bytes(std::span{ &materialData, 1 }));
 	}
 
-	m_woodMaterial = GetResourceManager().CreateResourceFromFile<pimm::MaterialResource>(L"Game/Assets/Shaders/BasicFourPoint.hlsl");
-	if (m_woodMaterial)
-	{
-		auto materialData = pimm::Vec3(1.0f);
-		m_woodMaterial->SetData(std::as_bytes(std::span{ &materialData, 1 }));
-		m_woodMaterial->SetTexture(0, woodTexture);
-	}
-
-	m_brickMaterial = GetResourceManager().CreateResourceFromFile<pimm::MaterialResource>(L"Game/Assets/Shaders/BasicThreePoint.hlsl");
-	if (m_brickMaterial)
-	{
-		auto materialData = pimm::Vec3(1.0f);
-		m_brickMaterial->SetData(std::as_bytes(std::span{ &materialData, 1 }));
-		m_brickMaterial->SetTexture(0, brickTexture);
-	}
+	m_armadilloMesh = GetResourceManager().CreateResourceFromFile<pimm::MeshResource>(L"Game/Assets/Meshes/armadillo.obj");
+	m_bunnyMesh = GetResourceManager().CreateResourceFromFile<pimm::MeshResource>(L"Game/Assets/Meshes/bunny.obj");
+	m_statueMesh = GetResourceManager().CreateResourceFromFile<pimm::MeshResource>(L"Game/Assets/Meshes/statue.obj");
+	m_teapotMesh = GetResourceManager().CreateResourceFromFile<pimm::MeshResource>(L"Game/Assets/Meshes/teapot.obj");
 
 	auto player = world.CreateAGameObject<Player>();
 	player->GetTransform().SetPosition({ 0.0f, 1.0f, -3.0f });
@@ -71,47 +48,11 @@ void MainGame::OnCreate()
 	auto floor = world.CreateAGameObject<pimm::Quad>();
 	floor->GetTransform().SetScale({ 20.0f, 1.0f, 20.0f });
 	floor->GetTransform().SetPosition({ 0.0f, -2.0f, 0.0f });
-	floor->GetMaterialComponent().SetMaterial(m_stoneMaterial);
+	floor->GetMaterialComponent().SetMaterial(m_basicFourPointMaterial);
 
 	auto* floorBody = floor->CreateOrGetComponent<pimm::RigidBodyComponent>();
 	floorBody->SetBodyType(pimm::BodyType::Static);
 	floorBody->AddBoxCollider({ 20.0f, 0.05f, 20.0f });
-
-	//teapot
-	{
-		auto teapotMesh = GetResourceManager().CreateResourceFromFile<pimm::MeshResource>(L"Game/Assets/Meshes/teapot.obj");
-
-		auto mesh = world.CreateAGameObject<pimm::MeshObject>();
-		auto comp = mesh->CreateOrGetComponent<pimm::MeshComponent>();
-		comp->SetMesh(teapotMesh);
-		comp->SetMaterial(0, m_brickMaterial);
-		mesh->GetTransform().SetPosition({ 0.0f, 1.0f, 0.0f });
-		mesh->GetTransform().SetScale({2.0f});
-	}
-
-	//bunny
-	{
-		auto bunnyMesh = GetResourceManager().CreateResourceFromFile<pimm::MeshResource>(L"Game/Assets/Meshes/bunny.obj");
-
-		auto mesh = world.CreateAGameObject<pimm::MeshObject>();
-		auto comp = mesh->CreateOrGetComponent<pimm::MeshComponent>();
-		comp->SetMesh(bunnyMesh);
-		comp->SetMaterial(0, m_brickMaterial);
-		mesh->GetTransform().SetPosition({ 3.0f, 0.0f, 0.0f });
-		mesh->GetTransform().SetScale({10.0f});
-	}
-
-	//statue
-	{
-		auto statueMesh = GetResourceManager().CreateResourceFromFile<pimm::MeshResource>(L"Game/Assets/Meshes/statue.obj");
-
-		auto mesh = world.CreateAGameObject<pimm::MeshObject>();
-		auto comp = mesh->CreateOrGetComponent<pimm::MeshComponent>();
-		comp->SetMesh(statueMesh);
-		comp->SetMaterial(0, m_brickMaterial);
-		mesh->GetTransform().SetPosition({ -3.0f, 0.0f, 0.0f });
-		mesh->GetTransform().SetScale({5.0f});
-	}
 
 	auto* uiManager = GetUIManager();
 	uiManager->RegisterPanel(std::make_unique<HierarchyPanel>(world, m_sceneModeManager));
@@ -200,10 +141,12 @@ void MainGame::SpawnObject(pimm::SpawnObjectType type, bool withPhysics)
 	{
 		case pimm::SpawnObjectType::Cube:
 		{
+			PIMMLogInformation("Spawned Cube. With Physics is {}", withPhysics);
+
 			auto cube = world.CreateAGameObject<pimm::Cube>();
 			cube->GetTransform().SetScale({ 1.0f });
 			cube->GetTransform().SetPosition(spawnPosition);
-			cube->GetMaterialComponent().SetMaterial(m_woodMaterial);
+			cube->GetMaterialComponent().SetMaterial(m_basicFourPointMaterial);
 			if (withPhysics)
 			{
 				auto* body = cube->CreateOrGetComponent<pimm::RigidBodyComponent>();
@@ -214,10 +157,12 @@ void MainGame::SpawnObject(pimm::SpawnObjectType type, bool withPhysics)
 		}
 		case pimm::SpawnObjectType::Sphere:
 		{
+			PIMMLogInformation("Spawned Sphere. With Physics is {}", withPhysics);
+
 			auto sphere = world.CreateAGameObject<pimm::Sphere>();
 			sphere->GetTransform().SetScale({ 1.0f });
 			sphere->GetTransform().SetPosition(spawnPosition);
-			sphere->GetMaterialComponent().SetMaterial(m_basicMaterial);
+			sphere->GetMaterialComponent().SetMaterial(m_basicFourPointMaterial);
 			if (withPhysics)
 			{
 				auto* body = sphere->CreateOrGetComponent<pimm::RigidBodyComponent>();
@@ -228,10 +173,12 @@ void MainGame::SpawnObject(pimm::SpawnObjectType type, bool withPhysics)
 		}
 		case pimm::SpawnObjectType::Cylinder:
 		{
+			PIMMLogInformation("Spawned Cylinder. With Physics is {}", withPhysics);
+
 			auto cylinder = world.CreateAGameObject<pimm::Cylinder>();
 			cylinder->GetTransform().SetScale({ 1.0f });
 			cylinder->GetTransform().SetPosition(spawnPosition);
-			cylinder->GetMaterialComponent().SetMaterial(m_purpleMaterial);
+			cylinder->GetMaterialComponent().SetMaterial(m_basicFourPointMaterial);
 			if (withPhysics)
 			{
 				auto* body = cylinder->CreateOrGetComponent<pimm::RigidBodyComponent>();
@@ -242,10 +189,12 @@ void MainGame::SpawnObject(pimm::SpawnObjectType type, bool withPhysics)
 		}
 		case pimm::SpawnObjectType::Capsule:
 		{
+			PIMMLogInformation("Spawned Capsule. With Physics is {}", withPhysics);
+
 			auto capsule = world.CreateAGameObject<pimm::Capsule>();
 			capsule->GetTransform().SetScale({ 1.0f });
 			capsule->GetTransform().SetPosition(spawnPosition);
-			capsule->GetMaterialComponent().SetMaterial(m_woodMaterial);
+			capsule->GetMaterialComponent().SetMaterial(m_basicFourPointMaterial);
 			if (withPhysics)
 			{
 				auto* body = capsule->CreateOrGetComponent<pimm::RigidBodyComponent>();
@@ -256,10 +205,12 @@ void MainGame::SpawnObject(pimm::SpawnObjectType type, bool withPhysics)
 		}
 		case pimm::SpawnObjectType::Quad:
 		{
+			PIMMLogInformation("Spawned Quad. With Physics is {}", withPhysics);
+
 			auto cube = world.CreateAGameObject<pimm::Quad>();
 			cube->GetTransform().SetScale({ 1.0f });
 			cube->GetTransform().SetPosition(spawnPosition);
-			cube->GetMaterialComponent().SetMaterial(m_woodMaterial);
+			cube->GetMaterialComponent().SetMaterial(m_basicFourPointMaterial);
 			if (withPhysics)
 			{
 				auto* body = cube->CreateOrGetComponent<pimm::RigidBodyComponent>();
@@ -268,6 +219,91 @@ void MainGame::SpawnObject(pimm::SpawnObjectType type, bool withPhysics)
 			}
 			break;
 		}	
+		case pimm::SpawnObjectType::Armadillo:
+		{
+			PIMMLogInformation("Spawned Armadillo. With Physics is {}", withPhysics);
+
+			auto mesh = world.CreateAGameObject<pimm::MeshObject>();
+			auto comp = mesh->CreateOrGetComponent<pimm::MeshComponent>();
+
+			comp->SetMesh(m_armadilloMesh);
+			comp->SetMaterial(0, m_basicThreePointMaterial);
+			mesh->GetTransform().SetScale({ 1.0f });
+			mesh->GetTransform().SetPosition(spawnPosition);
+			mesh->GetTransform().SetRotation({ 0.0f, -180.0f, 0.0f });
+			mesh->SetObjectName("Armadillo");
+
+			if (withPhysics)
+			{
+				auto* body = mesh->CreateOrGetComponent<pimm::RigidBodyComponent>();
+				body->AddBoxCollider(mesh->GetTransform().GetScale() * 0.5f);
+				body->SetMass(1.0f);
+			}
+			break;
+		}
+		case pimm::SpawnObjectType::Bunny:
+		{
+			PIMMLogInformation("Spawned Bunny. With Physics is {}", withPhysics);
+
+			auto mesh = world.CreateAGameObject<pimm::MeshObject>();
+			auto comp = mesh->CreateOrGetComponent<pimm::MeshComponent>();
+
+			comp->SetMesh(m_bunnyMesh);
+			comp->SetMaterial(0, m_basicThreePointMaterial);
+			mesh->GetTransform().SetScale({ 1.0f });
+			mesh->GetTransform().SetPosition(spawnPosition);
+			mesh->SetObjectName("Bunny");
+
+			if (withPhysics)
+			{
+				auto* body = mesh->CreateOrGetComponent<pimm::RigidBodyComponent>();
+				body->AddBoxCollider(mesh->GetTransform().GetScale() * 0.5f);
+				body->SetMass(1.0f);
+			}
+			break;
+		}
+		case pimm::SpawnObjectType::Statue:
+		{
+			PIMMLogInformation("Spawned Statue. With Physics is {}", withPhysics);
+
+			auto mesh = world.CreateAGameObject<pimm::MeshObject>();
+			auto comp = mesh->CreateOrGetComponent<pimm::MeshComponent>();
+
+			comp->SetMesh(m_statueMesh);
+			comp->SetMaterial(0, m_basicThreePointMaterial);
+			mesh->GetTransform().SetScale({ 1.0f });
+			mesh->GetTransform().SetPosition(spawnPosition);
+			mesh->SetObjectName("Statue");
+
+			if (withPhysics)
+			{
+				auto* body = mesh->CreateOrGetComponent<pimm::RigidBodyComponent>();
+				body->AddBoxCollider(mesh->GetTransform().GetScale() * 0.5f);
+				body->SetMass(1.0f);
+			}
+			break;
+		}
+		case pimm::SpawnObjectType::Teapot:
+		{
+			PIMMLogInformation("Spawned Teapot. With Physics is {}", withPhysics);
+
+			auto mesh = world.CreateAGameObject<pimm::MeshObject>();
+			auto comp = mesh->CreateOrGetComponent<pimm::MeshComponent>();
+
+			comp->SetMesh(m_teapotMesh);
+			comp->SetMaterial(0, m_basicThreePointMaterial);
+			mesh->GetTransform().SetScale({ 1.0f });
+			mesh->GetTransform().SetPosition(spawnPosition);
+			mesh->SetObjectName("Teapot");
+
+			if (withPhysics)
+			{
+				auto* body = mesh->CreateOrGetComponent<pimm::RigidBodyComponent>();
+				body->AddBoxCollider(mesh->GetTransform().GetScale() * 0.5f);
+				body->SetMass(1.0f);
+			}
+			break;
+		}
 	}
 }
 

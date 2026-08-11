@@ -17,7 +17,7 @@ void pimm::DeleteAGameObjectCommand::ExecuteCommand(AGameObject& gameObject, Wor
 	auto gameObjects = world.GetAllGameObjects();
 	//If the list of objects are not empty, then delete, and if its not the player (since player at index 0)
 	//Player: Index 0, Floor: Index 1
-	if (static_cast<ui32>(gameObjects.size()) > 1) world.DestroyAGameObjectInternal(gameObjects.back());
+	if (static_cast<ui32>(gameObjects.size()) > 2) world.DestroyAGameObjectInternal(gameObjects.back());
 }
 
 void pimm::DeleteAGameObjectCommand::ExecuteCommand(AGameObject& gameObject, World& world, ResourceManager& resourceManager)
