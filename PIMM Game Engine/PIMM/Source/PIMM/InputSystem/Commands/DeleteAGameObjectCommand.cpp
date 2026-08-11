@@ -16,8 +16,14 @@ void pimm::DeleteAGameObjectCommand::ExecuteCommand(AGameObject& gameObject, Wor
 {
 	auto gameObjects = world.GetAllGameObjects();
 	//If the list of objects are not empty, then delete, and if its not the player (since player at index 0)
-	//Player: Index 0, Floor: Index 1
-	if (static_cast<ui32>(gameObjects.size()) > 2) world.DestroyAGameObjectInternal(gameObjects.back());
+	//Player: Index 0
+	//Make sure the selected game object isnt getting deleted
+	if (gameObjects.back() == world.GetSelectedGameObject())
+	{
+		PIMMLogWarning("Deselect the object in the hierarchy!")
+		return;
+	}
+	if (static_cast<ui32>(gameObjects.size()) > 1) world.DestroyAGameObjectInternal(gameObjects.back());
 }
 
 void pimm::DeleteAGameObjectCommand::ExecuteCommand(AGameObject& gameObject, World& world, ResourceManager& resourceManager)
