@@ -12,7 +12,8 @@ namespace pimm
 		Cylinder,
 		Capsule,
 		Quad,
-		Mesh
+		Mesh,
+		Camera
 	};
 	class TopbarPanel final : public pimm::APanel
 	{
@@ -40,8 +41,8 @@ namespace pimm
 					if (ImGui::MenuItem("Cylinder") && m_onSpawn) m_onSpawn(SpawnObjectType::Cylinder, m_spawnWithPhysics);
 					if (ImGui::MenuItem("Capsule") && m_onSpawn) m_onSpawn(SpawnObjectType::Capsule, m_spawnWithPhysics);
 					if (ImGui::MenuItem("Quad") && m_onSpawn) m_onSpawn(SpawnObjectType::Quad, m_spawnWithPhysics);
-					if (ImGui::MenuItem("Mesh") && m_onSpawn) m_onSpawn(SpawnObjectType::Mesh, m_spawnWithPhysics);
-					ImGui::EndMenu();
+					if (ImGui::MenuItem("Mesh") && m_onSpawn) m_onSpawn(SpawnObjectType::Mesh, m_spawnWithPhysics);				ImGui::Separator();
+				if (ImGui::MenuItem("Camera") && m_onSpawn) m_onSpawn(SpawnObjectType::Camera, false);					ImGui::EndMenu();
 				}
 			if (ImGui::BeginMenu("File"))
 			{

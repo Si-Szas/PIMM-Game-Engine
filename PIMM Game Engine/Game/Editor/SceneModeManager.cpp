@@ -3,6 +3,7 @@
 #include <PIMM/AGameObject/AGameObject.h>
 #include <PIMM/AComponent/TransformComponent.h>
 #include <PIMM/AComponent/RigidBodyComponent.h>
+#include <PIMM/AComponent/CameraComponent.h>
 
 namespace pimm
 {
@@ -10,6 +11,8 @@ namespace pimm
 	{
 		if (m_currentMode == SceneMode::Play)
 			return;
+
+		world.FlushPendingObjects();
 
 		SnapshotAllTransforms(world);
 
@@ -28,6 +31,21 @@ namespace pimm
 
 		world.SetPhysicsEnabled(true);
 		world.ResetPhysicsAccumulator();
+
+		bool foundGameCamera = false;
+		auto objects2 = world.GetAllGameObjects();
+		for (auto* obj : objects2)
+		{
+			if (!obj) continue;
+			auto* cam = obj->GetComponent<CameraComponent>();
+			if (cam && cam->IsGameCamera())
+			{
+				world.SetActiveCamera(cam);
+				foundGameCamera = true;
+				break;
+			}
+		}
+
 		m_currentMode = SceneMode::Play;
 	}
 
@@ -48,6 +66,7 @@ namespace pimm
 		world.SetPhysicsEnabled(false);
 		RestoreAllTransforms(world);
 		m_snapshots.clear();
+		world.SetActiveCamera(nullptr);
 		m_currentMode = SceneMode::Edit;
 	}
 

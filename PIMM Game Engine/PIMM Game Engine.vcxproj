@@ -144,6 +144,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="PIMM\Source\PIMM\AGameObject\Camera.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\AGameObject\MeshObject.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\AComponent\MeshComponent.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Resource\MeshResource.cpp" />
@@ -213,6 +214,7 @@
   <ItemGroup>
     <ClInclude Include="Game\UI\DebugPanel.h" />
     <ClInclude Include="Game\UI\ScenePanel.h" />
+    <ClInclude Include="PIMM\Include\PIMM\AGameObject\Camera.h" />
     <ClInclude Include="PIMM\Include\PIMM\AGameObject\MeshObject.h" />
     <ClInclude Include="PIMM\Include\PIMM\AComponent\MeshComponent.h" />
     <ClInclude Include="PIMM\Include\PIMM\Resource\MeshResource.h" />

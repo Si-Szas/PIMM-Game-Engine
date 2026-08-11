@@ -9,6 +9,7 @@
 #include <PIMM/AGameObject/Cylinder.h>
 #include <PIMM/AGameObject/Capsule.h>
 #include <PIMM/AGameObject/MeshObject.h>
+#include <PIMM/AGameObject/Camera.h>
 #include <PIMM/AComponent/TransformComponent.h>
 #include <PIMM/AComponent/MaterialComponent.h>
 #include <PIMM/AComponent/RigidBodyComponent.h>
@@ -173,6 +174,7 @@ namespace pimm
 			{ Cylinder::getTypeId(),  "Cylinder" },
 			{ Capsule::getTypeId(),   "Capsule" },
 			{ MeshObject::getTypeId(),"MeshObject" },
+		{ Camera::getTypeId(),    "Camera" },
 		};
 
 		auto it = map.find(typeId);
@@ -188,6 +190,7 @@ namespace pimm
 			{ "Cylinder",   Cylinder::getTypeId()  },
 			{ "Capsule",    Capsule::getTypeId()   },
 			{ "MeshObject", MeshObject::getTypeId()},
+		{ "Camera",     Camera::getTypeId()    },
 		};
 
 		auto it = map.find(name);
@@ -560,8 +563,8 @@ namespace pimm
 				created = world.CreateAGameObject<Capsule>();
 			else if (obj.typeId == MeshObject::getTypeId())
 				created = world.CreateAGameObject<MeshObject>();
-			else
-				continue;
+		else if (obj.typeId == Camera::getTypeId())
+			created = world.CreateAGameObject<Camera>();
 
 			createdObjects[i] = created;
 

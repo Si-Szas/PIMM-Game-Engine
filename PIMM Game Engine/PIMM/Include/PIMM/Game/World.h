@@ -14,6 +14,8 @@
 
 namespace pimm
 {
+	class CameraComponent;
+
 	class World final : public Base
 	{
 	public:
@@ -78,6 +80,11 @@ namespace pimm
 		void StepPhysicsFrame();
 		bool IsPhysicsEnabled() const noexcept { return m_physicsEnabled; }
 
+		void SetActiveCamera(CameraComponent* camera) noexcept;
+		CameraComponent* GetActiveCamera() const;
+
+		void FlushPendingObjects();
+
 	private:
 		enum class EventType
 		{
@@ -112,8 +119,7 @@ namespace pimm
 		rp3d::PhysicsCommon m_physicsCommon;
 		rp3d::PhysicsWorld* m_physicsWorld{};
 		f32 m_physicsAccumulator{};
-		bool m_physicsEnabled = false;
-
+		bool m_physicsEnabled = false;	CameraComponent* m_activeCamera = nullptr;
 		friend class AGameObject;
 		friend class AComponent;
 	};

@@ -267,7 +267,25 @@ void MainGame::SpawnObject(pimm::SpawnObjectType type, bool withPhysics)
 				body->SetMass(1.0f);
 			}
 			break;
-		}	
+		}
+		case pimm::SpawnObjectType::Camera:
+		{
+			auto objects = world.GetAllGameObjects();
+			pimm::Vec3 camPosition = spawnPosition;
+			pimm::Vec3 camRotation{ 0.0f };
+
+			if (objects.size() > 0 && objects[0])
+			{
+				auto& playerTransform = objects[0]->GetTransform();
+				camPosition = playerTransform.GetPosition();
+				camRotation = playerTransform.GetRotation();
+			}
+
+			auto camera = world.CreateAGameObject<pimm::Camera>();
+			camera->GetTransform().SetPosition(camPosition);
+			camera->GetTransform().SetRotation(camRotation);
+			break;
+		}
 	}
 }
 

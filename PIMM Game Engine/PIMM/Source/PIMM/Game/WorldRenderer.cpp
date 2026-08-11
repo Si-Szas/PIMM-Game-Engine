@@ -98,9 +98,6 @@ void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 d
 	Sampler* samplers[] = { m_sampler.get() };
 	context.SetSamplers(std::span<Sampler*>{samplers});
 
-	////////// ACOMPONENTS //////////
-	auto numberOfComponents = 0u;
-
 	pimm::FrameBufferDescriptor frameBufferDescriptor{
 		.graphicsDevice = m_graphicsDevice,
 		.size = frameBufferSize,
@@ -120,16 +117,13 @@ void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 d
 		////////// CONSTANT BUFFER DATA //////////
 		CameraData cameraData{};
 		{
-			auto cameraComponents = world.GetAComponent<CameraComponent>(numberOfComponents);
-
-			for (auto i : std::views::iota(0u, numberOfComponents))
+			auto* camComponent = world.GetActiveCamera();
+			if (camComponent)
 			{
-				auto camComponent = cameraComponents[i];
 				cameraData.view = camComponent->GetViewMatrix();
 				camComponent->SetViewportSize(frameBufferSize);
 				cameraData.projection = camComponent->GetProjectionMatrix();
 				context.UpdateConstantBuffer(cameraCB, std::as_bytes(std::span{ &cameraData, 1 }));
-				break;
 			}
 		}
 		{
