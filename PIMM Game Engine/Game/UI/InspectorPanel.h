@@ -33,6 +33,7 @@ namespace pimm
 			ImGui::Begin("Inspector");
 			AGameObject* gameObject = m_world.GetSelectedGameObject();
 			bool isEditMode = m_modeManager.IsEditMode();
+			bool removeRigidBodyRequested = false;
 
 			if(gameObject){
 				size_t objectType = gameObject->GetTypeID();
@@ -82,7 +83,11 @@ namespace pimm
 							}
 
 							if (ImGui::DragFloat3("Scale", scaleArr, 0.1f))
+							{
 								transform.SetScale({ scaleArr[0], scaleArr[1], scaleArr[2] });
+								if (auto* rigidBody = gameObject->GetComponent<RigidBodyComponent>())
+									rigidBody->SyncColliderScale();
+							}
 						}
 
 						// Checking if it is a mesh object or not since materials are handled slightly differently
@@ -236,6 +241,13 @@ namespace pimm
 									ImGui::Text(gravityEnabled ? "Gravity: Enabled" : "Gravity: Disabled");
 								}
 							}
+
+							if (isEditMode)
+							{
+								ImGui::NewLine();
+								if (ImGui::Button("Remove RigidBody Component"))
+									removeRigidBodyRequested = true;
+							}
 						}
 
 						//Collider
@@ -265,7 +277,7 @@ namespace pimm
 
 							if (hasCollider && rigidBody->GetColliderCount() > 0)
 							{
-								const ColliderInfo& info = rigidBody->GetCollider(0);
+								const ColliderInfo& info = rigidBody->GetCurrentColliderInfo(0);
 								static const char* colliderTypeNames[] = { "Box", "Sphere", "Capsule" };
 								int currentType = static_cast<int>(info.type);
 
@@ -282,7 +294,7 @@ namespace pimm
 										}
 									}
 
-									const ColliderInfo& current = rigidBody->GetCollider(0);
+									const ColliderInfo& current = rigidBody->GetCurrentColliderInfo(0);
 
 									if (current.type == ColliderType::Box)
 									{
@@ -330,7 +342,19 @@ namespace pimm
 						}
 					}
 				}
+				if (removeRigidBodyRequested)
+				{
+					gameObject->RemoveComponent<RigidBodyComponent>();
+				}
+				else if (isEditMode && !gameObject->GetComponent<RigidBodyComponent>())
+				{
+					ImGui::Separator();
+					if (ImGui::Button("Add RigidBody Component"))
+						gameObject->CreateOrGetComponent<RigidBodyComponent>();
+				}
+
 			}
+
 			ImGui::End();
 		}
 

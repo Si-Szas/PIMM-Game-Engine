@@ -58,6 +58,7 @@ namespace pimm
 
 		ui32 GetColliderCount() const noexcept { return static_cast<ui32>(m_colliders.size()); }
 		const ColliderInfo& GetCollider(ui32 index) const noexcept { return m_colliders[index]; }
+		ColliderInfo GetCurrentColliderInfo(ui32 index) const noexcept;
 
 		//FORCES
 		void ApplyForce(const Vec3& worldForce);
@@ -74,6 +75,7 @@ namespace pimm
 		void SyncTransformFromPhysics();
 		//Call manually if you teleport the object via TransformComponent and want physics to match
 		void SyncPhysicsFromTransform();
+		void SyncColliderScale();
 
 		rp3d::RigidBody* GetNativeBody() noexcept;
 

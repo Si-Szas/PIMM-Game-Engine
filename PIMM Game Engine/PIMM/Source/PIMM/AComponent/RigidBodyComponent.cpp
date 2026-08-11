@@ -188,6 +188,31 @@ void pimm::RigidBodyComponent::RestoreLastCollider()
 	}
 }
 
+ColliderInfo pimm::RigidBodyComponent::GetCurrentColliderInfo(ui32 index) const noexcept
+{
+	ColliderInfo info = m_colliders[index];
+	rp3d::CollisionShape* shape = m_colliderShapes[index]->getCollisionShape();
+
+	switch (info.type)
+	{
+	case ColliderType::Box:
+	{
+		auto* box = static_cast<rp3d::BoxShape*>(shape);
+		rp3d::Vector3 he = box->getHalfExtents();
+		info.halfExtents = Vec3(he.x, he.y, he.z);
+		break;
+	}
+	case ColliderType::Sphere:
+		info.radius = static_cast<rp3d::SphereShape*>(shape)->getRadius();
+		break;
+	case ColliderType::Capsule:
+		info.radius = static_cast<rp3d::CapsuleShape*>(shape)->getRadius();
+		info.height = static_cast<rp3d::CapsuleShape*>(shape)->getHeight();
+		break;
+	}
+	return info;
+}
+
 void pimm::RigidBodyComponent::ApplyForce(const Vec3& worldForce)
 {
 	m_rigidBody->applyWorldForceAtCenterOfMass(ToRP3D(worldForce));
@@ -239,6 +264,48 @@ void pimm::RigidBodyComponent::SyncPhysicsFromTransform()
 	);
 
 	m_rigidBody->setTransform(rpTransform);
+}
+
+void RigidBodyComponent::SyncColliderScale()
+{
+	const Vec3 scale = m_object.GetTransform().GetScale();
+
+	for (size_t i = 0; i < m_colliders.size(); ++i)
+	{
+		const ColliderInfo& base = m_colliders[i];
+		rp3d::Collider* collider = m_colliderShapes[i];
+		if (!collider) continue;
+
+		rp3d::CollisionShape* shape = collider->getCollisionShape();
+
+		switch (base.type)
+		{
+		case ColliderType::Box:
+		{
+			auto* boxShape = static_cast<rp3d::BoxShape*>(shape);
+			boxShape->setHalfExtents(rp3d::Vector3(
+				base.halfExtents.x * scale.x,
+				base.halfExtents.y * scale.y,
+				base.halfExtents.z * scale.z));
+			break;
+		}
+		case ColliderType::Sphere:
+		{
+			auto* sphereShape = static_cast<rp3d::SphereShape*>(shape);
+			f32 uniformScale = std::max({ scale.x, scale.y, scale.z }); // spheres can't be non-uniform
+			sphereShape->setRadius(base.radius * uniformScale);
+			break;
+		}
+		case ColliderType::Capsule:
+		{
+			auto* capsuleShape = static_cast<rp3d::CapsuleShape*>(shape);
+			f32 radialScale = std::max(scale.x, scale.z); // capsule's axis is Y
+			capsuleShape->setRadius(base.radius * radialScale);
+			capsuleShape->setHeight(base.height * scale.y);
+			break;
+		}
+		}
+	}
 }
 
 rp3d::RigidBody* pimm::RigidBodyComponent::GetNativeBody() noexcept
