@@ -49,6 +49,15 @@ pimm::AComponent* pimm::AGameObject::GetComponentInternal(size_t ID)
 	return {};
 }
 
+void pimm::AGameObject::RemoveComponentInternal(size_t ID)
+{
+	auto it = m_components.find(ID);
+	if (it != m_components.end())
+	{
+		m_world.RemoveComponentInternal(*it->second);
+		m_components.erase(it); 
+	}
+}
 const std::unordered_map<size_t, pimm::UniquePtr<pimm::AComponent>>& pimm::AGameObject::GetAllComponents() const noexcept
 {
 	return m_components;

@@ -37,16 +37,15 @@ namespace pimm
 			{
 				if (ImGui::BeginMenu("GameObject"))
 				{
-					if (ImGui::MenuItem("Cube") && m_onSpawn) m_onSpawn(SpawnObjectType::Cube, true);
-					if (ImGui::MenuItem("100 Cubes") && m_onSpawn) m_onSpawn(SpawnObjectType::Cubes_100, true);
-					if (ImGui::MenuItem("Sphere") && m_onSpawn) m_onSpawn(SpawnObjectType::Sphere, true);
-					if (ImGui::MenuItem("Cylinder") && m_onSpawn) m_onSpawn(SpawnObjectType::Cylinder, true);
-					if (ImGui::MenuItem("Capsule") && m_onSpawn) m_onSpawn(SpawnObjectType::Capsule, true);
-					if (ImGui::MenuItem("Quad") && m_onSpawn) m_onSpawn(SpawnObjectType::Quad, true);
-					if (ImGui::MenuItem("Armadillo") && m_onSpawn) m_onSpawn(SpawnObjectType::Armadillo, true);
-					if (ImGui::MenuItem("Bunny") && m_onSpawn) m_onSpawn(SpawnObjectType::Bunny, true);
-					if (ImGui::MenuItem("Statue") && m_onSpawn) m_onSpawn(SpawnObjectType::Statue, true);
-					if (ImGui::MenuItem("Teapot") && m_onSpawn) m_onSpawn(SpawnObjectType::Teapot, true);
+					if (ImGui::MenuItem("Cube") && m_onSpawn) m_onSpawn(SpawnObjectType::Cube, false);
+					if (ImGui::MenuItem("Sphere") && m_onSpawn) m_onSpawn(SpawnObjectType::Sphere, false);
+					if (ImGui::MenuItem("Cylinder") && m_onSpawn) m_onSpawn(SpawnObjectType::Cylinder, false);
+					if (ImGui::MenuItem("Capsule") && m_onSpawn) m_onSpawn(SpawnObjectType::Capsule, false);
+					if (ImGui::MenuItem("Quad") && m_onSpawn) m_onSpawn(SpawnObjectType::Quad, false);
+					if (ImGui::MenuItem("Armadillo") && m_onSpawn) m_onSpawn(SpawnObjectType::Armadillo, false);
+					if (ImGui::MenuItem("Bunny") && m_onSpawn) m_onSpawn(SpawnObjectType::Bunny, false);
+					if (ImGui::MenuItem("Statue") && m_onSpawn) m_onSpawn(SpawnObjectType::Statue, false);
+					if (ImGui::MenuItem("Teapot") && m_onSpawn) m_onSpawn(SpawnObjectType::Teapot, false);
 					ImGui::EndMenu();
 				}
 			if (ImGui::BeginMenu("File"))

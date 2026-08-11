@@ -56,6 +56,7 @@ namespace pimm
 		AGameObject* const* GetAGameObjectsInternal(size_t typeID, ui32* numberOfObjects) const noexcept;
 
 		void AddComponentInternal(AComponent& component);
+		void RemoveComponentInternal(AComponent& component);
 		void AddDirtyTransformInternal(TransformComponent& transformComponent);
 		void DestroyAGameObject(AGameObject* object);
 		void DeleteAllAGameObjects();

@@ -35,7 +35,11 @@ namespace pimm
 		{
 			return static_cast<Type*>(GetComponentInternal(Type::getTypeId()));
 		}
-
+		template <typename Type>
+		void RemoveComponent() requires IsRegistered<AComponent, Type>
+		{
+			RemoveComponentInternal(Type::getTypeId());
+		}
 		//Get name
 		const std::string& GetObjectName() noexcept;
 		static const char* GetObjectLabel(AGameObject* object);
@@ -97,6 +101,7 @@ namespace pimm
 	private:
 		AComponent* CreateComponentInternal(UniquePtr<AComponent>& component);
 		AComponent* GetComponentInternal(size_t ID);
+		void RemoveComponentInternal(size_t ID);
 		void AddChildInternal(AGameObject* child);
 		void RemoveChildInternal(AGameObject* child);
 
