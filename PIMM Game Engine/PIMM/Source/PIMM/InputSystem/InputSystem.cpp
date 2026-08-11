@@ -28,8 +28,8 @@ pimm::InputSystem::InputSystem(const InputSystemDescriptor& descriptor) :
 	BindZKeyCommand(new UndoCommand(descriptor));
 
 	BindSpaceKeyCommand(new CreateAGameObjectCommand(descriptor));
-	BindBackspaceKeyCommand(new DeleteAGameObjectCommand(descriptor));
-	BindDeleteKeyCommand(new DeleteAllAGameObjectsCommand(descriptor));
+	BindDeleteKeyCommand(new DeleteAGameObjectCommand(descriptor));
+	//BindDeleteKeyCommand(new DeleteAllAGameObjectsCommand(descriptor));
 	BindEscapeKeyCommand(new ExitApplicationCommand(descriptor));
 }
 

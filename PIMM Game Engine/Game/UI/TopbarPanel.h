@@ -8,11 +8,15 @@ namespace pimm
 	enum class SpawnObjectType
 	{
 		Cube = 0,
+		Cubes_100,
 		Sphere,
 		Cylinder,
 		Capsule,
 		Quad,
-		Mesh
+		Armadillo,
+		Bunny,
+		Statue,
+		Teapot
 	};
 	class TopbarPanel final : public pimm::APanel
 	{
@@ -33,14 +37,16 @@ namespace pimm
 			{
 				if (ImGui::BeginMenu("GameObject"))
 				{
-					ImGui::Checkbox("With Physics", &m_spawnWithPhysics);
-					ImGui::Separator();
-					if (ImGui::MenuItem("Cube") && m_onSpawn) m_onSpawn(SpawnObjectType::Cube, m_spawnWithPhysics);
-					if (ImGui::MenuItem("Sphere") && m_onSpawn) m_onSpawn(SpawnObjectType::Sphere, m_spawnWithPhysics);
-					if (ImGui::MenuItem("Cylinder") && m_onSpawn) m_onSpawn(SpawnObjectType::Cylinder, m_spawnWithPhysics);
-					if (ImGui::MenuItem("Capsule") && m_onSpawn) m_onSpawn(SpawnObjectType::Capsule, m_spawnWithPhysics);
-					if (ImGui::MenuItem("Quad") && m_onSpawn) m_onSpawn(SpawnObjectType::Quad, m_spawnWithPhysics);
-					if (ImGui::MenuItem("Mesh") && m_onSpawn) m_onSpawn(SpawnObjectType::Mesh, m_spawnWithPhysics);
+					if (ImGui::MenuItem("Cube") && m_onSpawn) m_onSpawn(SpawnObjectType::Cube, false);
+					if (ImGui::MenuItem("100 Cubes") && m_onSpawn) m_onSpawn(SpawnObjectType::Cubes_100, true);
+					if (ImGui::MenuItem("Sphere") && m_onSpawn) m_onSpawn(SpawnObjectType::Sphere, false);
+					if (ImGui::MenuItem("Cylinder") && m_onSpawn) m_onSpawn(SpawnObjectType::Cylinder, false);
+					if (ImGui::MenuItem("Capsule") && m_onSpawn) m_onSpawn(SpawnObjectType::Capsule, false);
+					if (ImGui::MenuItem("Quad") && m_onSpawn) m_onSpawn(SpawnObjectType::Quad, false);
+					if (ImGui::MenuItem("Armadillo") && m_onSpawn) m_onSpawn(SpawnObjectType::Armadillo, false);
+					if (ImGui::MenuItem("Bunny") && m_onSpawn) m_onSpawn(SpawnObjectType::Bunny, false);
+					if (ImGui::MenuItem("Statue") && m_onSpawn) m_onSpawn(SpawnObjectType::Statue, false);
+					if (ImGui::MenuItem("Teapot") && m_onSpawn) m_onSpawn(SpawnObjectType::Teapot, false);
 					ImGui::EndMenu();
 				}
 			if (ImGui::BeginMenu("File"))
@@ -86,6 +92,5 @@ namespace pimm
 		SceneFileCallback m_onSave;
 		SceneFileCallback m_onLoad;
 		SceneMode m_currentMode = SceneMode::Edit;
-		bool m_spawnWithPhysics = true;
 	};
 }

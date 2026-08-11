@@ -213,6 +213,21 @@ void pimm::World::AddComponentInternal(AComponent& component)
 	m_components[typeID].push_back(&component);
 }
 
+void pimm::World::RemoveComponentInternal(AComponent& component)
+{
+	auto typeID = component.GetTypeID();
+	auto it = m_components.find(typeID);
+	if (it != m_components.end())
+	{
+		auto& componentList = it->second;
+		auto componentIt = std::find(componentList.begin(), componentList.end(), &component);
+		if (componentIt != componentList.end())
+		{
+			componentList.erase(componentIt);
+		}
+	}
+}
+
 void pimm::World::AddDirtyTransformInternal(TransformComponent& transformComponent)
 {
 	m_dirtyTransforms.push_back(&transformComponent);

@@ -20,9 +20,11 @@ class MainGame : public pimm::Game
 	private:
 		pimm::SceneModeManager m_sceneModeManager{};
 		pimm::TopbarPanel* m_topbarPanel = nullptr;
-		std::shared_ptr<pimm::MaterialResource> m_woodMaterial{};
-		std::shared_ptr<pimm::MaterialResource> m_stoneMaterial{};
-		std::shared_ptr<pimm::MaterialResource> m_brickMaterial{};
-		std::shared_ptr<pimm::MaterialResource> m_basicMaterial{};
-		std::shared_ptr<pimm::MaterialResource> m_purpleMaterial{};
+		pimm::RefPtr<pimm::MaterialResource> m_basicThreePointMaterial{};
+		pimm::RefPtr<pimm::MaterialResource> m_basicFourPointMaterial{};
+
+		pimm::RefPtr<pimm::MeshResource> m_armadilloMesh;
+		pimm::RefPtr<pimm::MeshResource> m_bunnyMesh;
+		pimm::RefPtr<pimm::MeshResource> m_statueMesh;
+		pimm::RefPtr<pimm::MeshResource> m_teapotMesh;
 };
