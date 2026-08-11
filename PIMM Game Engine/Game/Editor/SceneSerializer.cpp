@@ -15,6 +15,7 @@
 #include <PIMM/AComponent/MaterialComponent.h>
 #include <PIMM/AComponent/RigidBodyComponent.h>
 #include <PIMM/AComponent/CameraComponent.h>
+#include <PIMM/AComponent/ControllerComponent.h>
 #include <PIMM/AComponent/MeshComponent.h>
 #include <PIMM/Resource/ResourceManager.h>
 #include <PIMM/Resource/MaterialResource.h>
@@ -129,6 +130,12 @@ namespace pimm
 			f << SceneKey::FarPlane << " = " << cam.GetFarPlane() << '\n';
 			f << SceneKey::Fov << " = " << cam.GetFieldOfView() << '\n';
 			f << SceneKey::Active << " = " << (cam.IsActive() ? 1 : 0) << '\n';
+		}
+
+		void WriteController(std::ofstream& f, ControllerComponent& ctrl)
+		{
+			f << SceneKey::Sensitivity << " = " << ctrl.GetSensitivity() << '\n';
+			f << SceneKey::Speed << " = " << ctrl.GetSpeedModifier() << '\n';
 		}
 
 		void WriteMeshComponent(std::ofstream& f, MeshComponent& mc)
@@ -290,6 +297,11 @@ namespace pimm
 					file << "\n[" << SceneKey::Object << ' ' << i << '.' << SceneKey::Camera << "]\n";
 					WriteCamera(file, *static_cast<CameraComponent*>(comp.get()));
 				}
+				else if (compId == ControllerComponent::getTypeId())
+				{
+					file << "\n[" << SceneKey::Object << ' ' << i << '.' << SceneKey::Controller << "]\n";
+					WriteController(file, *static_cast<ControllerComponent*>(comp.get()));
+				}
 				else if (compId == MeshComponent::getTypeId())
 				{
 					file << "\n[" << SceneKey::Object << ' ' << i << '.' << SceneKey::MeshComponent << "]\n";
@@ -333,6 +345,10 @@ namespace pimm
 			f32 farPlane = 100.0f;
 			f32 fov = 1.5f;
 			bool activeCamera = false;
+
+			bool hasController = false;
+			f32 sensitivity = 0.1f;
+			f32 speedModifier = 3.0f;
 
 			bool hasMeshComponent = false;
 			std::wstring meshPath;
@@ -510,6 +526,14 @@ namespace pimm
 				else if (key == SceneKey::Active)
 					obj.activeCamera = std::stoi(value) != 0;
 			}
+			else if (currentSection == SceneKey::Controller)
+			{
+				obj.hasController = true;
+				if (key == SceneKey::Sensitivity)
+					obj.sensitivity = static_cast<f32>(std::stod(value));
+				else if (key == SceneKey::Speed)
+					obj.speedModifier = static_cast<f32>(std::stod(value));
+			}
 			else if (currentSection == SceneKey::MeshComponent)
 			{
 				obj.hasMeshComponent = true;
@@ -630,6 +654,13 @@ namespace pimm
 				cam->SetFarPlane(obj.farPlane);
 				cam->SetFieldOfView(obj.fov);
 				cam->SetActive(obj.activeCamera);
+			}
+
+			if (obj.hasController)
+			{
+				auto* ctrl = created->CreateOrGetComponent<ControllerComponent>();
+				ctrl->SetSensitivity(obj.sensitivity);
+				ctrl->SetSpeedModifier(obj.speedModifier);
 			}
 
 			if (obj.hasMeshComponent)

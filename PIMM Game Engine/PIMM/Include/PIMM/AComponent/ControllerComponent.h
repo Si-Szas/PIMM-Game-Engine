@@ -13,6 +13,11 @@ namespace pimm
 
 		void Update(f32 deltaTime);
 
+		void SetSensitivity(f32 sensitivity) noexcept { m_sensitivity = sensitivity; }
+		f32 GetSensitivity() const noexcept { return m_sensitivity; }
+		void SetSpeedModifier(f32 speed) noexcept { m_speedModifier = speed; }
+		f32 GetSpeedModifier() const noexcept { return m_speedModifier; }
+
 	private:
 		f32 m_sensitivity = 0.1f;
 		f32 m_speedModifier = 3.0f;

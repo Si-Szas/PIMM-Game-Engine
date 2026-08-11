@@ -10,6 +10,7 @@ namespace pimm
 		constexpr const char* Material = "Material";
 		constexpr const char* RigidBody = "RigidBody";
 		constexpr const char* Camera = "Camera";
+		constexpr const char* Controller = "Controller";
 		constexpr const char* MeshComponent = "MeshComponent";
 		constexpr const char* Children = "Children";
 		constexpr const char* State = "State";
@@ -32,6 +33,9 @@ namespace pimm
 		constexpr const char* FarPlane = "farPlane";
 		constexpr const char* Fov = "fov";
 		constexpr const char* Active = "active";
+
+		constexpr const char* Sensitivity = "sensitivity";
+		constexpr const char* Speed = "speed";
 
 		constexpr const char* Mesh = "mesh";
 
