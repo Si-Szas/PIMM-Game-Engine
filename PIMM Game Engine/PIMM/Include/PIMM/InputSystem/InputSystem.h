@@ -22,14 +22,15 @@ namespace pimm
 				//Handling of Inputs
 			InputCommand* HandleInput();
 			void RecordCommand(InputCommand* command);
-			void UndoCommand(AGameObject& gameObject);
-			void RedoCommand(AGameObject& gameObject);
+			//void UndoCommand(AGameObject& gameObject);
+			//void RedoCommand(AGameObject& gameObject);
 
 			//BINDERS
 			void BindWKeyCommand(InputCommand* newCommandBind);
 			void BindAKeyCommand(InputCommand* newCommandBind);
 			void BindSKeyCommand(InputCommand* newCommandBind);
 			void BindDKeyCommand(InputCommand* newCommandBind);
+			void BindZKeyCommand(InputCommand* newCommandBind);
 			void BindSpaceKeyCommand(InputCommand* newCommandBind);
 			void BindBackspaceKeyCommand(InputCommand* newCommandBind);
 			void BindDeleteKeyCommand(InputCommand* newCommandBind);
@@ -75,6 +76,7 @@ namespace pimm
 			InputCommand* AKeyCommand{};
 			InputCommand* SKeyCommand{};
 			InputCommand* DKeyCommand{};
+			InputCommand* ZKeyCommand{};
 			InputCommand* spaceKeyCommand{};
 			InputCommand* backspaceKeyCommand{};
 			InputCommand* deleteKeyCommand{};

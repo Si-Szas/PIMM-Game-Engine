@@ -15,6 +15,8 @@
 
 #include <iostream>
 
+#include "PIMM/InputSystem/Commands/UndoCommand.h"
+
 pimm::Player::Player(const AGameObjectDescriptor& descriptor) :
 	AGameObject(descriptor)
 {
@@ -72,6 +74,7 @@ void pimm::Player::OnUpdate(f32 deltaTime)
 		if (commandType == pimm::MoveRightCommand::getTypeId()) command->ExecuteCommand(*this, world);
 		if (commandType == pimm::MoveLeftCommand::getTypeId()) command->ExecuteCommand(*this, world);
 		if (commandType == pimm::MoveBackwardCommand::getTypeId()) command->ExecuteCommand(*this, world);
+		if (commandType == pimm::UndoCommand::getTypeId()) command->ExecuteCommand(*this, world);
 		//if (commandType == pimm::CreateAGameObjectCommand::getTypeId()) command->ExecuteCommand(*this, world, resourceManager);
 		if (commandType == pimm::DeleteAGameObjectCommand::getTypeId()) command->ExecuteCommand(*this, world);
 		//if (commandType == pimm::DeleteAllAGameObjectsCommand::getTypeId()) command->ExecuteCommand(*this, world);

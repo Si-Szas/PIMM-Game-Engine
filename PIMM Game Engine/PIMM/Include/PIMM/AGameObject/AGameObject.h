@@ -6,6 +6,8 @@
 
 #include <unordered_map>
 
+#include "PIMM/AComponent/TransformComponent.h"
+
 namespace pimm
 {
 	class AGameObject : public Identifier
@@ -85,6 +87,50 @@ namespace pimm
 
 		//DESTRUCTOR
 		virtual ~AGameObject();
+
+		class Snapshot
+		{
+		public:
+			Snapshot(Vec3 pos, Vec3 rot, Vec3 scale)
+			{
+				m_position = pos;
+				m_rotation = rot;
+				m_scale = scale;
+			}
+
+			Vec3 getPosSnapshot()
+			{
+				return m_position;
+			}
+
+			Vec3 getRotSnapshot()
+			{
+				return m_rotation;
+			}
+
+			Vec3 getScaleSnapshot()
+			{
+				return m_scale;
+			}
+
+		private:
+			Vec3 m_position;
+			Vec3 m_rotation;
+			Vec3 m_scale;
+
+		};
+
+		Snapshot* saveToSnapshot()
+		{
+			return new Snapshot(m_transform->GetPosition(), m_transform->GetRotation(), m_transform->GetScale());
+		}
+
+		void restoreFromSnapshot(Snapshot snapshot)
+		{
+			m_transform->SetPosition(snapshot.getPosSnapshot());
+			m_transform->SetRotation(snapshot.getRotSnapshot());
+			m_transform->SetScale(snapshot.getScaleSnapshot());
+		}
 
 	protected:
 		virtual void OnCreate()

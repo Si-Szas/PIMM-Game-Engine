@@ -9,9 +9,11 @@
 #include <PIMM/InputSystem/Commands/DeleteAGameObjectCommand.h>
 #include <PIMM/InputSystem/Commands/DeleteAllAGameObjectsCommand.h>
 #include <PIMM/InputSystem/Commands/ExitApplicationCommand.h>
+#include "PIMM/InputSystem/Commands/UndoCommand.h"
 
 #include <ranges>
 #include <Windows.h>
+
 
 pimm::InputSystem::InputSystem(const InputSystemDescriptor& descriptor) :
 	Base(descriptor.base),
@@ -22,6 +24,8 @@ pimm::InputSystem::InputSystem(const InputSystemDescriptor& descriptor) :
 	BindAKeyCommand(new MoveLeftCommand(descriptor));
 	BindSKeyCommand(new MoveBackwardCommand(descriptor));
 	BindDKeyCommand(new MoveRightCommand(descriptor));
+
+	BindZKeyCommand(new UndoCommand(descriptor));
 
 	BindSpaceKeyCommand(new CreateAGameObjectCommand(descriptor));
 	BindBackspaceKeyCommand(new DeleteAGameObjectCommand(descriptor));
@@ -65,6 +69,7 @@ pimm::InputCommand* pimm::InputSystem::HandleInput()
 	else if (IsKeyDown(pimm::KeyCode::A)) return AKeyCommand;
 	else if (IsKeyDown(pimm::KeyCode::S)) return SKeyCommand;
 	else if (IsKeyDown(pimm::KeyCode::D)) return DKeyCommand;
+	else if (IsKeyPressed(pimm::KeyCode::Z)) return ZKeyCommand;
 
 	else if (IsKeyPressed(pimm::KeyCode::Space))
 	{
@@ -97,33 +102,33 @@ void pimm::InputSystem::RecordCommand(InputCommand* command)
 	m_redoList.clear();
 }
 
-void pimm::InputSystem::UndoCommand(AGameObject& gameObject)
-{
-	//If the undo queue is empty, do not allow player to undo
-	if (m_undoList.empty()) return;
-
-	//Else, get the end of the undo queue
-	InputCommand* command = m_undoList.back();
-	m_undoList.pop_back();
-	//Undo the command
-	command->UndoCommand(gameObject);
-	//Push undoed command into redo queue in case user wants to redo
-	m_redoList.push_back(command);
-}
-
-void pimm::InputSystem::RedoCommand(AGameObject& gameObject)
-{
-	//Similar implementation to UndoCommand
-	if (m_redoList.empty()) return;
-
-	//Get redoed command
-	InputCommand* command = m_redoList.back();
-	m_redoList.pop_back();
-	//Reexecute the command
-	command->ExecuteCommand(gameObject, *m_world);
-	//Add redoed command to undo list
-	m_undoList.push_back(command);
-}
+//void pimm::InputSystem::UndoCommand(AGameObject& gameObject)
+//{
+//	//If the undo queue is empty, do not allow player to undo
+//	if (m_undoList.empty()) return;
+//
+//	//Else, get the end of the undo queue
+//	InputCommand* command = m_undoList.back();
+//	m_undoList.pop_back();
+//	//Undo the command
+//	command->UndoCommand(gameObject);
+//	//Push undoed command into redo queue in case user wants to redo
+//	m_redoList.push_back(command);
+//}
+//
+//void pimm::InputSystem::RedoCommand(AGameObject& gameObject)
+//{
+//	//Similar implementation to UndoCommand
+//	if (m_redoList.empty()) return;
+//
+//	//Get redoed command
+//	InputCommand* command = m_redoList.back();
+//	m_redoList.pop_back();
+//	//Reexecute the command
+//	command->ExecuteCommand(gameObject, *m_world);
+//	//Add redoed command to undo list
+//	m_undoList.push_back(command);
+//}
 
 void pimm::InputSystem::BindWKeyCommand(InputCommand* newCommandBind)
 {
@@ -152,6 +157,13 @@ void pimm::InputSystem::BindDKeyCommand(InputCommand* newCommandBind)
 	if (DKeyCommand != nullptr) delete DKeyCommand;
 
 	DKeyCommand = newCommandBind;
+}
+
+void pimm::InputSystem::BindZKeyCommand(InputCommand* newCommandBind)
+{
+	if (ZKeyCommand != nullptr) delete ZKeyCommand;
+
+	ZKeyCommand = newCommandBind;
 }
 
 void pimm::InputSystem::BindSpaceKeyCommand(InputCommand* newCommandBind)

@@ -146,6 +146,7 @@
   <ItemGroup>
     <ClCompile Include="PIMM\Source\PIMM\AGameObject\MeshObject.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\AComponent\MeshComponent.cpp" />
+    <ClCompile Include="PIMM\Source\PIMM\InputSystem\Commands\UndoCommand.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Resource\MeshResource.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\AComponent\RigidBodyComponent.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Graphics\FrameBuffer\FrameBuffer.cpp" />
@@ -215,6 +216,7 @@
     <ClInclude Include="Game\UI\ScenePanel.h" />
     <ClInclude Include="PIMM\Include\PIMM\AGameObject\MeshObject.h" />
     <ClInclude Include="PIMM\Include\PIMM\AComponent\MeshComponent.h" />
+    <ClInclude Include="PIMM\Include\PIMM\InputSystem\Commands\UndoCommand.h" />
     <ClInclude Include="PIMM\Include\PIMM\Resource\MeshResource.h" />
     <ClInclude Include="Game\UI\TopbarPanel.h" />
     <ClInclude Include="Game\Editor\SceneMode.h" />

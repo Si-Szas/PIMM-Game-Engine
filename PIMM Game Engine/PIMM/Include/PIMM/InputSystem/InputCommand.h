@@ -16,7 +16,7 @@ namespace pimm
 			virtual void ExecuteCommand() = 0;
 			virtual void ExecuteCommand(AGameObject& gameObject, World& world) = 0;
 			virtual void ExecuteCommand(AGameObject& gameObject, World& world, ResourceManager& resourceManager) = 0;
-			virtual void UndoCommand(AGameObject& gameObject) = 0;
+			//virtual void UndoCommand(AGameObject& gameObject) = 0;
 			//virtual void RedoCommand(AGameObject& gameObject) = 0;
 
 			//DESTRUCTOR
