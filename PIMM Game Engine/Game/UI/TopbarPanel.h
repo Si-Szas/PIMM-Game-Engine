@@ -8,6 +8,7 @@ namespace pimm
 	enum class SpawnObjectType
 	{
 		Cube = 0,
+		Cubes_100,
 		Sphere,
 		Cylinder,
 		Capsule,

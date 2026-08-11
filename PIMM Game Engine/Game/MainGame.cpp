@@ -126,7 +126,7 @@ void MainGame::OnUIRender()
 void MainGame::SpawnObject(pimm::SpawnObjectType type, bool withPhysics)
 {
 	auto& world = GetWorld();
-	pimm::Vec3 spawnPosition{ 0.0f, 5.0f, 0.0f };
+	pimm::Vec3 spawnPosition{ 0.0f };
 
 	switch (type)
 	{
@@ -143,6 +143,26 @@ void MainGame::SpawnObject(pimm::SpawnObjectType type, bool withPhysics)
 				auto* body = cube->CreateOrGetComponent<pimm::RigidBodyComponent>();
 				body->AddBoxCollider(cube->GetTransform().GetScale() * 0.5f);
 				body->SetMass(1.0f);
+			}
+			break;
+		}
+		case pimm::SpawnObjectType::Cubes_100:
+		{
+			for (pimm::ui32 i = 0; i < 10; i++) {
+				for (pimm::ui32 j = 0; j < 10; j++) {
+					PIMMLogInformation("Spawned Cube. With Physics is {}", withPhysics);
+
+					auto cube = world.CreateAGameObject<pimm::Cube>();
+					cube->GetTransform().SetScale({ 1.0f });
+					cube->GetTransform().SetPosition({ (i - 4.5f) * 2.0f, 0.0f, (j - 4.5f) * 2.0f });
+					cube->GetMaterialComponent().SetMaterial(m_basicFourPointMaterial);
+					if (withPhysics)
+					{
+						auto* body = cube->CreateOrGetComponent<pimm::RigidBodyComponent>();
+						body->AddBoxCollider(cube->GetTransform().GetScale() * 0.5f);
+						body->SetMass(1.0f);
+					}
+				}
 			}
 			break;
 		}
