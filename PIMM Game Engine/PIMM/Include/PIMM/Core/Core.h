@@ -48,6 +48,7 @@ namespace pimm {
 		class Cylinder;
 		class Capsule;
 		class MeshObject;
+		class CameraObject;
 	//Components
 	class AComponent;
 		class TransformComponent;

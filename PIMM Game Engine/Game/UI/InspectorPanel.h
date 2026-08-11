@@ -15,6 +15,7 @@
 #include <PIMM/Resource/TextureResource.h>
 #include <PIMM/Resource/ResourceManager.h>
 #include <PIMM/AGameObject/MeshObject.h>
+#include <PIMM/AGameObject/CameraObject.h>
 
 #include <filesystem>
 #include <vector>
@@ -87,6 +88,37 @@ namespace pimm
 								transform.SetScale({ scaleArr[0], scaleArr[1], scaleArr[2] });
 								if (auto* rigidBody = gameObject->GetComponent<RigidBodyComponent>())
 									rigidBody->SyncColliderScale();
+							}
+						}
+
+						if (componentId == pimm::CameraComponent::getTypeId())
+						{
+							ImGui::Separator();
+							ImGui::Text("Camera");
+							ImGui::NewLine();
+
+							auto* camera = static_cast<pimm::CameraComponent*>(componentPtr.get());
+							bool active = camera->IsActive();
+							if (isEditMode && ImGui::Checkbox("Active Scene Camera", &active) && active)
+								m_world.SetActiveCameraObject(static_cast<pimm::CameraObject*>(gameObject));
+
+							float nearPlane = camera->GetNearPlane();
+							float farPlane = camera->GetFarPlane();
+							float fieldOfView = camera->GetFieldOfView();
+							if (isEditMode)
+							{
+								if (ImGui::DragFloat("Near Plane", &nearPlane, 0.01f, 0.001f, farPlane))
+									camera->SetNearPlane(nearPlane);
+								if (ImGui::DragFloat("Far Plane", &farPlane, 1.0f, nearPlane, 100000.0f))
+									camera->SetFarPlane(farPlane);
+								if (ImGui::DragFloat("Field Of View", &fieldOfView, 0.01f, 0.001f, 3.13f))
+									camera->SetFieldOfView(fieldOfView);
+							}
+							else
+							{
+								ImGui::Text("Near Plane: %.2f", nearPlane);
+								ImGui::Text("Far Plane: %.2f", farPlane);
+								ImGui::Text("Field Of View: %.2f", fieldOfView);
 							}
 						}
 
@@ -472,7 +504,7 @@ namespace pimm
 		RefPtr<MaterialResource> CloneMaterialForObject(pimm::AGameObject* gameObject, pimm::MaterialResource* source)
 		{
 			MaterialResourceDescriptor descriptor{
-				{ { gameObject->GetLogger() }, L"", gameObject->GetResourceManager() },
+				{ { gameObject->GetLogger() }, source->GetPath().c_str(), gameObject->GetResourceManager() },
 				gameObject->GetGraphicsDevice()
 			};
 			auto cloned = std::make_shared<MaterialResource>(*source, descriptor);

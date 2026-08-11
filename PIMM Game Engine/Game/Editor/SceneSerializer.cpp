@@ -1,6 +1,7 @@
 #include "SceneSerializer.h"
 #include "SceneFormat.h"
 #include "SceneMode.h"
+#include "../Player/Player.h"
 #include <PIMM/Game/World.h>
 #include <PIMM/AGameObject/AGameObject.h>
 #include <PIMM/AGameObject/Quad.h>
@@ -9,6 +10,7 @@
 #include <PIMM/AGameObject/Cylinder.h>
 #include <PIMM/AGameObject/Capsule.h>
 #include <PIMM/AGameObject/MeshObject.h>
+#include <PIMM/AGameObject/CameraObject.h>
 #include <PIMM/AComponent/TransformComponent.h>
 #include <PIMM/AComponent/MaterialComponent.h>
 #include <PIMM/AComponent/RigidBodyComponent.h>
@@ -126,6 +128,7 @@ namespace pimm
 			f << SceneKey::NearPlane << " = " << cam.GetNearPlane() << '\n';
 			f << SceneKey::FarPlane << " = " << cam.GetFarPlane() << '\n';
 			f << SceneKey::Fov << " = " << cam.GetFieldOfView() << '\n';
+			f << SceneKey::Active << " = " << (cam.IsActive() ? 1 : 0) << '\n';
 		}
 
 		void WriteMeshComponent(std::ofstream& f, MeshComponent& mc)
@@ -162,6 +165,19 @@ namespace pimm
 	{
 		out.assign(narrow.begin(), narrow.end());
 	}
+
+		bool ParseQuotedPath(const std::string& value, std::wstring& out)
+		{
+			size_t firstQuote = value.find('"');
+			if (firstQuote == std::string::npos) return false;
+
+			size_t secondQuote = value.find('"', firstQuote + 1);
+			if (secondQuote == std::string::npos) return false;
+
+			WidenPath(out, value.substr(firstQuote + 1, secondQuote - firstQuote - 1));
+			return true;
+		}
+
 }
 
 	std::string SceneSerializer::GetTypeName(size_t typeId)
@@ -173,6 +189,8 @@ namespace pimm
 			{ Cylinder::getTypeId(),  "Cylinder" },
 			{ Capsule::getTypeId(),   "Capsule" },
 			{ MeshObject::getTypeId(),"MeshObject" },
+			{ CameraObject::getTypeId(),"CameraObject" },
+			{ Player::getTypeId(),      "Player" },
 		};
 
 		auto it = map.find(typeId);
@@ -188,6 +206,8 @@ namespace pimm
 			{ "Cylinder",   Cylinder::getTypeId()  },
 			{ "Capsule",    Capsule::getTypeId()   },
 			{ "MeshObject", MeshObject::getTypeId()},
+			{ "CameraObject", CameraObject::getTypeId()},
+			{ "Player",       Player::getTypeId()      },
 		};
 
 		auto it = map.find(name);
@@ -312,6 +332,7 @@ namespace pimm
 			f32 nearPlane = 0.01f;
 			f32 farPlane = 100.0f;
 			f32 fov = 1.5f;
+			bool activeCamera = false;
 
 			bool hasMeshComponent = false;
 			std::wstring meshPath;
@@ -433,15 +454,13 @@ namespace pimm
 				obj.hasMaterial = true;
 				if (key == SceneKey::Shader)
 				{
-					value.erase(std::remove(value.begin(), value.end(), '\"'), value.end());
-					WidenPath(obj.materialShader, value);
+					ParseQuotedPath(value, obj.materialShader);
 				}
 				else if (key == SceneKey::Color)
 					ParseVec3(value, obj.materialColor);
 				else if (key.starts_with(SceneKey::TexturePrefix))
 				{
-					value.erase(std::remove(value.begin(), value.end(), '\"'), value.end());
-					WidenPath(obj.texture0, value);
+					ParseQuotedPath(value, obj.texture0);
 				}
 			}
 			else if (currentSection == SceneKey::RigidBody)
@@ -488,39 +507,36 @@ namespace pimm
 					obj.farPlane = static_cast<f32>(std::stod(value));
 				else if (key == SceneKey::Fov)
 					obj.fov = static_cast<f32>(std::stod(value));
+				else if (key == SceneKey::Active)
+					obj.activeCamera = std::stoi(value) != 0;
 			}
 			else if (currentSection == SceneKey::MeshComponent)
 			{
 				obj.hasMeshComponent = true;
 				if (key == SceneKey::Mesh)
 				{
-					value.erase(std::remove(value.begin(), value.end(), '\"'), value.end());
-					WidenPath(obj.meshPath, value);
+					ParseQuotedPath(value, obj.meshPath);
 				}
 				else if (key.starts_with(SceneKey::MaterialPrefix))
 				{
-					std::istringstream iss(value);
 					std::string shaderPath, texPath;
 					Vec3 color{ 1.0f };
 
-					if (value.front() == '\"')
+					size_t shaderStart = value.find('\"');
+					if (shaderStart != std::string::npos)
 					{
-						size_t endQuote = value.find('\"', 1);
+						size_t endQuote = value.find('\"', shaderStart + 1);
 						if (endQuote != std::string::npos)
 						{
-							shaderPath = value.substr(1, endQuote - 1);
+							shaderPath = value.substr(shaderStart + 1, endQuote - shaderStart - 1);
 							std::string rest = value.substr(endQuote + 1);
 
 							std::istringstream restIss(rest);
 							restIss >> color.x >> color.y >> color.z;
 
-							size_t texStart = rest.find('\"');
-							if (texStart != std::string::npos)
-							{
-								size_t texEnd = rest.find('\"', texStart + 1);
-								if (texEnd != std::string::npos)
-									texPath = rest.substr(texStart + 1, texEnd - texStart - 1);
-							}
+							std::wstring texturePath;
+							if (ParseQuotedPath(rest, texturePath))
+								texPath.assign(texturePath.begin(), texturePath.end());
 						}
 					}
 
@@ -560,6 +576,10 @@ namespace pimm
 				created = world.CreateAGameObject<Capsule>();
 			else if (obj.typeId == MeshObject::getTypeId())
 				created = world.CreateAGameObject<MeshObject>();
+			else if (obj.typeId == CameraObject::getTypeId())
+				created = world.CreateAGameObject<CameraObject>();
+			else if (obj.typeId == Player::getTypeId())
+				created = world.CreateAGameObject<Player>();
 			else
 				continue;
 
@@ -574,17 +594,17 @@ namespace pimm
 			{
 				auto& matComp = created->GetMaterialComponent();
 				auto matRes = resourceManager.CreateResourceFromFile<MaterialResource>(obj.materialShader.c_str());
-				if (matRes)
-				{
-					matRes->SetData(std::as_bytes(std::span{ &obj.materialColor, 1 }));
-					if (!obj.texture0.empty())
-					{
-						auto tex = resourceManager.CreateResourceFromFile<TextureResource>(obj.texture0.c_str());
-						if (tex)
-							matRes->SetTexture(0, tex);
-					}
-					matComp.SetMaterial(matRes);
-				}
+						if (matRes)
+						{
+							matRes->SetData(std::as_bytes(std::span{ &obj.materialColor, 1 }));
+							if (!obj.texture0.empty())
+							{
+								auto tex = resourceManager.CreateResourceFromFile<TextureResource>(obj.texture0.c_str());
+								if (tex)
+									matRes->SetTexture(0, tex);
+							}
+							matComp.SetMaterial(matRes);
+						}
 			}
 
 			if (obj.hasRigidBody)
@@ -609,24 +629,25 @@ namespace pimm
 				cam->SetNearPlane(obj.nearPlane);
 				cam->SetFarPlane(obj.farPlane);
 				cam->SetFieldOfView(obj.fov);
+				cam->SetActive(obj.activeCamera);
 			}
 
 			if (obj.hasMeshComponent)
 			{
 				auto* mc = created->CreateOrGetComponent<MeshComponent>();
-				if (!obj.meshPath.empty())
+						if (!obj.meshPath.empty())
 				{
 					auto mesh = resourceManager.CreateResourceFromFile<MeshResource>(obj.meshPath.c_str());
 					if (mesh)
 						mc->SetMesh(mesh);
 
-					for (size_t m = 0; m < obj.meshMaterials.size(); ++m)
+							for (size_t m = 0; mesh && m < obj.meshMaterials.size(); ++m)
 					{
 						auto& slot = obj.meshMaterials[m];
 						if (!slot.shaderPath.empty())
 						{
 							auto mat = resourceManager.CreateResourceFromFile<MaterialResource>(slot.shaderPath.c_str());
-							if (mat)
+										if (mat)
 							{
 								mat->SetData(std::as_bytes(std::span{ &slot.color, 1 }));
 								if (!slot.texturePath.empty())
@@ -650,6 +671,32 @@ namespace pimm
 			{
 				if (createdObjects[i] && createdObjects[obj.parentIndex])
 					createdObjects[i]->SetParent(createdObjects[obj.parentIndex]);
+			}
+		}
+
+		bool hasActiveCamera = false;
+		for (auto* object : world.GetAllGameObjects())
+		{
+			if (object && object->GetTypeID() == CameraObject::getTypeId())
+			{
+				auto* camera = static_cast<CameraObject*>(object)->GetComponent<CameraComponent>();
+				if (camera && camera->IsActive())
+				{
+					hasActiveCamera = true;
+					break;
+				}
+			}
+		}
+
+		if (!hasActiveCamera)
+		{
+			for (auto* object : world.GetAllGameObjects())
+			{
+				if (object && object->GetTypeID() == CameraObject::getTypeId())
+				{
+					world.SetActiveCameraObject(static_cast<CameraObject*>(object));
+					break;
+				}
 			}
 		}
 

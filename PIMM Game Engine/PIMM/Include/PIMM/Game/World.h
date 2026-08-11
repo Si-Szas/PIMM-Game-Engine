@@ -69,6 +69,9 @@ namespace pimm
 		ui32 GetSelectedObjectIndex();
 
 		AGameObject* GetSelectedGameObject();
+		CameraObject* GetActiveCameraObject() const noexcept;
+		bool HasActiveCameraObject() const noexcept;
+		void SetActiveCameraObject(CameraObject* camera) noexcept;
 
 		//PHYSICS
 		rp3d::PhysicsWorld& GetPhysicsWorld() noexcept { return *m_physicsWorld; }

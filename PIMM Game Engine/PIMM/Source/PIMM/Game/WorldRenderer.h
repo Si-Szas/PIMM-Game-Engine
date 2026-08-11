@@ -27,6 +27,8 @@ namespace pimm
 		std::vector<RefPtr<IndexBuffer>>& GetIndexBuffer() noexcept;
 		FrameBuffer* GetFrameBuffer() const noexcept;
 		void SetSceneViewSize(Rect size) noexcept;
+		void SetSceneCameraMode(bool enabled) noexcept;
+		bool IsSceneCameraMode() const noexcept;
 
 
 		//DESTRUCTOR
@@ -63,5 +65,6 @@ namespace pimm
 
 		RefPtr<Sampler> m_sampler{};
 		std::vector<Texture*> m_textures{};
+		bool m_sceneCameraMode = false;
 	};
 }

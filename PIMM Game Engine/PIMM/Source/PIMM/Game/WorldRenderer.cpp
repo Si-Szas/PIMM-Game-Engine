@@ -18,6 +18,8 @@
 #include <PIMM/AGameObject/Cylinder.h>
 #include <PIMM/AGameObject/Capsule.h>
 #include <PIMM/AGameObject/MeshObject.h>
+#include <PIMM/AGameObject/CameraObject.h>
+#include <PIMM/AGameObject/AGameObject.h>
 //COMPONENTS//
 #include <PIMM/AComponent/AComponent.h>
 #include <PIMM/AComponent/TransformComponent.h>
@@ -116,21 +118,40 @@ void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 d
 	auto& objectCB = *m_objectConstantBuffer;
 	auto& materialCB = *m_materialConstantBuffer;
 
-	{
+		{
 		////////// CONSTANT BUFFER DATA //////////
 		CameraData cameraData{};
 		{
-			auto cameraComponents = world.GetAComponent<CameraComponent>(numberOfComponents);
+				if (m_sceneCameraMode)
+				{
+					auto* cameraObject = world.GetActiveCameraObject();
+					if (cameraObject && cameraObject->GetTypeID() == CameraObject::getTypeId())
+					{
+						auto* camComponent = cameraObject->GetComponent<CameraComponent>();
+						if (camComponent)
+						{
+							cameraData.view = camComponent->GetViewMatrix();
+							camComponent->SetViewportSize(frameBufferSize);
+							cameraData.projection = camComponent->GetProjectionMatrix();
+						}
+					}
+				}
+				else
+				{
+				auto cameraComponents = world.GetAComponent<CameraComponent>(numberOfComponents);
 
-			for (auto i : std::views::iota(0u, numberOfComponents))
-			{
-				auto camComponent = cameraComponents[i];
-				cameraData.view = camComponent->GetViewMatrix();
-				camComponent->SetViewportSize(frameBufferSize);
-				cameraData.projection = camComponent->GetProjectionMatrix();
-				context.UpdateConstantBuffer(cameraCB, std::as_bytes(std::span{ &cameraData, 1 }));
-				break;
+				for (auto i : std::views::iota(0u, numberOfComponents))
+				{
+					auto camComponent = cameraComponents[i];
+					if (camComponent->GetGameObject().GetTypeID() == CameraObject::getTypeId())
+						continue;
+					cameraData.view = camComponent->GetViewMatrix();
+					camComponent->SetViewportSize(frameBufferSize);
+					cameraData.projection = camComponent->GetProjectionMatrix();
+					break;
 			}
+				}
+				context.UpdateConstantBuffer(cameraCB, std::as_bytes(std::span{ &cameraData, 1 }));
 		}
 		{
 			ObjectData objectData{};
@@ -264,6 +285,16 @@ pimm::FrameBuffer* pimm::WorldRenderer::GetFrameBuffer() const noexcept
 void pimm::WorldRenderer::SetSceneViewSize(pimm::Rect size) noexcept
 { 
 	m_sceneViewSize = size;
+}
+
+void pimm::WorldRenderer::SetSceneCameraMode(bool enabled) noexcept
+{
+	m_sceneCameraMode = enabled;
+}
+
+bool pimm::WorldRenderer::IsSceneCameraMode() const noexcept
+{
+	return m_sceneCameraMode;
 }
 
 pimm::WorldRenderer::~WorldRenderer()

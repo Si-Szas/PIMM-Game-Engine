@@ -29,6 +29,9 @@ namespace pimm
 			void SetViewportSize(const Rect& size) noexcept;
 			Rect GetViewportSize() const noexcept;
 
+			void SetActive(bool active) noexcept;
+			bool IsActive() const noexcept;
+
 		private:
 			//FUNCTIONS
 			void ComputeProjectionMatrix() noexcept;
@@ -41,6 +44,7 @@ namespace pimm
 			f32 m_fieldOfView = 1.5f;
 
 			Rect m_viewportSize{ 1, 1 };
+			bool m_active = false;
 
 			bool m_dirty{ true }; 
 

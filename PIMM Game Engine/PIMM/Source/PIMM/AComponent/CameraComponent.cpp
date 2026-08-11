@@ -68,6 +68,16 @@ pimm::Rect pimm::CameraComponent::GetViewportSize() const noexcept
 	return m_viewportSize;
 }
 
+void pimm::CameraComponent::SetActive(bool active) noexcept
+{
+	m_active = active;
+}
+
+bool pimm::CameraComponent::IsActive() const noexcept
+{
+	return m_active;
+}
+
 void pimm::CameraComponent::ComputeProjectionMatrix() noexcept
 {
 	m_projection = 

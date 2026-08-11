@@ -60,14 +60,17 @@ void MainGame::OnCreate()
 		[this]()
 		{
 			m_sceneModeManager.EnterPlayMode(GetWorld());
+			GetWorldRenderer().SetSceneCameraMode(true);
 		},
 		[this]()
 		{
 			m_sceneModeManager.EnterPauseMode(GetWorld());
+			GetWorldRenderer().SetSceneCameraMode(false);
 		},
 		[this]()
 		{
 			m_sceneModeManager.EnterEditMode(GetWorld());
+			GetWorldRenderer().SetSceneCameraMode(false);
 		},
 		[this]()
 		{
@@ -315,6 +318,14 @@ void MainGame::SpawnObject(pimm::SpawnObjectType type, bool withPhysics)
 			}
 			break;
 		}
+		case pimm::SpawnObjectType::Camera:
+		{
+			auto camera = world.CreateAGameObject<pimm::CameraObject>();
+			camera->GetTransform().SetPosition({ 0.0f, 1.0f, -5.0f });
+			if (!world.GetActiveCameraObject())
+				world.SetActiveCameraObject(camera);
+			break;
+		}
 	}
 }
 
@@ -329,7 +340,7 @@ void MainGame::SaveScene()
 	ofn.lpstrFile = filePath;
 	ofn.nMaxFile = MAX_PATH;
 	ofn.lpstrDefExt = L"pimm";
-	ofn.Flags = OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY;
+	ofn.Flags = OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY | OFN_NOCHANGEDIR;
 
 	if (GetSaveFileNameW(&ofn))
 	{
@@ -348,15 +359,29 @@ void MainGame::LoadScene()
 	ofn.lpstrFile = filePath;
 	ofn.nMaxFile = MAX_PATH;
 	ofn.lpstrDefExt = L"pimm";
-	ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+	ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | OFN_NOCHANGEDIR;
 
 	if (GetOpenFileNameW(&ofn))
 	{
 		pimm::SceneSerializer::Load(GetWorld(), filePath, GetResourceManager());
+		GetWorldRenderer().SetSceneCameraMode(false);
 
 		auto& world = GetWorld();
-		auto player = world.CreateAGameObject<Player>();
-		player->GetTransform().SetPosition({ 0.0f, 1.0f, -3.0f });
-		player->GetTransform().SetRotation({ 20.0f, 0.0f, 0.0f });
+		bool hasEditorCamera = false;
+		for (auto* object : world.GetAllGameObjects())
+		{
+			if (object && object->GetTypeID() == Player::getTypeId())
+			{
+				hasEditorCamera = true;
+				break;
+			}
+		}
+
+		if (!hasEditorCamera)
+		{
+			auto player = world.CreateAGameObject<Player>();
+			player->GetTransform().SetPosition({ 0.0f, 1.0f, -3.0f });
+			player->GetTransform().SetRotation({ 20.0f, 0.0f, 0.0f });
+		}
 	}
 }

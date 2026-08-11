@@ -31,6 +31,7 @@ namespace pimm
 		constexpr const char* NearPlane = "nearPlane";
 		constexpr const char* FarPlane = "farPlane";
 		constexpr const char* Fov = "fov";
+		constexpr const char* Active = "active";
 
 		constexpr const char* Mesh = "mesh";
 

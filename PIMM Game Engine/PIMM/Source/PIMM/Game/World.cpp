@@ -3,6 +3,7 @@
 #include <PIMM/AComponent/AComponent.h>
 #include <PIMM/AComponent/TransformComponent.h>
 #include <PIMM/AComponent/RigidBodyComponent.h>
+#include <PIMM/AGameObject/CameraObject.h>
 
 #include <algorithm>
 #include <span>
@@ -149,6 +150,52 @@ pimm::ui32 pimm::World::GetSelectedObjectIndex()
 pimm::AGameObject* pimm::World::GetSelectedGameObject()
 {
 	return m_selectedGameObject;
+}
+
+pimm::CameraObject* pimm::World::GetActiveCameraObject() const noexcept
+{
+	for (auto* object : m_allObjects)
+	{
+		if (!object || object->GetTypeID() != CameraObject::getTypeId()) continue;
+
+		auto* camera = static_cast<CameraObject*>(object);
+		if (auto* component = camera->GetComponent<CameraComponent>(); component && component->IsActive())
+			return camera;
+	}
+
+	for (auto* object : m_allObjects)
+	{
+		if (object && object->GetTypeID() == CameraObject::getTypeId())
+			return static_cast<CameraObject*>(object);
+	}
+
+	return nullptr;
+}
+
+bool pimm::World::HasActiveCameraObject() const noexcept
+{
+	for (auto* object : m_allObjects)
+	{
+		if (!object || object->GetTypeID() != CameraObject::getTypeId()) continue;
+
+		auto* camera = static_cast<CameraObject*>(object);
+		if (auto* component = camera->GetComponent<CameraComponent>(); component && component->IsActive())
+			return true;
+	}
+
+	return false;
+}
+
+void pimm::World::SetActiveCameraObject(CameraObject* camera) noexcept
+{
+	for (auto* object : m_allObjects)
+	{
+		if (!object || object->GetTypeID() != CameraObject::getTypeId()) continue;
+
+		auto* cameraObject = static_cast<CameraObject*>(object);
+		if (auto* component = cameraObject->GetComponent<CameraComponent>())
+			component->SetActive(cameraObject == camera);
+	}
 }
 
 pimm::AGameObject* pimm::World::CreateAGameObjectInternal(UniquePtr<pimm::AGameObject>& object)

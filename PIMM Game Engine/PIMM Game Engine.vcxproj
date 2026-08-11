@@ -168,6 +168,7 @@
     <ClCompile Include="PIMM\Source\PIMM\InputSystem\Commands\MoveForwardCommandForwardCommand.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\InputSystem\InputCommand.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\AGameObject\Capsule.cpp" />
+    <ClCompile Include="PIMM\Source\PIMM\AGameObject\CameraObject.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\AComponent\CapsuleComponent.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\AComponent\QuadComponent.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\AGameObject\Cylinder.cpp" />
@@ -214,6 +215,7 @@
     <ClInclude Include="Game\UI\DebugPanel.h" />
     <ClInclude Include="Game\UI\ScenePanel.h" />
     <ClInclude Include="PIMM\Include\PIMM\AGameObject\MeshObject.h" />
+    <ClInclude Include="PIMM\Include\PIMM\AGameObject\CameraObject.h" />
     <ClInclude Include="PIMM\Include\PIMM\AComponent\MeshComponent.h" />
     <ClInclude Include="PIMM\Include\PIMM\Resource\MeshResource.h" />
     <ClInclude Include="Game\UI\TopbarPanel.h" />

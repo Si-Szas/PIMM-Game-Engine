@@ -17,6 +17,7 @@ namespace pimm
 		Bunny,
 		Statue,
 		Teapot
+		,Camera
 	};
 	class TopbarPanel final : public pimm::APanel
 	{
@@ -47,6 +48,7 @@ namespace pimm
 					if (ImGui::MenuItem("Bunny") && m_onSpawn) m_onSpawn(SpawnObjectType::Bunny, false);
 					if (ImGui::MenuItem("Statue") && m_onSpawn) m_onSpawn(SpawnObjectType::Statue, false);
 					if (ImGui::MenuItem("Teapot") && m_onSpawn) m_onSpawn(SpawnObjectType::Teapot, false);
+					if (ImGui::MenuItem("Camera") && m_onSpawn) m_onSpawn(SpawnObjectType::Camera, false);
 					ImGui::EndMenu();
 				}
 			if (ImGui::BeginMenu("File"))
