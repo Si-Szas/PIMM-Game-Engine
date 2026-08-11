@@ -71,27 +71,27 @@ namespace pimm
 							float rotationArr[3] = { rotation.x, rotation.y, rotation.z };
 							float scaleArr[3] = { scale.x, scale.y, scale.z };
 
-							if (ImGui::DragFloat3("Position", positionArr, 0.1f))
+							//If the scene is in edit mode, allow the player to manipulate its transform component
+							if (isEditMode)
 							{
-								transform.SetPosition({ positionArr[0], positionArr[1], positionArr[2] });
-								if (auto* rigidBody = gameObject->GetComponent<RigidBodyComponent>())
-									rigidBody->SyncPhysicsFromTransform();
-							}
+								if (ImGui::DragFloat3("Position", positionArr, 0.1f))
+									transform.SetPosition({ positionArr[0], positionArr[1], positionArr[2] });
 
-							if (ImGui::DragFloat3("Rotation", rotationArr, 0.1f))
-							{
-								transform.SetRotation({ rotationArr[0], rotationArr[1], rotationArr[2] });
-								if (auto* rigidBody = gameObject->GetComponent<RigidBodyComponent>())
-									rigidBody->SyncPhysicsFromTransform();
-							}
+								if (ImGui::DragFloat3("Rotation", rotationArr, 0.1f))
+									transform.SetRotation({ rotationArr[0], rotationArr[1], rotationArr[2] });
 
-							if (ImGui::DragFloat3("Scale", scaleArr, 0.1f))
+								if (ImGui::DragFloat3("Scale", scaleArr, 0.1f))
+									transform.SetScale({ scaleArr[0], scaleArr[1], scaleArr[2] });
+							}
+							// If scene is running, do not allow manipulation
+							else
 							{
-								transform.SetScale({ scaleArr[0], scaleArr[1], scaleArr[2] });
-								if (auto* rigidBody = gameObject->GetComponent<RigidBodyComponent>())
-									rigidBody->SyncColliderScale();
+								ImGui::InputFloat3("Position", positionArr, "%.2f", ImGuiInputTextFlags_ReadOnly);
+								ImGui::InputFloat3("Rotation", rotationArr, "%.2f", ImGuiInputTextFlags_ReadOnly);
+								ImGui::InputFloat3("Scale", scaleArr, "%.2f", ImGuiInputTextFlags_ReadOnly);
 							}
 						}
+
 
 						if (componentId == pimm::CameraComponent::getTypeId())
 						{
