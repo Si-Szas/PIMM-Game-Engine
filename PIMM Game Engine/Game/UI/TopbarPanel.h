@@ -38,6 +38,7 @@ namespace pimm
 				if (ImGui::BeginMenu("GameObject"))
 				{
 					if (ImGui::MenuItem("Cube") && m_onSpawn) m_onSpawn(SpawnObjectType::Cube, false);
+					if (ImGui::MenuItem("100 Cubes") && m_onSpawn) m_onSpawn(SpawnObjectType::Cubes_100, true);
 					if (ImGui::MenuItem("Sphere") && m_onSpawn) m_onSpawn(SpawnObjectType::Sphere, false);
 					if (ImGui::MenuItem("Cylinder") && m_onSpawn) m_onSpawn(SpawnObjectType::Cylinder, false);
 					if (ImGui::MenuItem("Capsule") && m_onSpawn) m_onSpawn(SpawnObjectType::Capsule, false);
