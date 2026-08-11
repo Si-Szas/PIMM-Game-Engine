@@ -239,21 +239,24 @@ void pimm::GizmoRenderer::RenderGizmos(ID3D11DeviceContext& context, const World
 		const Rect viewport = camComp->GetViewportSize();
 		const f32 aspect = (viewport.height > 0) ? static_cast<f32>(viewport.width) / static_cast<f32>(viewport.height) : 1.0f;
 
+		constexpr f32 kGizmoScale = 0.01f;
+
 		const f32 halfH = std::tan(fov * 0.5f);
 		const f32 halfW = halfH * aspect;
 
-		// 8 corners in camera space (camera looks down +Z, left-handed).
-		// Order: near TL, near TR, near BR, near BL, far TL, far TR, far BR, far BL
+		const f32 gizmoNear = nearPlane * kGizmoScale;
+		const f32 gizmoFar = farPlane * kGizmoScale;
+
 		const Vec3 camSpace[8] =
 		{
-			{ -halfW * nearPlane,  halfH * nearPlane, nearPlane }, // 0 near TL
-			{  halfW * nearPlane,  halfH * nearPlane, nearPlane }, // 1 near TR
-			{  halfW * nearPlane, -halfH * nearPlane, nearPlane }, // 2 near BR
-			{ -halfW * nearPlane, -halfH * nearPlane, nearPlane }, // 3 near BL
-			{ -halfW * farPlane,   halfH * farPlane,  farPlane  }, // 4 far TL
-			{  halfW * farPlane,   halfH * farPlane,  farPlane  }, // 5 far TR
-			{  halfW * farPlane,  -halfH * farPlane,  farPlane  }, // 6 far BR
-			{ -halfW * farPlane,  -halfH * farPlane,  farPlane  }, // 7 far BL
+			{ -halfW * gizmoNear,  halfH * gizmoNear, gizmoNear },
+			{  halfW * gizmoNear,  halfH * gizmoNear, gizmoNear },
+			{  halfW * gizmoNear, -halfH * gizmoNear, gizmoNear },
+			{ -halfW * gizmoNear, -halfH * gizmoNear, gizmoNear },
+			{ -halfW * gizmoFar,   halfH * gizmoFar,  gizmoFar  },
+			{  halfW * gizmoFar,   halfH * gizmoFar,  gizmoFar  },
+			{  halfW * gizmoFar,  -halfH * gizmoFar,  gizmoFar  },
+			{ -halfW * gizmoFar,  -halfH * gizmoFar,  gizmoFar  },
 		};
 
 		Vec3 worldCorners[8];
@@ -288,8 +291,8 @@ void pimm::GizmoRenderer::RenderGizmos(ID3D11DeviceContext& context, const World
 		AddLine(worldCorners[3], worldCorners[7]);
 
 		// A short "forward" indicator from near center to make orientation obvious.
-		const Vec3 nearCenter = TransformPoint(camWorld, { 0.0f, 0.0f, nearPlane });
-		const Vec3 tip = TransformPoint(camWorld, { 0.0f, 0.0f, nearPlane + std::min(farPlane - nearPlane, 0.5f) });
+		const Vec3 nearCenter = TransformPoint(camWorld, { 0.0f, 0.0f, gizmoNear });
+		const Vec3 tip = TransformPoint(camWorld, { 0.0f, 0.0f, gizmoNear + std::min(gizmoFar - gizmoNear, 0.125f) });
 		AddLine(nearCenter, tip);
 
 		++drawnCount;
