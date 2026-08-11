@@ -181,6 +181,7 @@
     <ClCompile Include="PIMM\Source\PIMM\AGameObject\Cube.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\AComponent\CubeComponent.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\AComponent\AComponent.cpp" />
+    <ClCompile Include="PIMM\Source\PIMM\AComponent\ControllerComponent.cpp" />
     <ClCompile Include="Game\MainGame.cpp" />
     <ClCompile Include="Game\Editor\SceneModeManager.cpp" />
     <ClCompile Include="Game\Editor\SceneSerializer.cpp" />
@@ -273,6 +274,7 @@
     <ClInclude Include="PIMM\Include\PIMM\AGameObject\Sphere.h" />
     <ClInclude Include="PIMM\Include\PIMM\AComponent\SphereComponent.h" />
     <ClInclude Include="PIMM\Include\PIMM\AComponent\CameraComponent.h" />
+    <ClInclude Include="PIMM\Include\PIMM\AComponent\ControllerComponent.h" />
     <ClInclude Include="PIMM\Include\PIMM\InputSystem\InputSystem.h" />
     <ClInclude Include="PIMM\Include\PIMM\AGameObject\Cube.h" />
     <ClInclude Include="PIMM\Include\PIMM\AComponent\CubeComponent.h" />

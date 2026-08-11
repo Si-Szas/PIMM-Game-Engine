@@ -2,6 +2,7 @@
 #include <PIMM/Core/Common.h>
 #include <PIMM/AGameObject/AGameObject.h>
 #include <PIMM/AComponent/CameraComponent.h>
+#include <PIMM/AComponent/ControllerComponent.h>
 
 namespace pimm
 {
@@ -14,6 +15,8 @@ namespace pimm
 
 		void OnCreate();
 		void OnUpdate(f32 deltaTime);
+
+		bool HasController() noexcept;
 
 		~CameraObject();
 

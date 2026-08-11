@@ -8,6 +8,7 @@
 #include <PIMM/AComponent/TransformComponent.h>
 #include <PIMM/AComponent/RigidBodyComponent.h>
 #include <PIMM/AComponent/CameraComponent.h>
+#include <PIMM/AComponent/ControllerComponent.h>
 #include <PIMM/AComponent/MaterialComponent.h>
 #include <PIMM/AComponent/MeshComponent.h>
 #include <PIMM/Resource/MeshResource.h>
@@ -35,6 +36,7 @@ namespace pimm
 			AGameObject* gameObject = m_world.GetSelectedGameObject();
 			bool isEditMode = m_modeManager.IsEditMode();
 			bool removeRigidBodyRequested = false;
+			bool removeControllerRequested = false;
 
 			if(gameObject){
 				size_t objectType = gameObject->GetTypeID();
@@ -394,6 +396,17 @@ namespace pimm
 								}
 							}
 						}
+						if (componentId == pimm::ControllerComponent::getTypeId())
+						{
+							ImGui::Separator();
+							ImGui::Text("Controller");
+							ImGui::NewLine();
+							if (isEditMode)
+							{
+								if (ImGui::Button("Remove Controller Component"))
+									removeControllerRequested = true;
+							}
+						}
 					}
 				}
 				if (removeRigidBodyRequested)
@@ -405,6 +418,17 @@ namespace pimm
 					ImGui::Separator();
 					if (ImGui::Button("Add RigidBody Component"))
 						gameObject->CreateOrGetComponent<RigidBodyComponent>();
+				}
+
+				if (removeControllerRequested)
+				{
+					gameObject->RemoveComponent<ControllerComponent>();
+				}
+				else if (isEditMode && objectType == CameraObject::getTypeId() && !gameObject->GetComponent<ControllerComponent>())
+				{
+					ImGui::Separator();
+					if (ImGui::Button("Add Controller Component"))
+						gameObject->CreateOrGetComponent<ControllerComponent>();
 				}
 
 			}

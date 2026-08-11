@@ -98,6 +98,8 @@ void MainGame::OnUpdate(f32 deltaTime)
 
 	auto& world = GetWorld();
 
+	world.SetPlayMode(m_sceneModeManager.IsPlayMode());
+
 	if (m_sceneModeManager.IsPlayMode())
 	{
 		world.SetPhysicsEnabled(true);

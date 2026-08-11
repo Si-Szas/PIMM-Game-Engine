@@ -17,6 +17,7 @@
 #include <PIMM/AComponent/AComponent.h>
 #include <PIMM/AComponent/TransformComponent.h>
 #include <PIMM/AComponent/CameraComponent.h>
+#include <PIMM/AComponent/ControllerComponent.h>
 #include <PIMM/AComponent/QuadComponent.h>
 #include <PIMM/AComponent/CubeComponent.h>
 #include <PIMM/AComponent/SphereComponent.h>

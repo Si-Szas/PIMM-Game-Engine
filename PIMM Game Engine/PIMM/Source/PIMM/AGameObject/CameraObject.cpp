@@ -16,6 +16,14 @@ void pimm::CameraObject::OnCreate()
 
 void pimm::CameraObject::OnUpdate(f32 deltaTime)
 {
+	auto* controller = GetComponent<ControllerComponent>();
+	if (controller)
+		controller->Update(deltaTime);
+}
+
+bool pimm::CameraObject::HasController() noexcept
+{
+	return GetComponent<ControllerComponent>() != nullptr;
 }
 
 pimm::CameraObject::~CameraObject()

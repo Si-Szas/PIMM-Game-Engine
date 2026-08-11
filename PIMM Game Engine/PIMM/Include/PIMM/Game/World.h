@@ -82,6 +82,9 @@ namespace pimm
 		void StepPhysicsFrame();
 		bool IsPhysicsEnabled() const noexcept { return m_physicsEnabled; }
 
+		void SetPlayMode(bool playMode) noexcept { m_playMode = playMode; }
+		bool IsPlayMode() const noexcept { return m_playMode; }
+
 	private:
 		enum class EventType
 		{
@@ -117,6 +120,7 @@ namespace pimm
 		rp3d::PhysicsWorld* m_physicsWorld{};
 		f32 m_physicsAccumulator{};
 		bool m_physicsEnabled = false;
+		bool m_playMode = false;
 
 		friend class AGameObject;
 		friend class AComponent;
