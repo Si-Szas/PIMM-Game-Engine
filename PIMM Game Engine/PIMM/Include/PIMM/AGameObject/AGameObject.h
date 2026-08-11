@@ -39,6 +39,7 @@ namespace pimm
 		//Get name
 		const std::string& GetObjectName() noexcept;
 		static const char* GetObjectLabel(AGameObject* object);
+		void SetObjectName(std::string newName);
 
 		//Get offset
 		ui32 GetVertexOffset() noexcept;

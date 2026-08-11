@@ -31,6 +31,40 @@ public:
             auto gameObjects = m_world.GetAllGameObjects();
             bool isEditMode = m_modeManager.IsEditMode();
 
+            for (auto* object : gameObjects)
+            {
+                if (!object) continue;
+
+                std::string currentName = object->GetObjectName();
+                std::string baseName = CleanName(currentName);
+
+                int duplicateCounter = 0;
+                for (auto* otherObject : gameObjects)
+                {
+                    if (otherObject == object) break;
+
+                    if (otherObject != nullptr)
+                    {
+                        std::string otherBase = CleanName(otherObject->GetObjectName());
+                        if (otherBase == baseName)
+                        {
+                            duplicateCounter++;
+                        }
+                    }
+                }
+
+                std::string uniqueName = baseName;
+                if (duplicateCounter > 0)
+                {
+                    uniqueName += " (" + std::to_string(duplicateCounter) + ")";
+                }
+
+                if (currentName != uniqueName)
+                {
+                    object->SetObjectName(uniqueName);
+                }
+            }
+
             for (pimm::ui32 i = 0; i < gameObjects.size(); i++)
             {
                 if(i > 0){
@@ -128,6 +162,17 @@ private:
         }
 
         ImGui::PopID();
+    }
+
+    std::string CleanName(const std::string& name)
+    {
+        //Cleans up the name in case of duplicate brackest
+        size_t bracket = name.find(" (");
+        if (bracket != std::string::npos)
+        {
+            return name.substr(0, bracket);
+        }
+        return name;
     }
 
     private:

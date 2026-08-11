@@ -166,6 +166,11 @@ const char* pimm::AGameObject::GetObjectLabel(AGameObject* object)
 	return object->m_name.c_str();
 }
 
+void pimm::AGameObject::SetObjectName(std::string newName)
+{
+	m_name = newName;
+}
+
 //size_t pimm::AGameObject::GetWorldIndex() const noexcept
 //{
 //	return m_worldIndex;
