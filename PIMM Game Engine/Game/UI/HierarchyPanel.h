@@ -67,14 +67,12 @@ public:
 
             for (pimm::ui32 i = 0; i < gameObjects.size(); i++)
             {
-                if(i > 0){
-                    auto* object = gameObjects[i];
+                auto* object = gameObjects[i];
 
                     if (!object) continue;
                     if (object->GetParent() != nullptr) continue;
                     RenderNode(object, gameObjects);
                 }
-            }
 
             if (isEditMode)
             {

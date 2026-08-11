@@ -135,10 +135,16 @@ void pimm::World::StepPhysicsFrame()
 
 void pimm::World::SetSelectedObjectIndex(ui32 newIndex)
 {
-	m_selectedObjectIndex = newIndex;
-
 	auto gameObjects = GetAllGameObjects();
 
+	if (newIndex >= gameObjects.size())
+	{
+		m_selectedObjectIndex = 0;
+		m_selectedGameObject = nullptr;
+		return;
+	}
+
+	m_selectedObjectIndex = newIndex;
 	m_selectedGameObject = gameObjects[newIndex];
 }
 
@@ -323,12 +329,6 @@ void pimm::World::DestroyAGameObject(AGameObject* object)
 
 void pimm::World::DeleteAllAGameObjects()
 {
-	// DELETE ALL GAME OBJECTS
-	//  - Clear the pointers from m_allObjects
-	//  - Clear all dirty transforms (makes sure nothing gets updated)
-	//  - Clear Vertex and Index buffer from world renderer
-	//  - Clear components and objects
-
 	m_allObjects.clear();
 	m_dirtyTransforms.clear();
 
@@ -344,6 +344,9 @@ void pimm::World::DeleteAllAGameObjects()
 	m_eventsSwapBuffer.clear();
 
 	m_objects.clear();
+
+	m_selectedGameObject = nullptr;
+	m_selectedObjectIndex = 0;
 }
 
 void pimm::World::DestroyAGameObjectInternal(AGameObject* object)
