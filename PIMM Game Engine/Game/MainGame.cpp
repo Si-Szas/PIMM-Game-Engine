@@ -1,6 +1,7 @@
 #include "MainGame.h"
 #include "Player/Player.h"
 #include "Editor/SceneSerializer.h"
+#include <PIMM/AGameObject/CameraObject.h>
 #include <PIMM/ImGui/imgui.h>
 #include <PIMM/Graphics/FrameBuffer/FrameBuffer.h>
 #include <PIMM/AComponent/RigidBodyComponent.h>
@@ -320,7 +321,9 @@ void MainGame::SpawnObject(pimm::SpawnObjectType type, bool withPhysics)
 		}
 		case pimm::SpawnObjectType::Camera:
 		{
+			PIMMLogInformation("SpawnObject: creating CameraObject (typeId={})", pimm::CameraObject::getTypeId());
 			auto camera = world.CreateAGameObject<pimm::CameraObject>();
+			PIMMLogInformation("SpawnObject: created camera ptr={} typeId={}", static_cast<void*>(camera), camera ? camera->GetTypeID() : 0);
 			camera->GetTransform().SetPosition({ 0.0f, 1.0f, -5.0f });
 			if (!world.GetActiveCameraObject())
 				world.SetActiveCameraObject(camera);

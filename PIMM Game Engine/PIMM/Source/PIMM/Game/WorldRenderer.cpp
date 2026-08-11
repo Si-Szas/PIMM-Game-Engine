@@ -32,6 +32,10 @@
 #include <PIMM/Resource/TextureResource.h>
 //MESHES//
 #include <PIMM/Resource/MeshResource.h>
+//GIZMOS//
+#include <PIMM/Game/GizmoRenderer.h>
+#include <PIMM/AGameObject/CameraObject.h>
+#include <PIMM/AComponent/CameraComponent.h>
 
 #include <PIMM/Math/Vec2.h>
 #include <PIMM/Math/Vec3.h>
@@ -77,6 +81,9 @@ pimm::WorldRenderer::WorldRenderer(const WorldRendererDescriptor& descriptor) :
 	});
 
 	m_sampler = device.CreateSampler({});
+
+	//Create the gizmo renderer for editor visuals (e.g. camera frustums)
+	m_gizmoRenderer = std::make_unique<GizmoRenderer>(*m_graphicsDevice.GetD3DDevice().Get(), m_logger);
 }
 
 void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 deltaTime)
@@ -238,6 +245,19 @@ void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 d
 					
 				}
 			}
+		}
+
+		//Draw editor gizmos (e.g. camera frustum wireframes) on top of the scene
+		if (m_gizmoRenderer)
+		{
+			const CameraObject* skipCamera = m_sceneCameraMode ? world.GetActiveCameraObject() : nullptr;
+
+			m_gizmoRenderer->RenderGizmos(
+				*context.GetD3D11DeviceContext().Get(),
+				world,
+				cameraData.view,
+				cameraData.projection,
+				skipCamera);
 		}
 
 		//Pass device context where we will extract the commands from

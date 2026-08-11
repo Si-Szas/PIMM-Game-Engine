@@ -7,9 +7,11 @@
 #include <PIMM/Math/Vec4.h>
 #include <PIMM/Math/Matrix4x4.h>
 #include <vector>
+#include <memory>
 
 namespace pimm
 {
+	class GizmoRenderer;
 	//We don't want the graphics engine to be further dervied by other classes
 	class WorldRenderer final : public Base
 	{
@@ -66,5 +68,7 @@ namespace pimm
 		RefPtr<Sampler> m_sampler{};
 		std::vector<Texture*> m_textures{};
 		bool m_sceneCameraMode = false;
+
+		std::unique_ptr<GizmoRenderer> m_gizmoRenderer{};
 	};
 }

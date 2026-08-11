@@ -198,6 +198,7 @@
     <ClCompile Include="PIMM\Source\PIMM\Core\Logger.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Graphics\GraphicsDevice\GraphicsDevice.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Game\WorldRenderer.cpp" />
+    <ClCompile Include="PIMM\Source\PIMM\Game\GizmoRenderer.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Core\Base.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Game\Game.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Game\Win32\Win32Game.cpp" />
@@ -301,6 +302,7 @@
     <ClInclude Include="PIMM\Source\PIMM\Graphics\GraphicsUtility\GraphicsLogUtility.h" />
     <ClInclude Include="PIMM\Source\PIMM\Graphics\GraphicsDevice\GraphicsDevice.h" />
     <ClInclude Include="PIMM\Source\PIMM\Game\WorldRenderer.h" />
+    <ClInclude Include="PIMM\Source\PIMM\Game\GizmoRenderer.h" />
     <ClInclude Include="PIMM\Include\PIMM\All.h" />
     <ClInclude Include="PIMM\Include\PIMM\Core\Base.h" />
     <ClInclude Include="PIMM\Include\PIMM\Core\Core.h" />
