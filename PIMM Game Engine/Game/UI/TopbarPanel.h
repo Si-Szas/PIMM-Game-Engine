@@ -36,17 +36,15 @@ namespace pimm
 			{
 				if (ImGui::BeginMenu("GameObject"))
 				{
-					ImGui::Checkbox("With Physics", &m_spawnWithPhysics);
-					ImGui::Separator();
-					if (ImGui::MenuItem("Cube") && m_onSpawn) m_onSpawn(SpawnObjectType::Cube, m_spawnWithPhysics);
-					if (ImGui::MenuItem("Sphere") && m_onSpawn) m_onSpawn(SpawnObjectType::Sphere, m_spawnWithPhysics);
-					if (ImGui::MenuItem("Cylinder") && m_onSpawn) m_onSpawn(SpawnObjectType::Cylinder, m_spawnWithPhysics);
-					if (ImGui::MenuItem("Capsule") && m_onSpawn) m_onSpawn(SpawnObjectType::Capsule, m_spawnWithPhysics);
-					if (ImGui::MenuItem("Quad") && m_onSpawn) m_onSpawn(SpawnObjectType::Quad, m_spawnWithPhysics);
-					if (ImGui::MenuItem("Armadillo") && m_onSpawn) m_onSpawn(SpawnObjectType::Armadillo, m_spawnWithPhysics);
-					if (ImGui::MenuItem("Bunny") && m_onSpawn) m_onSpawn(SpawnObjectType::Bunny, m_spawnWithPhysics);
-					if (ImGui::MenuItem("Statue") && m_onSpawn) m_onSpawn(SpawnObjectType::Statue, m_spawnWithPhysics);
-					if (ImGui::MenuItem("Teapot") && m_onSpawn) m_onSpawn(SpawnObjectType::Teapot, m_spawnWithPhysics);
+					if (ImGui::MenuItem("Cube") && m_onSpawn) m_onSpawn(SpawnObjectType::Cube, true);
+					if (ImGui::MenuItem("Sphere") && m_onSpawn) m_onSpawn(SpawnObjectType::Sphere, true);
+					if (ImGui::MenuItem("Cylinder") && m_onSpawn) m_onSpawn(SpawnObjectType::Cylinder, true);
+					if (ImGui::MenuItem("Capsule") && m_onSpawn) m_onSpawn(SpawnObjectType::Capsule, true);
+					if (ImGui::MenuItem("Quad") && m_onSpawn) m_onSpawn(SpawnObjectType::Quad, true);
+					if (ImGui::MenuItem("Armadillo") && m_onSpawn) m_onSpawn(SpawnObjectType::Armadillo, true);
+					if (ImGui::MenuItem("Bunny") && m_onSpawn) m_onSpawn(SpawnObjectType::Bunny, true);
+					if (ImGui::MenuItem("Statue") && m_onSpawn) m_onSpawn(SpawnObjectType::Statue, true);
+					if (ImGui::MenuItem("Teapot") && m_onSpawn) m_onSpawn(SpawnObjectType::Teapot, true);
 					ImGui::EndMenu();
 				}
 			if (ImGui::BeginMenu("File"))
@@ -92,6 +90,5 @@ namespace pimm
 		SceneFileCallback m_onSave;
 		SceneFileCallback m_onLoad;
 		SceneMode m_currentMode = SceneMode::Edit;
-		bool m_spawnWithPhysics = true;
 	};
 }

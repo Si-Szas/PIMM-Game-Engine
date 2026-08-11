@@ -67,23 +67,22 @@ namespace pimm
 							float rotationArr[3] = { rotation.x, rotation.y, rotation.z };
 							float scaleArr[3] = { scale.x, scale.y, scale.z };
 
-							if (isEditMode)
+							if (ImGui::DragFloat3("Position", positionArr, 0.1f))
 							{
-								if (ImGui::DragFloat3("Position", positionArr, 0.1f))
-									transform.SetPosition({ positionArr[0], positionArr[1], positionArr[2] });
-
-								if (ImGui::DragFloat3("Rotation", rotationArr, 0.1f))
-									transform.SetRotation({ rotationArr[0], rotationArr[1], rotationArr[2] });
-
-								if (ImGui::DragFloat3("Scale", scaleArr, 0.1f))
-									transform.SetScale({ scaleArr[0], scaleArr[1], scaleArr[2] });
+								transform.SetPosition({ positionArr[0], positionArr[1], positionArr[2] });
+								if (auto* rigidBody = gameObject->GetComponent<RigidBodyComponent>())
+									rigidBody->SyncPhysicsFromTransform();
 							}
-							else
+
+							if (ImGui::DragFloat3("Rotation", rotationArr, 0.1f))
 							{
-								ImGui::InputFloat3("Position", positionArr, "%.2f", ImGuiInputTextFlags_ReadOnly);
-								ImGui::InputFloat3("Rotation", rotationArr, "%.2f", ImGuiInputTextFlags_ReadOnly);
-								ImGui::InputFloat3("Scale", scaleArr, "%.2f", ImGuiInputTextFlags_ReadOnly);
+								transform.SetRotation({ rotationArr[0], rotationArr[1], rotationArr[2] });
+								if (auto* rigidBody = gameObject->GetComponent<RigidBodyComponent>())
+									rigidBody->SyncPhysicsFromTransform();
 							}
+
+							if (ImGui::DragFloat3("Scale", scaleArr, 0.1f))
+								transform.SetScale({ scaleArr[0], scaleArr[1], scaleArr[2] });
 						}
 
 						// Checking if it is a mesh object or not since materials are handled slightly differently
@@ -114,7 +113,10 @@ namespace pimm
 											if (ImGui::ColorEdit3("Material Color", color))
 											{
 												pimm::Vec3 updatedColor(color[0], color[1], color[2]);
-												materialResource->SetData(std::as_bytes(std::span{ &updatedColor, 1 }));
+												auto clonedMaterial = CloneMaterialForObject(gameObject, materialResource);
+												clonedMaterial->SetData(std::as_bytes(std::span{ &updatedColor, 1 }));
+												material.SetMaterial(clonedMaterial);
+												materialResource = clonedMaterial.get();
 											}
 										}
 										else
@@ -198,14 +200,133 @@ namespace pimm
 							ImGui::Separator();
 							ImGui::Text("RigidBody");
 							ImGui::NewLine();
+
+							auto* rigidBody = static_cast<pimm::RigidBodyComponent*>(componentPtr.get());
+
+							if (isEditMode)
+							{
+								static const char* bodyTypeNames[] = { "Static", "Kinematic", "Dynamic" };
+								int currentBodyType = static_cast<int>(rigidBody->GetBodyType());
+
+								if (ImGui::Combo("Body Type", &currentBodyType, bodyTypeNames, IM_ARRAYSIZE(bodyTypeNames)))
+								{
+									rigidBody->SetBodyType(static_cast<pimm::BodyType>(currentBodyType));
+								}
+							}
+							else
+							{
+								static const char* bodyTypeNames[] = { "Static", "Kinematic", "Dynamic" };
+								ImGui::Text("Body Type: %s", bodyTypeNames[static_cast<int>(rigidBody->GetBodyType())]);
+							}
+
+							// Gravity toggle 
+							if (rigidBody->GetBodyType() == pimm::BodyType::Dynamic)
+							{
+								bool gravityEnabled = rigidBody->IsGravityEnabled();
+
+								if (isEditMode)
+								{
+									if (ImGui::Checkbox("Use Gravity", &gravityEnabled))
+									{
+										rigidBody->EnableGravity(gravityEnabled);
+									}
+								}
+								else
+								{
+									ImGui::Text(gravityEnabled ? "Gravity: Enabled" : "Gravity: Disabled");
+								}
+							}
 						}
 
-						//Camera Component
+						//Collider
 						if (componentId == pimm::RigidBodyComponent::getTypeId())
 						{
 							ImGui::Separator();
-							ImGui::Text("Camera");
+							ImGui::Text("Collider");
 							ImGui::NewLine();
+
+							auto* rigidBody = static_cast<pimm::RigidBodyComponent*>(componentPtr.get());
+							bool hasCollider = rigidBody->GetColliderCount() > 0;
+
+							if (isEditMode)
+							{
+								if (ImGui::Checkbox("Enable Collider", &hasCollider))
+								{
+									if (hasCollider)
+										rigidBody->RestoreLastCollider();
+									else
+										rigidBody->RemoveAllColliders();
+								}
+							}
+							else
+							{
+								ImGui::Text(hasCollider ? "Collider: Enabled" : "Collider: Disabled");
+							}
+
+							if (hasCollider && rigidBody->GetColliderCount() > 0)
+							{
+								const ColliderInfo& info = rigidBody->GetCollider(0);
+								static const char* colliderTypeNames[] = { "Box", "Sphere", "Capsule" };
+								int currentType = static_cast<int>(info.type);
+
+								if (isEditMode)
+								{
+									if (ImGui::Combo("Collider Type", &currentType, colliderTypeNames, IM_ARRAYSIZE(colliderTypeNames)))
+									{
+										rigidBody->RemoveAllColliders();
+										switch (static_cast<ColliderType>(currentType))
+										{
+										case ColliderType::Box:     rigidBody->AddBoxCollider(Vec3{ 0.5f });       break;
+										case ColliderType::Sphere:  rigidBody->AddSphereCollider(0.5f);            break;
+										case ColliderType::Capsule: rigidBody->AddCapsuleCollider(0.5f, 1.0f);     break;
+										}
+									}
+
+									const ColliderInfo& current = rigidBody->GetCollider(0);
+
+									if (current.type == ColliderType::Box)
+									{
+										float halfExtents[3] = { current.halfExtents.x, current.halfExtents.y, current.halfExtents.z };
+										if (ImGui::DragFloat3("Half Extents", halfExtents, 0.05f, 0.01f, 1000.0f))
+										{
+											rigidBody->RemoveAllColliders();
+											rigidBody->AddBoxCollider({ halfExtents[0], halfExtents[1], halfExtents[2] });
+										}
+									}
+									else if (current.type == ColliderType::Sphere)
+									{
+										float radius = current.radius;
+										if (ImGui::DragFloat("Radius", &radius, 0.05f, 0.01f, 1000.0f))
+										{
+											rigidBody->RemoveAllColliders();
+											rigidBody->AddSphereCollider(radius);
+										}
+									}
+									else if (current.type == ColliderType::Capsule)
+									{
+										float radius = current.radius;
+										float height = current.height;
+										bool changed = false;
+										changed |= ImGui::DragFloat("Radius", &radius, 0.05f, 0.01f, 1000.0f);
+										changed |= ImGui::DragFloat("Height", &height, 0.05f, 0.01f, 1000.0f);
+										if (changed)
+										{
+											rigidBody->RemoveAllColliders();
+											rigidBody->AddCapsuleCollider(radius, height);
+										}
+									}
+								}
+								else
+								{
+									ImGui::Text("Type: %s", colliderTypeNames[currentType]);
+									if (info.type == ColliderType::Box)
+										ImGui::Text("Half Extents: %.2f, %.2f, %.2f", info.halfExtents.x, info.halfExtents.y, info.halfExtents.z);
+									else if (info.type == ColliderType::Sphere)
+										ImGui::Text("Radius: %.2f", info.radius);
+									else if (info.type == ColliderType::Capsule)
+										ImGui::Text("Radius: %.2f  Height: %.2f", info.radius, info.height);
+								}
+							}
 						}
 					}
 				}

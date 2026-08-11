@@ -47,11 +47,14 @@ namespace pimm
 		f32 GetMass() const noexcept;
 
 		void EnableGravity(bool enabled) noexcept;
+		bool IsGravityEnabled() const noexcept;
 
 		//COLLIDERS - halfExtents/radius are WORLD units, not affected by TransformComponent scale
 		void AddBoxCollider(const Vec3& halfExtents);
 		void AddSphereCollider(f32 radius);
 		void AddCapsuleCollider(f32 radius, f32 height);
+		void RemoveAllColliders();
+		void RestoreLastCollider();
 
 		ui32 GetColliderCount() const noexcept { return static_cast<ui32>(m_colliders.size()); }
 		const ColliderInfo& GetCollider(ui32 index) const noexcept { return m_colliders[index]; }
@@ -80,6 +83,10 @@ namespace pimm
 	private:
 		rp3d::RigidBody* m_rigidBody{};
 		BodyType m_bodyType{ BodyType::Dynamic };
+		bool m_savedGravityEnabled{ true };
 		std::vector<ColliderInfo> m_colliders{};
+		std::vector<rp3d::Collider*> m_colliderShapes{};
+		ColliderInfo m_lastColliderInfo{};
+		bool m_hasLastCollider{ false };
 	};
 }
