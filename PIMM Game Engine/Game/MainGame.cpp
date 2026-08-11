@@ -45,15 +45,6 @@ void MainGame::OnCreate()
 	player->GetTransform().SetPosition({ 0.0f, 1.0f, -3.0f });
 	player->GetTransform().SetRotation({ 20.0f, 0.0f, 0.0f });
 
-	auto floor = world.CreateAGameObject<pimm::Quad>();
-	floor->GetTransform().SetScale({ 20.0f, 1.0f, 20.0f });
-	floor->GetTransform().SetPosition({ 0.0f, -2.0f, 0.0f });
-	floor->GetMaterialComponent().SetMaterial(m_basicFourPointMaterial);
-
-	auto* floorBody = floor->CreateOrGetComponent<pimm::RigidBodyComponent>();
-	floorBody->SetBodyType(pimm::BodyType::Static);
-	floorBody->AddBoxCollider({ 20.0f, 0.05f, 20.0f });
-
 	auto* uiManager = GetUIManager();
 	uiManager->RegisterPanel(std::make_unique<HierarchyPanel>(world, m_sceneModeManager));
 	uiManager->RegisterPanel(std::make_unique<InspectorPanel>(world, m_sceneModeManager));
