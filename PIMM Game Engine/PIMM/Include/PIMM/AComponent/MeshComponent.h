@@ -15,8 +15,7 @@ namespace pimm{
 			//GETTER
 			MeshResource* GetMesh() const noexcept;
 			MaterialResource* GetMaterial(ui32 index) const noexcept;
-
-			//SETTER
+		ui32 GetMaterialCount() const noexcept { return static_cast<ui32>(m_materials.size()); }
 			void SetMesh(const RefPtr<MeshResource>& newMesh);
 			void SetMaterial(ui32 index, const RefPtr<MaterialResource>& newMaterial);
 

@@ -5,6 +5,7 @@
 #include <PIMM/Math/Vec3.h>
 
 #include <reactphysics3d/reactphysics3d.h>
+#include <vector>
 
 namespace pimm
 {
@@ -13,6 +14,21 @@ namespace pimm
 		Static = 0,
 		Kinematic,
 		Dynamic
+	};
+
+	enum class ColliderType
+	{
+		Box = 0,
+		Sphere,
+		Capsule
+	};
+
+	struct ColliderInfo
+	{
+		ColliderType type = ColliderType::Box;
+		Vec3 halfExtents{ 0.5f };
+		f32 radius = 0.5f;
+		f32 height = 1.0f;
 	};
 
 	class RigidBodyComponent final : public AComponent
@@ -36,6 +52,9 @@ namespace pimm
 		void AddBoxCollider(const Vec3& halfExtents);
 		void AddSphereCollider(f32 radius);
 		void AddCapsuleCollider(f32 radius, f32 height);
+
+		ui32 GetColliderCount() const noexcept { return static_cast<ui32>(m_colliders.size()); }
+		const ColliderInfo& GetCollider(ui32 index) const noexcept { return m_colliders[index]; }
 
 		//FORCES
 		void ApplyForce(const Vec3& worldForce);
@@ -61,5 +80,6 @@ namespace pimm
 	private:
 		rp3d::RigidBody* m_rigidBody{};
 		BodyType m_bodyType{ BodyType::Dynamic };
+		std::vector<ColliderInfo> m_colliders{};
 	};
 }

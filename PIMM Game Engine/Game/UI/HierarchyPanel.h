@@ -4,6 +4,7 @@
 #include <PIMM/UIManager/APanel.h>
 #include <PIMM/Game/World.h>
 #include <PIMM/ImGui/imgui.h>
+#include "../Editor/SceneModeManager.h"
 
 #include <../../Game/Player/Player.h>
 #include <PIMM/AGameObject/Quad.h>
@@ -19,40 +20,43 @@
 class HierarchyPanel final : public pimm::APanel
 {
 public:
-    HierarchyPanel(pimm::World& world)
-        : APanel("Hierarchy"), m_world(world) {
+    HierarchyPanel(pimm::World& world, const pimm::SceneModeManager& modeManager)
+        : APanel("Hierarchy"), m_world(world), m_modeManager(modeManager) {
     }
 
-    void Render() override {
+    void Render() override 
+    {
         ImGui::Begin("Hierarchy");
 
             auto gameObjects = m_world.GetAllGameObjects();
+            bool isEditMode = m_modeManager.IsEditMode();
 
-        for (pimm::ui32 i = 0; i < gameObjects.size(); i++)
-        {
-            //So the scene camera isnt rendered in the hierarchy panel
-            if (i > 0) {
-                auto* object = gameObjects[i];
-
-                if (!object) continue;
-                if (object->GetParent() != nullptr) continue;
-                RenderNode(object, gameObjects);
-            }
-        }
-
-        // "Unparenting area"
-        ImGui::InvisibleButton("##HierarchyDropRoot", ImGui::GetContentRegionAvail());
-        if (ImGui::BeginDragDropTarget())
-        {
-            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("HIERARCHY_ITEM"))
+            for (pimm::ui32 i = 0; i < gameObjects.size(); i++)
             {
-                auto* dropped = *static_cast<pimm::AGameObject* const*>(payload->Data);
-                dropped->SetParent(nullptr);
-            }
-            ImGui::EndDragDropTarget();
-        }
+                if(i > 0){
+                    auto* object = gameObjects[i];
 
-        ImGui::End();
+                    if (!object) continue;
+                    if (object->GetParent() != nullptr) continue;
+                    RenderNode(object, gameObjects);
+                }
+            }
+
+            if (isEditMode)
+            {
+                ImGui::InvisibleButton("##HierarchyDropRoot", ImGui::GetContentRegionAvail());
+                if (ImGui::BeginDragDropTarget())
+                {
+                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("HIERARCHY_ITEM"))
+                    {
+                        auto* dropped = *static_cast<pimm::AGameObject* const*>(payload->Data);
+                        dropped->SetParent(nullptr);
+                    }
+                    ImGui::EndDragDropTarget();
+                }
+            }
+
+            ImGui::End();
     }
 
 private:
@@ -128,5 +132,6 @@ private:
 
     private:
         pimm::World& m_world;
+        const pimm::SceneModeManager& m_modeManager;
         pimm::AGameObject* m_selected{ nullptr };
 };
