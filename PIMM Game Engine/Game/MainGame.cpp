@@ -75,7 +75,7 @@ void MainGame::OnCreate()
 
 	auto* floorBody = floor->CreateOrGetComponent<pimm::RigidBodyComponent>();
 	floorBody->SetBodyType(pimm::BodyType::Static);
-	floorBody->AddBoxCollider({ 10.0f, 0.05f, 10.0f });
+	floorBody->AddBoxCollider({ 20.0f, 0.05f, 20.0f });
 
 	//teapot
 	{
