@@ -3,7 +3,6 @@
 #include <PIMM/AComponent/AComponent.h>
 #include <PIMM/AComponent/TransformComponent.h>
 #include <PIMM/AComponent/RigidBodyComponent.h>
-#include <PIMM/AComponent/CameraComponent.h>
 
 #include <algorithm>
 #include <span>
@@ -108,67 +107,9 @@ void pimm::World::Update(f32 deltaTime)
 	}
 }
 
-void pimm::World::FlushPendingObjects()
-{
-	if (m_events.empty())
-		return;
-
-	std::swap(m_events, m_eventsSwapBuffer);
-	std::swap(m_pendingObjects, m_pendingObjectsSwapBuffer);
-
-	for (auto& gameObjEvent : m_eventsSwapBuffer)
-	{
-		if (gameObjEvent.eventType == EventType::DestroyAll)
-		{
-			this->DeleteAllAGameObjects();
-			continue;
-		}
-
-		if (!gameObjEvent.object) continue;
-
-		auto objectTypeID = gameObjEvent.object->GetTypeID();
-		auto pendingObjectIndex = gameObjEvent.pendingObjectIndex;
-
-		if (gameObjEvent.eventType == EventType::Create)
-		{
-			auto& obj = m_pendingObjectsSwapBuffer[pendingObjectIndex];
-			auto ptr = obj.get();
-
-			m_objects[objectTypeID].push_back(std::move(obj));
-
-			ptr->OnCreate();
-		}
-
-		if (gameObjEvent.eventType == EventType::Destroy)
-		{
-			this->DestroyAGameObject(gameObjEvent.object);
-		}
-	}
-
-	m_pendingObjectsSwapBuffer.clear();
-	m_eventsSwapBuffer.clear();
-}
-
 void pimm::World::SetPhysicsEnabled(bool enabled) noexcept
 {
 	m_physicsEnabled = enabled;
-}
-
-void pimm::World::SetActiveCamera(CameraComponent* camera) noexcept
-{
-	m_activeCamera = camera;
-}
-
-pimm::CameraComponent* pimm::World::GetActiveCamera() const
-{
-	if (m_activeCamera)
-		return m_activeCamera;
-
-	auto it = m_components.find(CameraComponent::getTypeId());
-	if (it != m_components.end() && !it->second.empty())
-		return static_cast<CameraComponent*>(it->second[0]);
-
-	return nullptr;
 }
 
 void pimm::World::ResetPhysicsAccumulator() noexcept

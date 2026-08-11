@@ -28,8 +28,7 @@ namespace pimm
 
 			void SetViewportSize(const Rect& size) noexcept;
 			Rect GetViewportSize() const noexcept;
-		void SetGameCamera(bool isGameCamera) noexcept { m_isGameCamera = isGameCamera; }
-		bool IsGameCamera() const noexcept { return m_isGameCamera; }
+
 		private:
 			//FUNCTIONS
 			void ComputeProjectionMatrix() noexcept;
@@ -43,7 +42,7 @@ namespace pimm
 
 			Rect m_viewportSize{ 1, 1 };
 
-		bool m_dirty{ true };
-		bool m_isGameCamera = false;
+			bool m_dirty{ true }; 
+
 	};
 }
