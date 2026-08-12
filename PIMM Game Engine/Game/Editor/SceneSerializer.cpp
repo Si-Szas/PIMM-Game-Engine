@@ -86,23 +86,23 @@ namespace pimm
 		}
 
 		void WriteRigidBody(std::ofstream& f, RigidBodyComponent& rb)
-		{
-			f << SceneKey::BodyType << " = \"" << BodyTypeToString(rb.GetBodyType()) << "\"\n";
-			f << SceneKey::Mass << " = " << rb.GetMass() << '\n';
+	{
+		f << SceneKey::BodyType << " = \"" << BodyTypeToString(rb.GetBodyType()) << "\"\n";
+		f << SceneKey::Mass << " = " << rb.GetMass() << '\n';
 
-			for (ui32 i = 0; i < rb.GetColliderCount(); ++i)
+		for (ui32 i = 0; i < rb.GetColliderCount(); ++i)
+		{
+			const auto& c = rb.GetCollider(i);
+			f << SceneKey::ColliderPrefix << i << " = ";
+			f << ColliderTypeToString(c.type) << ' ';
+			switch (c.type)
 			{
-				const auto& c = rb.GetCollider(i);
-				f << SceneKey::ColliderPrefix << i << " = ";
-				f << ColliderTypeToString(c.type) << ' ';
-				switch (c.type)
-				{
-				case ColliderType::Box:     WriteVec3(f, c.halfExtents); break;
-				case ColliderType::Sphere:  f << c.radius << '\n'; break;
-				case ColliderType::Capsule: f << c.radius << ' ' << c.height << '\n'; break;
-				}
+			case ColliderType::Box:     WriteVec3(f, c.halfExtents); break;
+			case ColliderType::Sphere:  f << c.radius << '\n'; break;
+			case ColliderType::Capsule: f << c.radius << ' ' << c.height << '\n'; break;
 			}
 		}
+	}
 
 		void WriteMaterial(std::ofstream& f, MaterialComponent& mc)
 		{
@@ -638,36 +638,37 @@ namespace pimm
 			}
 
 			if (obj.hasRigidBody)
+		{
+			auto* rb = created->CreateOrGetComponent<RigidBodyComponent>();
+			rb->SetBodyType(obj.bodyType);
+			for (auto& c : obj.colliders)
 			{
-				auto* rb = created->CreateOrGetComponent<RigidBodyComponent>();
-				rb->SetBodyType(obj.bodyType);
-				rb->SetMass(obj.mass);
-				for (auto& c : obj.colliders)
+				switch (c.type)
 				{
-					switch (c.type)
-					{
-					case ColliderType::Box:     rb->AddBoxCollider(c.halfExtents); break;
-					case ColliderType::Sphere:  rb->AddSphereCollider(c.radius); break;
-					case ColliderType::Capsule: rb->AddCapsuleCollider(c.radius, c.height); break;
-					}
+				case ColliderType::Box:     rb->AddBoxCollider(c.halfExtents); break;
+				case ColliderType::Sphere:  rb->AddSphereCollider(c.radius); break;
+				case ColliderType::Capsule: rb->AddCapsuleCollider(c.radius, c.height); break;
 				}
 			}
+			rb->SetMass(obj.mass);
+			rb->SyncColliderScale();
+		}
 
-			if (obj.hasCamera)
-			{
-				auto* cam = created->CreateOrGetComponent<CameraComponent>();
-				cam->SetNearPlane(obj.nearPlane);
-				cam->SetFarPlane(obj.farPlane);
-				cam->SetFieldOfView(obj.fov);
-				cam->SetActive(obj.activeCamera);
-			}
+		if (obj.hasCamera)
+		{
+			auto* cam = created->CreateOrGetComponent<CameraComponent>();
+			cam->SetNearPlane(obj.nearPlane);
+			cam->SetFarPlane(obj.farPlane);
+			cam->SetFieldOfView(obj.fov);
+			cam->SetActive(obj.activeCamera);
+		}
 
-			if (obj.hasController)
-			{
-				auto* ctrl = created->CreateOrGetComponent<ControllerComponent>();
-				ctrl->SetSensitivity(obj.sensitivity);
-				ctrl->SetSpeedModifier(obj.speedModifier);
-			}
+		if (obj.hasController)
+		{
+			auto* ctrl = created->CreateOrGetComponent<ControllerComponent>();
+			ctrl->SetSensitivity(obj.sensitivity);
+			ctrl->SetSpeedModifier(obj.speedModifier);
+		}
 
 			if (obj.hasMeshComponent)
 			{

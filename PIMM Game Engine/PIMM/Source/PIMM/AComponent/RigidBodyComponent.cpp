@@ -126,7 +126,12 @@ bool pimm::RigidBodyComponent::IsGravityEnabled() const noexcept
 
 void pimm::RigidBodyComponent::AddBoxCollider(const Vec3& halfExtents)
 {
-	auto* shape = m_world.GetPhysicsCommon().createBoxShape(ToRP3D(halfExtents));
+	const Vec3 scale = m_object.GetTransform().GetScale();
+	auto* shape = m_world.GetPhysicsCommon().createBoxShape(ToRP3D({
+		halfExtents.x * scale.x,
+		halfExtents.y * scale.y,
+		halfExtents.z * scale.z
+	}));
 	auto* collider = m_rigidBody->addCollider(shape, rp3d::Transform::identity());  
 	m_rigidBody->updateMassPropertiesFromColliders();
 	m_colliders.push_back({ ColliderType::Box, halfExtents, 0.0f, 0.0f });
@@ -135,7 +140,9 @@ void pimm::RigidBodyComponent::AddBoxCollider(const Vec3& halfExtents)
 
 void pimm::RigidBodyComponent::AddSphereCollider(f32 radius)
 {
-	auto* shape = m_world.GetPhysicsCommon().createSphereShape(radius);
+	const Vec3 scale = m_object.GetTransform().GetScale();
+	f32 uniformScale = std::max({ scale.x, scale.y, scale.z });
+	auto* shape = m_world.GetPhysicsCommon().createSphereShape(radius * uniformScale);
 	auto* collider = m_rigidBody->addCollider(shape, rp3d::Transform::identity());
 	m_rigidBody->updateMassPropertiesFromColliders();
 	m_colliders.push_back({ ColliderType::Sphere, {}, radius, 0.0f });
@@ -144,7 +151,9 @@ void pimm::RigidBodyComponent::AddSphereCollider(f32 radius)
 
 void pimm::RigidBodyComponent::AddCapsuleCollider(f32 radius, f32 height)
 {
-	auto* shape = m_world.GetPhysicsCommon().createCapsuleShape(radius, height);
+	const Vec3 scale = m_object.GetTransform().GetScale();
+	f32 radialScale = std::max(scale.x, scale.z);
+	auto* shape = m_world.GetPhysicsCommon().createCapsuleShape(radius * radialScale, height * scale.y);
 	auto* collider = m_rigidBody->addCollider(shape, rp3d::Transform::identity());
 	m_rigidBody->updateMassPropertiesFromColliders();
 	m_colliders.push_back({ ColliderType::Capsule, {}, radius, height });
