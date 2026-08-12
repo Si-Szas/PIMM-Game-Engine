@@ -69,6 +69,15 @@ namespace pimm
 		ui32 GetSelectedObjectIndex();
 
 		AGameObject* GetSelectedGameObject();
+		std::span<AGameObject* const> GetSelectedGameObjects() const noexcept;
+		bool IsSelected(const AGameObject* object) const noexcept;
+		void SelectObject(AGameObject* object);
+		void DeselectObject(AGameObject* object);
+		void ToggleSelection(AGameObject* object);
+		void DeselectAllObjects();
+
+		void SetSearchFilter(const std::string& filter) noexcept;
+		const std::string& GetSearchFilter() const noexcept;
 		CameraObject* GetActiveCameraObject() const noexcept;
 		bool HasActiveCameraObject() const noexcept;
 		void SetActiveCameraObject(CameraObject* camera) noexcept;
@@ -112,8 +121,10 @@ namespace pimm
 		WorldRenderer& m_worldRenderer;
 
 		//INSPECTOR PANEL
-		AGameObject* m_selectedGameObject{};
+		std::vector<AGameObject*> m_selectedObjects{};
 		ui32 m_selectedObjectIndex = 0;
+
+		std::string m_searchFilter{};
 
 		//PHYSICS
 		rp3d::PhysicsCommon m_physicsCommon;

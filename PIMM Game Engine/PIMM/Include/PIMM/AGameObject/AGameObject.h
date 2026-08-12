@@ -87,6 +87,9 @@ namespace pimm
 
 		void SetParent(AGameObject* parent);
 
+		bool IsEnabled() const noexcept { return m_enabled; }
+		void SetEnabled(bool enabled) noexcept { m_enabled = enabled; }
+
 		//DESTRUCTOR
 		virtual ~AGameObject();
 
@@ -129,6 +132,8 @@ namespace pimm
 		f32 speedModifier = 3.0f;
 
 		std::string m_name;
+
+		bool m_enabled = true;
 
 		AGameObject* m_parent{ nullptr };
 		std::vector<AGameObject*> m_children{};

@@ -1,6 +1,7 @@
 #pragma once
 #include <PIMM/UIManager/APanel.h>
 #include <PIMM/ImGui/imgui.h>
+#include <PIMM/Game/World.h>
 #include "../Editor/SceneMode.h"
 #include <functional>
 namespace pimm
@@ -27,11 +28,12 @@ namespace pimm
 		using FrameStepCallback = std::function<void()>;
 		using SceneFileCallback = std::function<void()>;
 
-		TopbarPanel(SpawnCallback onSpawn, ModeCallback onPlay, ModeCallback onPause, ModeCallback onStop, FrameStepCallback onFrameStep, SceneFileCallback onSave, SceneFileCallback onLoad)
-			: APanel("Topbar"), m_onSpawn(std::move(onSpawn)), m_onPlay(std::move(onPlay)), m_onPause(std::move(onPause)), m_onStop(std::move(onStop)), m_onFrameStep(std::move(onFrameStep)), m_onSave(std::move(onSave)), m_onLoad(std::move(onLoad)) {
+		TopbarPanel(World& world, WorldRenderer& wr, SpawnCallback onSpawn, ModeCallback onPlay, ModeCallback onPause, ModeCallback onStop, FrameStepCallback onFrameStep, SceneFileCallback onSave, SceneFileCallback onLoad)
+			: APanel("Topbar"), m_world(world), m_worldRenderer(wr), m_onSpawn(std::move(onSpawn)), m_onPlay(std::move(onPlay)), m_onPause(std::move(onPause)), m_onStop(std::move(onStop)), m_onFrameStep(std::move(onFrameStep)), m_onSave(std::move(onSave)), m_onLoad(std::move(onLoad)) {
 		}
 
 		void SetCurrentMode(SceneMode mode) { m_currentMode = mode; }
+		int GetRenderMode() const { return m_renderMode; }
 
 		void Render() override {
 			if (ImGui::BeginMainMenuBar())
@@ -82,6 +84,20 @@ namespace pimm
 					if (m_onStop) m_onStop();
 				ImGui::EndDisabled();
 
+				ImGui::SameLine();
+				if (ImGui::Button("1/4"))
+					m_worldRenderer.SetViewportLayout(
+						m_worldRenderer.GetViewportLayout() == ViewportLayout::Single
+							? ViewportLayout::Quad : ViewportLayout::Single);
+
+				ImGui::SameLine();
+				{
+					static const char* modes[] = { "Lit", "Unlit", "Wireframe", "Lit+Wire", "Unlit+Wire" };
+					ImGui::SetNextItemWidth(120.0f);
+					if (ImGui::Combo("##RenderMode", &m_renderMode, modes, IM_ARRAYSIZE(modes)))
+						{}
+				}
+
 				ImGui::EndMainMenuBar();
 			}
 		}
@@ -93,6 +109,9 @@ namespace pimm
 		FrameStepCallback m_onFrameStep;
 		SceneFileCallback m_onSave;
 		SceneFileCallback m_onLoad;
+		World& m_world;
+		WorldRenderer& m_worldRenderer;
 		SceneMode m_currentMode = SceneMode::Edit;
+		int m_renderMode = 0;
 	};
 }

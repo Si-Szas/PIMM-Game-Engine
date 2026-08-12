@@ -28,8 +28,27 @@ public:
     {
         ImGui::Begin("Hierarchy");
 
+            {
+                float searchWidth = ImGui::GetContentRegionAvail().x;
+                ImGui::SetNextItemWidth(searchWidth);
+                static char searchBuf[256] = {};
+                strcpy_s(searchBuf, m_world.GetSearchFilter().c_str());
+                if (ImGui::InputTextWithHint("##HierarchySearch", "Search...", searchBuf, sizeof(searchBuf)))
+                    m_world.SetSearchFilter(searchBuf);
+                if (!m_world.GetSearchFilter().empty())
+                {
+                    ImGui::SameLine();
+                    if (ImGui::SmallButton("X"))
+                        m_world.SetSearchFilter("");
+                }
+            }
+
+            ImGui::Separator();
+
             auto gameObjects = m_world.GetAllGameObjects();
             bool isEditMode = m_modeManager.IsEditMode();
+            const auto& searchFilter = m_world.GetSearchFilter();
+            bool hasFilter = !searchFilter.empty();
 
             for (auto* object : gameObjects)
             {
@@ -72,10 +91,12 @@ public:
                     if (!object) continue;
                     if (object->GetTypeID() == pimm::Player::getTypeId()) continue;
                     if (object->GetParent() != nullptr) continue;
+                    if (hasFilter && !ObjectMatchesFilter(object, searchFilter))
+                        continue;
                     RenderNode(object, gameObjects);
                 }
 
-            if (isEditMode)
+            if (isEditMode && !hasFilter)
             {
                 ImGui::InvisibleButton("##HierarchyDropRoot", ImGui::GetContentRegionAvail());
                 if (ImGui::BeginDragDropTarget())
@@ -89,10 +110,35 @@ public:
                 }
             }
 
+            if (isEditMode && ImGui::IsKeyPressed(ImGuiKey_Delete) && ImGui::IsWindowFocused())
+            {
+                auto selected = m_world.GetSelectedGameObjects();
+                for (auto* obj : selected)
+                {
+                    if (obj && obj->GetTypeID() != pimm::Player::getTypeId())
+                        m_world.DestroyAGameObjectInternal(obj);
+                }
+                m_world.DeselectAllObjects();
+            }
+
             ImGui::End();
     }
 
 private:
+    bool ObjectMatchesFilter(pimm::AGameObject* object, const std::string& filter)
+    {
+        if (filter.empty())
+            return true;
+        std::string name = object->GetObjectName();
+        std::string nameLower;
+        std::string filterLower;
+        nameLower.resize(name.size());
+        filterLower.resize(filter.size());
+        std::transform(name.begin(), name.end(), nameLower.begin(), ::tolower);
+        std::transform(filter.begin(), filter.end(), filterLower.begin(), ::tolower);
+        return nameLower.find(filterLower) != std::string::npos;
+    }
+
     void RenderNode(pimm::AGameObject* object, std::span<pimm::AGameObject* const> gameObjects)
     {
         ImGui::PushID(object);
@@ -100,19 +146,29 @@ private:
         const bool hasChildren = !object->GetChildren().empty();
         ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
         if (!hasChildren) flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_Bullet;
-        if (object == m_selected) flags |= ImGuiTreeNodeFlags_Selected;
+        if (m_world.IsSelected(object)) flags |= ImGuiTreeNodeFlags_Selected;
 
         bool open = ImGui::TreeNodeEx(object->GetObjectLabel(object), flags);
 
         if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
         {
-            m_selected = object;
+            bool ctrlHeld = ImGui::GetIO().KeyCtrl;
+            bool shiftHeld = ImGui::GetIO().KeyShift;
 
-            auto it = std::ranges::find(gameObjects, object);
-            if (it != gameObjects.end())
+            if (ctrlHeld)
             {
-                pimm::ui32 realIndex = static_cast<pimm::ui32>(std::distance(gameObjects.begin(), it));
-                m_world.SetSelectedObjectIndex(realIndex);
+                m_world.ToggleSelection(object);
+                m_lastClicked = object;
+            }
+            else if (shiftHeld && m_lastClicked)
+            {
+                HandleRangeSelect(gameObjects, m_lastClicked, object);
+            }
+            else
+            {
+                m_world.DeselectAllObjects();
+                m_world.SelectObject(object);
+                m_lastClicked = object;
             }
         }
 
@@ -163,6 +219,23 @@ private:
         ImGui::PopID();
     }
 
+    void HandleRangeSelect(std::span<pimm::AGameObject* const> gameObjects, pimm::AGameObject* from, pimm::AGameObject* to)
+    {
+        auto itFrom = std::find(gameObjects.begin(), gameObjects.end(), from);
+        auto itTo = std::find(gameObjects.begin(), gameObjects.end(), to);
+        if (itFrom == gameObjects.end() || itTo == gameObjects.end())
+            return;
+
+        if (itFrom > itTo)
+            std::swap(itFrom, itTo);
+
+        for (auto it = itFrom; it <= itTo; ++it)
+        {
+            if (*it && (*it)->GetTypeID() != pimm::Player::getTypeId())
+                m_world.SelectObject(*it);
+        }
+    }
+
     std::string CleanName(const std::string& name)
     {
         //Cleans up the name in case of duplicate brackest
@@ -177,5 +250,5 @@ private:
     private:
         pimm::World& m_world;
         const pimm::SceneModeManager& m_modeManager;
-        pimm::AGameObject* m_selected{ nullptr };
+        pimm::AGameObject* m_lastClicked{ nullptr };
 };
