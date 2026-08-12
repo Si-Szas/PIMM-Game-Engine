@@ -388,7 +388,7 @@ namespace pimm
 
 							if (hasCollider && rigidBody->GetColliderCount() > 0)
 							{
-								const ColliderInfo& info = rigidBody->GetCurrentColliderInfo(0);
+								const ColliderInfo& info = rigidBody->GetCollider(0);
 								static const char* colliderTypeNames[] = { "Box", "Sphere", "Capsule" };
 								int currentType = static_cast<int>(info.type);
 
@@ -405,7 +405,7 @@ namespace pimm
 										}
 									}
 
-									const ColliderInfo& current = rigidBody->GetCurrentColliderInfo(0);
+									const ColliderInfo& current = rigidBody->GetCollider(0);
 
 									if (current.type == ColliderType::Box)
 									{
