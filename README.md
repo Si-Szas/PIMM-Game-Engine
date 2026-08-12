@@ -9,8 +9,8 @@ Developed by:
 The entry point of the engine (main function) is found in the **Game** folder in **main.cpp**. In other words, go to **PIMM Game Engine/Game/main.cpp**.
 ## Instructions
 ### How to Run the Program for Test Cases
-1. Download the code .zip file on the branch's test case that you want to view
+1. Download the code .zip file from the main branch for the most updated version of the Scene Editor project
 2. Open the **PIMM Game Engine** folder and open the project solution, **PIMM Game Engine.sln**
 3. Run / Build the solution on Debug mode, or use the **Local Windows Debugger** button at the top bar of Visual Studio
-### Other notes
+## Other notes
 - You can press the [Esc] button to close the program :D
