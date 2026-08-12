@@ -6,13 +6,30 @@
 #include <PIMM/Math/Vec3.h>
 #include <PIMM/Math/Vec4.h>
 #include <PIMM/Math/Matrix4x4.h>
+#include <d3d11.h>
+#include <wrl.h>
 #include <vector>
 #include <memory>
 
 namespace pimm
 {
 	class GizmoRenderer;
-	//We don't want the graphics engine to be further dervied by other classes
+
+	enum class RenderMode
+	{
+		Lit = 0,
+		Unlit,
+		Wireframe,
+		LitWireframe,
+		UnlitWireframe
+	};
+
+	enum class ViewportLayout
+	{
+		Single = 0,
+		Quad
+	};
+
 	class WorldRenderer final : public Base
 	{
 	public:
@@ -32,8 +49,14 @@ namespace pimm
 		void SetSceneCameraMode(bool enabled) noexcept;
 		bool IsSceneCameraMode() const noexcept;
 
+		void SetRenderMode(RenderMode mode) noexcept { m_renderMode = mode; }
+		RenderMode GetRenderMode() const noexcept { return m_renderMode; }
 
-		//DESTRUCTOR
+		void SetViewportLayout(ViewportLayout layout) noexcept;
+		ViewportLayout GetViewportLayout() const noexcept { return m_viewportLayout; }
+		ui32 GetViewportCount() const noexcept;
+		FrameBuffer* GetViewportFrameBuffer(ui32 index) const;
+
 		virtual ~WorldRenderer() override;
 
 		struct alignas(16) ObjectData
@@ -48,10 +71,11 @@ namespace pimm
 		};
 
 	private:
+		Matrix4x4 BuildOrthoViewMatrix(ui32 viewIndex) const;
+
 		Rect m_swapChainSize{};
 		Rect m_sceneViewSize{};
 		UIManager& m_uiManager;
-		//Define a smart pointer to a render system variable of class Render System
 		GraphicsDevice& m_graphicsDevice;
 		RefPtr<DeviceContext> m_deviceContext{};
 		RefPtr<GraphicsPipelineState> m_pipeline{};
@@ -64,10 +88,16 @@ namespace pimm
 		RefPtr<ConstantBuffer> m_materialConstantBuffer{};
 
 		UniquePtr<FrameBuffer> m_frameBuffer{};
+		UniquePtr<FrameBuffer> m_viewportFrameBuffers[4]{};
 
 		RefPtr<Sampler> m_sampler{};
 		std::vector<Texture*> m_textures{};
 		bool m_sceneCameraMode = false;
+		RenderMode m_renderMode = RenderMode::Lit;
+		ViewportLayout m_viewportLayout = ViewportLayout::Single;
+
+		Microsoft::WRL::ComPtr<ID3D11RasterizerState> m_wireframeRasterizer{};
+		Microsoft::WRL::ComPtr<ID3D11PixelShader> m_unlitPixelShader{};
 
 		std::unique_ptr<GizmoRenderer> m_gizmoRenderer{};
 	};

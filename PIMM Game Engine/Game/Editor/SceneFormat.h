@@ -16,6 +16,7 @@ namespace pimm
 		constexpr const char* State = "State";
 
 		constexpr const char* Name = "name";
+		constexpr const char* Enabled = "enabled";
 		constexpr const char* Version = "version";
 		constexpr const char* Type = "type";
 		constexpr const char* Parent = "parent";

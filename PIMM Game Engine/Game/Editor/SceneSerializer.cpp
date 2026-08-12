@@ -241,6 +241,7 @@ namespace pimm
 			file << "[" << SceneKey::Object << ' ' << i << "]\n";
 			file << SceneKey::Type << " = \"" << GetTypeName(obj->GetTypeID()) << "\"\n";
 			file << SceneKey::Name << " = \"" << obj->GetObjectName() << "\"\n";
+			file << SceneKey::Enabled << " = " << (obj->IsEnabled() ? 1 : 0) << '\n';
 
 			auto* parent = obj->GetParent();
 			int parentIndex = -1;
@@ -325,6 +326,7 @@ namespace pimm
 		{
 			size_t typeId = 0;
 			std::string name;
+			bool enabled = true;
 			Vec3 position{ 0.0f };
 			Vec3 scale{ 1.0f };
 			Vec3 rotation{ 0.0f };
@@ -449,6 +451,8 @@ namespace pimm
 					value.erase(std::remove(value.begin(), value.end(), '\"'), value.end());
 					obj.name = value;
 				}
+				else if (key == SceneKey::Enabled)
+					obj.enabled = std::stoi(value) != 0;
 				else if (key == SceneKey::Parent)
 					obj.parentIndex = std::stoi(value);
 				else if (key == SceneKey::Position)
@@ -613,6 +617,8 @@ namespace pimm
 			transform.SetPosition(obj.position);
 			transform.SetScale(obj.scale);
 			transform.SetRotation(obj.rotation);
+
+			created->SetEnabled(obj.enabled);
 
 			if (obj.hasMaterial)
 			{

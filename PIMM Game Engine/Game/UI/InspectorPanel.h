@@ -33,15 +33,89 @@ namespace pimm
 		void Render() override
 		{
 			ImGui::Begin("Inspector");
-			AGameObject* gameObject = m_world.GetSelectedGameObject();
+			auto selectedObjects = m_world.GetSelectedGameObjects();
+			AGameObject* gameObject = (selectedObjects.size() == 1) ? selectedObjects[0] : nullptr;
 			bool isEditMode = m_modeManager.IsEditMode();
+			bool isMultiSelect = selectedObjects.size() > 1;
 			bool removeRigidBodyRequested = false;
 			bool removeControllerRequested = false;
 
-			if(gameObject){
+			if (isMultiSelect)
+			{
+				ImGui::Text("%zu objects selected", selectedObjects.size());
+				ImGui::NewLine();
+
+				if (isEditMode)
+				{
+					ImGui::Separator();
+					ImGui::Text("Transform (Multi-Edit)");
+					ImGui::NewLine();
+
+					auto& firstTransform = selectedObjects[0]->GetTransform();
+					Vec3 position = firstTransform.GetPosition();
+					Vec3 rotation = firstTransform.GetRotation();
+					Vec3 scale = firstTransform.GetScale();
+
+					float positionArr[3] = { position.x, position.y, position.z };
+					float rotationArr[3] = { rotation.x, rotation.y, rotation.z };
+					float scaleArr[3] = { scale.x, scale.y, scale.z };
+
+					float prevPos[3] = { positionArr[0], positionArr[1], positionArr[2] };
+					float prevRot[3] = { rotationArr[0], rotationArr[1], rotationArr[2] };
+					float prevScale[3] = { scaleArr[0], scaleArr[1], scaleArr[2] };
+
+					if (ImGui::DragFloat3("Position", positionArr, 0.1f))
+					{
+						Vec3 delta(positionArr[0] - prevPos[0], positionArr[1] - prevPos[1], positionArr[2] - prevPos[2]);
+						for (auto* obj : selectedObjects)
+						{
+							if (!obj) continue;
+							Vec3 p = obj->GetTransform().GetPosition();
+							obj->GetTransform().SetPosition({ p.x + delta.x, p.y + delta.y, p.z + delta.z });
+							if (auto* rigidBody = obj->GetComponent<RigidBodyComponent>())
+								rigidBody->SyncPhysicsFromTransform();
+						}
+					}
+
+					if (ImGui::DragFloat3("Rotation", rotationArr, 0.1f))
+					{
+						Vec3 delta(rotationArr[0] - prevRot[0], rotationArr[1] - prevRot[1], rotationArr[2] - prevRot[2]);
+						for (auto* obj : selectedObjects)
+						{
+							if (!obj) continue;
+							Vec3 r = obj->GetTransform().GetRotation();
+							obj->GetTransform().SetRotation({ r.x + delta.x, r.y + delta.y, r.z + delta.z });
+							if (auto* rigidBody = obj->GetComponent<RigidBodyComponent>())
+								rigidBody->SyncPhysicsFromTransform();
+						}
+					}
+
+					if (ImGui::DragFloat3("Scale", scaleArr, 0.1f))
+					{
+						Vec3 delta(scaleArr[0] - prevScale[0], scaleArr[1] - prevScale[1], scaleArr[2] - prevScale[2]);
+						for (auto* obj : selectedObjects)
+						{
+							if (!obj) continue;
+							Vec3 s = obj->GetTransform().GetScale();
+							obj->GetTransform().SetScale({ s.x + delta.x, s.y + delta.y, s.z + delta.z });
+							if (auto* rigidBody = obj->GetComponent<RigidBodyComponent>())
+								rigidBody->SyncColliderScale();
+						}
+					}
+				}
+			}
+			else if(gameObject){
 				size_t objectType = gameObject->GetTypeID();
 
 				ImGui::Text(gameObject->GetObjectLabel(gameObject));
+
+				if (isEditMode)
+				{
+					bool enabled = gameObject->IsEnabled();
+					if (ImGui::Checkbox("Enabled", &enabled))
+						gameObject->SetEnabled(enabled);
+				}
+
 				ImGui::NewLine();
 
 				///////////COMPONENTS///////////

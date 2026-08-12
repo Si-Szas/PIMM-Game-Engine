@@ -54,6 +54,8 @@ void MainGame::OnCreate()
 	uiManager->RegisterPanel(std::make_unique<DebugPanel>(GetLogger()));
 
 	auto topbarPanel = std::make_unique<TopbarPanel>(
+		world,
+		GetWorldRenderer(),
 		[this](pimm::SpawnObjectType type, bool withPhysics)
 		{
 			SpawnObject(type, withPhysics);
@@ -99,6 +101,9 @@ void MainGame::OnUpdate(f32 deltaTime)
 	auto& world = GetWorld();
 
 	world.SetPlayMode(m_sceneModeManager.IsPlayMode());
+
+	if (m_topbarPanel)
+		GetWorldRenderer().SetRenderMode(static_cast<RenderMode>(m_topbarPanel->GetRenderMode()));
 
 	if (m_sceneModeManager.IsPlayMode())
 	{

@@ -74,7 +74,8 @@ void pimm::World::Update(f32 deltaTime)
 	{
 		for (auto& object : objects)
 		{
-			object->OnUpdate(deltaTime);
+			if (object->IsEnabled())
+				object->OnUpdate(deltaTime);
 		}
 	}
 
@@ -140,12 +141,13 @@ void pimm::World::SetSelectedObjectIndex(ui32 newIndex)
 	if (newIndex >= gameObjects.size())
 	{
 		m_selectedObjectIndex = 0;
-		m_selectedGameObject = nullptr;
+		m_selectedObjects.clear();
 		return;
 	}
 
 	m_selectedObjectIndex = newIndex;
-	m_selectedGameObject = gameObjects[newIndex];
+	m_selectedObjects.clear();
+	m_selectedObjects.push_back(gameObjects[newIndex]);
 }
 
 pimm::ui32 pimm::World::GetSelectedObjectIndex()
@@ -155,7 +157,61 @@ pimm::ui32 pimm::World::GetSelectedObjectIndex()
 
 pimm::AGameObject* pimm::World::GetSelectedGameObject()
 {
-	return m_selectedGameObject;
+	if (m_selectedObjects.empty())
+		return nullptr;
+	return m_selectedObjects[0];
+}
+
+std::span<pimm::AGameObject* const> pimm::World::GetSelectedGameObjects() const noexcept
+{
+	return m_selectedObjects;
+}
+
+bool pimm::World::IsSelected(const AGameObject* object) const noexcept
+{
+	return std::find(m_selectedObjects.begin(), m_selectedObjects.end(), object) != m_selectedObjects.end();
+}
+
+void pimm::World::SelectObject(AGameObject* object)
+{
+	if (!object)
+		return;
+	if (!IsSelected(object))
+		m_selectedObjects.push_back(object);
+}
+
+void pimm::World::DeselectObject(AGameObject* object)
+{
+	if (!object)
+		return;
+	auto it = std::find(m_selectedObjects.begin(), m_selectedObjects.end(), object);
+	if (it != m_selectedObjects.end())
+		m_selectedObjects.erase(it);
+}
+
+void pimm::World::ToggleSelection(AGameObject* object)
+{
+	if (!object)
+		return;
+	if (IsSelected(object))
+		DeselectObject(object);
+	else
+		SelectObject(object);
+}
+
+void pimm::World::DeselectAllObjects()
+{
+	m_selectedObjects.clear();
+}
+
+void pimm::World::SetSearchFilter(const std::string& filter) noexcept
+{
+	m_searchFilter = filter;
+}
+
+const std::string& pimm::World::GetSearchFilter() const noexcept
+{
+	return m_searchFilter;
 }
 
 pimm::CameraObject* pimm::World::GetActiveCameraObject() const noexcept
@@ -345,8 +401,10 @@ void pimm::World::DeleteAllAGameObjects()
 
 	m_objects.clear();
 
-	m_selectedGameObject = nullptr;
+	m_selectedObjects.clear();
 	m_selectedObjectIndex = 0;
+
+	m_searchFilter.clear();
 }
 
 void pimm::World::DestroyAGameObjectInternal(AGameObject* object)

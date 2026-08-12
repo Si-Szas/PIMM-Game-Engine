@@ -39,9 +39,27 @@
 
 #include <PIMM/Math/Vec2.h>
 #include <PIMM/Math/Vec3.h>
+#include <d3dcompiler.h>
 #include <iostream>
 #include <fstream>
 #include <ranges>
+
+#pragma comment(lib, "d3dcompiler")
+
+namespace
+{
+	constexpr const char* kUnlitShaderSource = R"(
+cbuffer MaterialData : register(b2)
+{
+	float3 materialColor;
+}
+
+float4 PS_Main(float4 position : SV_Position) : SV_Target
+{
+	return float4(materialColor, 1.0f);
+}
+)";
+}
 
 pimm::WorldRenderer::WorldRenderer(const WorldRendererDescriptor& descriptor) :
 	Base(descriptor.base),
@@ -84,69 +102,103 @@ pimm::WorldRenderer::WorldRenderer(const WorldRendererDescriptor& descriptor) :
 
 	//Create the gizmo renderer for editor visuals (e.g. camera frustums)
 	m_gizmoRenderer = std::make_unique<GizmoRenderer>(*m_graphicsDevice.GetD3DDevice().Get(), m_logger);
+
+	D3D11_RASTERIZER_DESC rsDesc{};
+	rsDesc.FillMode = D3D11_FILL_WIREFRAME;
+	rsDesc.CullMode = D3D11_CULL_NONE;
+	rsDesc.FrontCounterClockwise = FALSE;
+	rsDesc.DepthClipEnable = TRUE;
+	rsDesc.AntialiasedLineEnable = TRUE;
+	m_graphicsDevice.GetD3DDevice()->CreateRasterizerState(&rsDesc, &m_wireframeRasterizer);
+
+	{
+		size_t srcLen = std::char_traits<char>::length(kUnlitShaderSource);
+		Microsoft::WRL::ComPtr<ID3DBlob> psBlob;
+		Microsoft::WRL::ComPtr<ID3DBlob> errBlob;
+		HRESULT hr = D3DCompile(kUnlitShaderSource, srcLen, "UnlitPS", nullptr, nullptr, "PS_Main", "ps_4_0", 0, 0, &psBlob, &errBlob);
+		if (SUCCEEDED(hr) && psBlob)
+			m_graphicsDevice.GetD3DDevice()->CreatePixelShader(psBlob->GetBufferPointer(), psBlob->GetBufferSize(), nullptr, &m_unlitPixelShader);
+	}
 }
 
 void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 deltaTime)
 {
-	////////// CAMERA SET-UP //////////
-	m_swapChainSize = swapChain.GetSize();;
+	m_swapChainSize = swapChain.GetSize();
 	Rect frameBufferSize = (m_sceneViewSize.width > 0 && m_sceneViewSize.height > 0) ? m_sceneViewSize : m_swapChainSize;
-	////////// DEVICE CONTEXT //////////
-	// - Update the constant buffer before everything
-	// - context.UpdateConstantBuffer(vsConstantBuffer, &data);
-	// - We want to first clear the buffer, then after rendering on a back buffer, we want to move that back to the front buffer
-	// - Record render command that clears content of back buffer and binds it so we can render elements onto it
-	// - UsPipeline
-	//	- Bind all objects inside graphics pipeline state (shaders) to actual GPU pipeline
+
 	auto& context = *m_deviceContext;
-	
-	//context.ClearAndSetBackBuffer(swapChain, { 0.251f, 0.141f, 0.31f, 1.0f });
+
 	context.SetViewportSize(frameBufferSize);
 
-	////////// TEXUTRES //////////
 	Sampler* samplers[] = { m_sampler.get() };
 	context.SetSamplers(std::span<Sampler*>{samplers});
 
-	////////// ACOMPONENTS //////////
 	auto numberOfComponents = 0u;
+
+	Rect viewportSize = frameBufferSize;
+	if (m_viewportLayout == ViewportLayout::Quad)
+	{
+		viewportSize.width /= 2;
+		viewportSize.height /= 2;
+	}
+
+	pimm::FrameBufferDescriptor viewportFbDesc{
+		.graphicsDevice = m_graphicsDevice,
+		.size = viewportSize,
+		.sampleCount = 1
+	};
+
+	for (ui32 vp = 0; vp < GetViewportCount(); ++vp)
+	{
+		if (!m_viewportFrameBuffers[vp])
+			m_viewportFrameBuffers[vp] = m_graphicsDevice.CreateFrameBuffer(viewportFbDesc);
+		else
+			m_viewportFrameBuffers[vp]->Create(m_graphicsDevice, viewportFbDesc);
+	}
 
 	pimm::FrameBufferDescriptor frameBufferDescriptor{
 		.graphicsDevice = m_graphicsDevice,
 		.size = frameBufferSize,
 		.sampleCount = 1
 	};
-	
-	m_frameBuffer->Create(m_graphicsDevice, frameBufferDescriptor);
-	context.ClearAndSetFrameBuffer(*m_frameBuffer, { 0.251f, 0.141f, 0.31f, 1.0f });
-	
 
-	////////// CONSTANT BUFFER DATA //////////
+	m_frameBuffer->Create(m_graphicsDevice, frameBufferDescriptor);
+
 	auto& cameraCB = *m_cameraConstantBuffer;
 	auto& objectCB = *m_objectConstantBuffer;
 	auto& materialCB = *m_materialConstantBuffer;
 
-		{
-		////////// CONSTANT BUFFER DATA //////////
+	for (ui32 vp = 0; vp < GetViewportCount(); ++vp)
+	{
 		CameraData cameraData{};
+
+		if (m_viewportLayout == ViewportLayout::Quad && vp > 0)
 		{
-				if (m_sceneCameraMode)
+			cameraData.view = BuildOrthoViewMatrix(vp);
+			f32 halfSize = 5.0f;
+			cameraData.projection = Matrix4x4::OrthoLH(
+				halfSize * 2.0f * (f32(viewportSize.width) / f32(viewportSize.height)),
+				halfSize * 2.0f, 0.01f, 100.0f);
+		}
+		else
+		{
+			if (m_sceneCameraMode)
+			{
+				auto* cameraObject = world.GetActiveCameraObject();
+				if (cameraObject && cameraObject->GetTypeID() == CameraObject::getTypeId())
 				{
-					auto* cameraObject = world.GetActiveCameraObject();
-					if (cameraObject && cameraObject->GetTypeID() == CameraObject::getTypeId())
+					auto* camComponent = cameraObject->GetComponent<CameraComponent>();
+					if (camComponent)
 					{
-						auto* camComponent = cameraObject->GetComponent<CameraComponent>();
-						if (camComponent)
-						{
-							cameraData.view = camComponent->GetViewMatrix();
-							camComponent->SetViewportSize(frameBufferSize);
-							cameraData.projection = camComponent->GetProjectionMatrix();
-						}
+						cameraData.view = camComponent->GetViewMatrix();
+						camComponent->SetViewportSize(frameBufferSize);
+						cameraData.projection = camComponent->GetProjectionMatrix();
 					}
 				}
-				else
-				{
+			}
+			else
+			{
 				auto cameraComponents = world.GetAComponent<CameraComponent>(numberOfComponents);
-
 				for (auto i : std::views::iota(0u, numberOfComponents))
 				{
 					auto camComponent = cameraComponents[i];
@@ -156,45 +208,65 @@ void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 d
 					camComponent->SetViewportSize(frameBufferSize);
 					cameraData.projection = camComponent->GetProjectionMatrix();
 					break;
-			}
 				}
-				context.UpdateConstantBuffer(cameraCB, std::as_bytes(std::span{ &cameraData, 1 }));
+			}
 		}
+
+		context.UpdateConstantBuffer(cameraCB, std::as_bytes(std::span{ &cameraData, 1 }));
+
+		FrameBuffer& targetFb = (m_viewportLayout == ViewportLayout::Quad)
+			? *m_viewportFrameBuffers[vp] : *m_frameBuffer;
+		context.ClearAndSetFrameBuffer(targetFb, { 0.251f, 0.141f, 0.31f, 1.0f });
+
 		{
 			ObjectData objectData{};
 			auto gameObjects = world.GetAllGameObjects();
 			ui32 totalGameObjects = static_cast<ui32>(gameObjects.size());
-
-			//std::cout << "[LOG] Current Game Objects No.: " << totalGameObjects << std::endl;
+			const auto& searchFilter = world.GetSearchFilter();
+			bool hasFilter = !searchFilter.empty();
+			bool wireframePass = (m_renderMode == RenderMode::Wireframe || m_renderMode == RenderMode::LitWireframe || m_renderMode == RenderMode::UnlitWireframe);
+			bool unlitPass = (m_renderMode == RenderMode::Unlit || m_renderMode == RenderMode::UnlitWireframe);
 
 			for (auto i : std::views::iota(0u, totalGameObjects))
 			{
 				auto object = gameObjects[i];
 				if (!object) continue;
 
+				if (!object->IsEnabled()) continue;
+
+				if (hasFilter)
+				{
+					std::string nameLower = object->GetObjectName();
+					std::string filterLower = searchFilter;
+					std::transform(nameLower.begin(), nameLower.end(), nameLower.begin(), ::tolower);
+					std::transform(filterLower.begin(), filterLower.end(), filterLower.begin(), ::tolower);
+					if (nameLower.find(filterLower) == std::string::npos)
+						continue;
+				}
+
 				auto& transform = object->GetTransform();
 				size_t objectType = object->GetTypeID();
-				//auto material = object->GetMaterialComponent().GetMaterial();
 
-				//TO BE FIXED
-				// Issue is material on the mesh does not want to load properly, even if the texture can load on the other objs
-				// Get material at index 0 for now since still figuring out how to render it
 				pimm::MaterialResource* material = nullptr;
 				if (objectType == pimm::MeshObject::getTypeId())
 				{
 					auto meshComp = object->GetComponent<pimm::MeshComponent>();
 					if (meshComp) material = meshComp->GetMaterial(0);
 				}
-				
-				//For primitives (or non meshes wtvr), get the material assigned to it
+
 				if (!material) material = object->GetMaterialComponent().GetMaterial();
-				//END OF TO BE FIXED
 
 				if (material)
 				{
 					objectData.world = transform.GetAffineWorldMatrix();
 
 					context.SetGraphicsPipelineState(material->GetGraphicsPipelineState());
+
+					auto d3dContext = context.GetD3D11DeviceContext();
+
+					if (unlitPass && m_unlitPixelShader)
+						d3dContext->PSSetShader(m_unlitPixelShader.Get(), nullptr, 0);
+
 					context.UpdateConstantBuffer(objectCB, std::as_bytes(std::span{ &objectData, 1 }));
 					context.UpdateConstantBuffer(materialCB, material->GetData());
 					ConstantBuffer* cbs[] = { &objectCB, &cameraCB, &materialCB };
@@ -208,6 +280,9 @@ void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 d
 						if (tex) m_textures[t] = &tex->GetTexture();
 					}
 					context.SetTextures(std::span<Texture*>{m_textures});
+
+					if (wireframePass && m_wireframeRasterizer)
+						d3dContext->RSSetState(m_wireframeRasterizer.Get());
 
 					if (objectType == pimm::Quad::getTypeId())
 					{
@@ -242,13 +317,15 @@ void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 d
 						context.SetIndexBuffer(object->GetComponent<MeshComponent>()->GetMesh()->GetIndexBuffer());
 						context.Draw3PatchIndexedTriangleList(object->GetComponent<MeshComponent>()->GetMesh()->GetIndexBuffer().GetIndexListSize(), 0u, 0u);
 					}
-					
+
+					if (wireframePass && m_wireframeRasterizer)
+						d3dContext->RSSetState(nullptr);
+
 				}
 			}
 		}
 
-		//Draw editor gizmos (e.g. camera frustum wireframes) on top of the scene
-		if (m_gizmoRenderer)
+		if (m_viewportLayout == ViewportLayout::Single && m_gizmoRenderer)
 		{
 			const CameraObject* skipCamera = m_sceneCameraMode ? world.GetActiveCameraObject() : nullptr;
 
@@ -259,32 +336,59 @@ void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 d
 				cameraData.projection,
 				skipCamera);
 		}
-
-		//Pass device context where we will extract the commands from
-		m_graphicsDevice.ExecuteCommandList(context);
-
-		auto immediateContext = m_graphicsDevice.GetD3DDeviceContext();
-		m_deviceContext->ExecuteCommandList(immediateContext);
-		auto rtv = swapChain.GetRenderTargetView();
-		auto dsv = swapChain.GetDepthStencilView();
-		immediateContext->OMSetRenderTargets(1, &rtv, dsv);
-		float clearColor[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
-
-		// clear backbuffer
-
-		immediateContext->ClearRenderTargetView(rtv, clearColor);
-		immediateContext->ClearDepthStencilView(
-			dsv,
-			D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
-			1.0f,
-			0
-		);
-
-		m_uiManager.Render();
-
-		//Present our back buffer with its rendered content on the window
-		swapChain.Present();
 	}
+
+	m_graphicsDevice.ExecuteCommandList(context);
+
+	auto immediateContext = m_graphicsDevice.GetD3DDeviceContext();
+	m_deviceContext->ExecuteCommandList(immediateContext);
+	auto rtv = swapChain.GetRenderTargetView();
+	auto dsv = swapChain.GetDepthStencilView();
+	immediateContext->OMSetRenderTargets(1, &rtv, dsv);
+	float clearColor[4] = { 0.1f, 0.1f, 0.1f, 1.0f };
+
+	immediateContext->ClearRenderTargetView(rtv, clearColor);
+	immediateContext->ClearDepthStencilView(
+		dsv,
+		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
+		1.0f,
+		0
+	);
+
+	m_uiManager.Render();
+
+	swapChain.Present();
+}
+
+void pimm::WorldRenderer::SetViewportLayout(ViewportLayout layout) noexcept
+{
+	m_viewportLayout = layout;
+}
+
+pimm::ui32 pimm::WorldRenderer::GetViewportCount() const noexcept
+{
+	return (m_viewportLayout == ViewportLayout::Quad) ? 4 : 1;
+}
+
+pimm::FrameBuffer* pimm::WorldRenderer::GetViewportFrameBuffer(ui32 index) const
+{
+	if (index >= 4)
+		return nullptr;
+	if (m_viewportLayout == ViewportLayout::Quad)
+		return m_viewportFrameBuffers[index].get();
+	return m_frameBuffer.get();
+}
+
+pimm::Matrix4x4 pimm::WorldRenderer::BuildOrthoViewMatrix(ui32 viewIndex) const
+{
+	Vec3 offsets[] = {
+		{ 0.0f, 0.0f, 0.0f },
+		{ 0.0f, 0.0f, -20.0f },
+		{ 20.0f, 0.0f, 0.0f },
+		{ 0.0f, 20.0f, 0.0f }
+	};
+	Vec3 eye = offsets[viewIndex % 4];
+	return Matrix4x4::Translate({ -eye.x, -eye.y, -eye.z });
 }
 
 pimm::GraphicsDevice& pimm::WorldRenderer::GetGraphicsDevice() const noexcept
