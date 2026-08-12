@@ -168,14 +168,18 @@ void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 d
 	auto& objectCB = *m_objectConstantBuffer;
 	auto& materialCB = *m_materialConstantBuffer;
 
+	Vec3 editorCamPos{};
+	Vec3 editorCamForward{};
+
 	for (ui32 vp = 0; vp < GetViewportCount(); ++vp)
 	{
 		CameraData cameraData{};
 
 		if (m_viewportLayout == ViewportLayout::Quad && vp > 0)
 		{
-			cameraData.view = BuildOrthoViewMatrix(vp);
-			f32 halfSize = 5.0f;
+			Vec3 lookTarget = { editorCamPos.x + editorCamForward.x * 20.0f, editorCamPos.y + editorCamForward.y * 20.0f, editorCamPos.z + editorCamForward.z * 20.0f };
+			cameraData.view = BuildOrthoViewMatrix(vp, lookTarget);
+			f32 halfSize = 25.0f;
 			cameraData.projection = Matrix4x4::OrthoLH(
 				halfSize * 2.0f * (f32(viewportSize.width) / f32(viewportSize.height)),
 				halfSize * 2.0f, 0.01f, 100.0f);
@@ -193,6 +197,8 @@ void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 d
 						cameraData.view = camComponent->GetViewMatrix();
 						camComponent->SetViewportSize(frameBufferSize);
 						cameraData.projection = camComponent->GetProjectionMatrix();
+						editorCamPos = cameraObject->GetTransform().GetPosition();
+						editorCamForward = cameraObject->GetTransform().Forward();
 					}
 				}
 			}
@@ -207,6 +213,8 @@ void pimm::WorldRenderer::Render(const World& world, SwapChain& swapChain, f32 d
 					cameraData.view = camComponent->GetViewMatrix();
 					camComponent->SetViewportSize(frameBufferSize);
 					cameraData.projection = camComponent->GetProjectionMatrix();
+					editorCamPos = camComponent->GetGameObject().GetTransform().GetPosition();
+					editorCamForward = camComponent->GetGameObject().GetTransform().Forward();
 					break;
 				}
 			}
@@ -379,17 +387,33 @@ pimm::FrameBuffer* pimm::WorldRenderer::GetViewportFrameBuffer(ui32 index) const
 	return m_frameBuffer.get();
 }
 
-pimm::Matrix4x4 pimm::WorldRenderer::BuildOrthoViewMatrix(ui32 viewIndex) const
-{
-	Vec3 offsets[] = {
-		{ 0.0f, 0.0f, 0.0f },
-		{ 0.0f, 0.0f, -20.0f },
-		{ 20.0f, 0.0f, 0.0f },
-		{ 0.0f, 20.0f, 0.0f }
-	};
-	Vec3 eye = offsets[viewIndex % 4];
-	return Matrix4x4::Translate({ -eye.x, -eye.y, -eye.z });
-}
+pimm::Matrix4x4 pimm::WorldRenderer::BuildOrthoViewMatrix(ui32 viewIndex, const Vec3& focusPoint) const
+	{
+		f32 dist = 50.0f;
+		Vec3 eye = focusPoint;
+		Matrix4x4 translate{};
+		Matrix4x4 rotate{};
+
+		switch (viewIndex)
+		{
+		case 1:
+			eye.z -= dist;
+			translate = Matrix4x4::Translate({ -eye.x, -eye.y, -eye.z });
+			return translate;
+		case 2:
+			eye.x += dist;
+			translate = Matrix4x4::Translate({ -eye.x, -eye.y, -eye.z });
+			rotate = Matrix4x4::RotateAlongY(90.0f);
+			return translate * rotate;
+		case 3:
+			eye.y += dist;
+			translate = Matrix4x4::Translate({ -eye.x, -eye.y, -eye.z });
+			rotate = Matrix4x4::RotateAlongX(-90.0f);
+			return translate * rotate;
+		}
+
+		return Matrix4x4::Identity();
+	}
 
 pimm::GraphicsDevice& pimm::WorldRenderer::GetGraphicsDevice() const noexcept
 {

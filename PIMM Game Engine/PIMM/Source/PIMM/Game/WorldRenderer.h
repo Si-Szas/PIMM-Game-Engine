@@ -71,7 +71,7 @@ namespace pimm
 		};
 
 	private:
-		Matrix4x4 BuildOrthoViewMatrix(ui32 viewIndex) const;
+		Matrix4x4 BuildOrthoViewMatrix(ui32 viewIndex, const Vec3& focusPoint) const;
 
 		Rect m_swapChainSize{};
 		Rect m_sceneViewSize{};
