@@ -12,3 +12,5 @@ The entry point of the engine (main function) is found in the **Game** folder in
 1. Download the code .zip file on the branch's test case that you want to view
 2. Open the **PIMM Game Engine** folder and open the project solution, **PIMM Game Engine.sln**
 3. Run / Build the solution on Debug mode, or use the **Local Windows Debugger** button at the top bar of Visual Studio
+### Other notes
+- You can press the [Esc] button to close the program :D
