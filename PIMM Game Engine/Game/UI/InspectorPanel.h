@@ -154,8 +154,11 @@ namespace pimm
 								if (ImGui::DragFloat3("Rotation", rotationArr, 0.1f))
 									transform.SetRotation({ rotationArr[0], rotationArr[1], rotationArr[2] });
 
-								if (ImGui::DragFloat3("Scale", scaleArr, 0.1f))
+								if (ImGui::DragFloat3("Scale", scaleArr, 0.1f)){
 									transform.SetScale({ scaleArr[0], scaleArr[1], scaleArr[2] });
+									if (auto* rigidBody = gameObject->GetComponent<RigidBodyComponent>())
+										rigidBody->SyncColliderScale();
+								}
 							}
 							// If scene is running, do not allow manipulation
 							else
