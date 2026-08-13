@@ -6,6 +6,7 @@ namespace pimm
 	namespace SceneKey
 	{
 		constexpr const char* Scene = "Scene";
+		constexpr const char* Objects = "objects";
 		constexpr const char* Object = "Object";
 		constexpr const char* Material = "Material";
 		constexpr const char* RigidBody = "RigidBody";
@@ -48,11 +49,15 @@ namespace pimm
 		constexpr const char* ColliderSphere = "sphere";
 		constexpr const char* ColliderCapsule = "capsule";
 
+		constexpr const char* HalfExtents = "halfExtents";
+		constexpr const char* Radius = "radius";
+		constexpr const char* Height = "height";
+
 		constexpr const char* BodyStatic = "Static";
 		constexpr const char* BodyKinematic = "Kinematic";
 		constexpr const char* BodyDynamic = "Dynamic";
 
-		constexpr const char* FileExtension = "pimm";
-		constexpr const char* FileFilter = "PIMM Scene (*.pimm)\0*.pimm\0";
+		constexpr const char* FileExtension = "json";
+		constexpr const char* FileFilter = "JSON Scene (*.json)\0*.json\0";
 	}
 }

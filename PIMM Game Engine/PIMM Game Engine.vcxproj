@@ -73,13 +73,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>Bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>Intermediate\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>PIMM/Include;PIMM/Source;PIMM/Vendor/stb-image/include/;PIMM/Vendor/tinyobjloader/include/;$(IncludePath)</IncludePath>
-    <IncludePath>PIMM/Include;PIMM/Source;PIMM/Vendor/stb-image/include/;PIMM/Vendor/ReactPhysics3D/include;PIMM/Vendor/tinyobjloader/include;$(IncludePath)</IncludePath>
+    <IncludePath>PIMM/Include;PIMM/Source;PIMM/Vendor/stb-image/include/;PIMM/Vendor/tinyobjloader/include/;PIMM/Vendor/json/include;$(IncludePath)</IncludePath>
+    <IncludePath>PIMM/Include;PIMM/Source;PIMM/Vendor/stb-image/include/;PIMM/Vendor/ReactPhysics3D/include;PIMM/Vendor/tinyobjloader/include;PIMM/Vendor/json/include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>Bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>Intermediate\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>PIMM/Include;PIMM/Source;$(IncludePath)</IncludePath>
+    <IncludePath>PIMM/Include;PIMM/Source;PIMM/Vendor/json/include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -185,6 +185,7 @@
     <ClCompile Include="Game\MainGame.cpp" />
     <ClCompile Include="Game\Editor\SceneModeManager.cpp" />
     <ClCompile Include="Game\Editor\SceneSerializer.cpp" />
+    <ClCompile Include="Game\Editor\SceneJsonConverter.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Game\World.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\Graphics\IndexBuffer\IndexBuffer.cpp" />
     <ClCompile Include="PIMM\Source\PIMM\AGameObject\AGameObject.cpp" />
@@ -224,6 +225,8 @@
     <ClInclude Include="Game\Editor\SceneMode.h" />
     <ClInclude Include="Game\Editor\SceneModeManager.h" />
     <ClInclude Include="Game\Editor\SceneFormat.h" />
+    <ClInclude Include="Game\Editor\SceneData.h" />
+    <ClInclude Include="Game\Editor\SceneJsonConverter.h" />
     <ClInclude Include="Game\Editor\SceneSerializer.h" />
     <ClInclude Include="PIMM\Include\PIMM\AComponent\RigidBodyComponent.h" />
     <ClInclude Include="PIMM\Source\PIMM\Graphics\FrameBuffer\FrameBuffer.h" />

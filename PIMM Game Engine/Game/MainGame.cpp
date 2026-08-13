@@ -346,10 +346,10 @@ void MainGame::SaveScene()
 	OPENFILENAMEW ofn = {};
 	ofn.lStructSize = sizeof(ofn);
 	ofn.hwndOwner = nullptr;
-	ofn.lpstrFilter = L"PIMM Scene (*.pimm)\0*.pimm\0";
+	ofn.lpstrFilter = L"JSON Scene (*.json)\0*.json\0";
 	ofn.lpstrFile = filePath;
 	ofn.nMaxFile = MAX_PATH;
-	ofn.lpstrDefExt = L"pimm";
+	ofn.lpstrDefExt = L"json";
 	ofn.Flags = OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY | OFN_NOCHANGEDIR;
 
 	if (GetSaveFileNameW(&ofn))
@@ -365,10 +365,10 @@ void MainGame::LoadScene()
 	OPENFILENAMEW ofn = {};
 	ofn.lStructSize = sizeof(ofn);
 	ofn.hwndOwner = nullptr;
-	ofn.lpstrFilter = L"PIMM Scene (*.pimm)\0*.pimm\0";
+	ofn.lpstrFilter = L"JSON Scene (*.json)\0*.json\0";
 	ofn.lpstrFile = filePath;
 	ofn.nMaxFile = MAX_PATH;
-	ofn.lpstrDefExt = L"pimm";
+	ofn.lpstrDefExt = L"json";
 	ofn.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY | OFN_NOCHANGEDIR;
 
 	if (GetOpenFileNameW(&ofn))
