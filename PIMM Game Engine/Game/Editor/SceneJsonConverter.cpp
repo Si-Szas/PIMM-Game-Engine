@@ -135,6 +135,8 @@ namespace pimm
 				continue;
 			if (obj->GetTypeID() == 0)
 				continue;
+			if (obj->GetTypeID() == Player::getTypeId())
+				continue;
 
 			remap[i] = static_cast<int>(data.objects.size());
 
@@ -289,6 +291,9 @@ namespace pimm
 		for (size_t i = 0; i < data.objects.size(); ++i)
 		{
 			const auto& obj = data.objects[i];
+
+			if (obj.typeId == Player::getTypeId())
+				continue;
 
 			AGameObject* created = nullptr;
 
