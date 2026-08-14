@@ -323,6 +323,7 @@ namespace pimm
 			transform.SetScale(obj.scale);
 			transform.SetRotation(obj.rotation);
 
+			created->SetObjectName(obj.name);
 			created->SetEnabled(obj.enabled);
 
 			if (obj.material)
@@ -350,9 +351,9 @@ namespace pimm
 				{
 					switch (c.type)
 					{
-					case ColliderType::Box:     rb->AddBoxCollider(c.halfExtents); break;
-					case ColliderType::Sphere:  rb->AddSphereCollider(c.radius); break;
-					case ColliderType::Capsule: rb->AddCapsuleCollider(c.radius, c.height); break;
+					case ColliderType::Box:     rb->AddBoxCollider(c.halfExtents, c.position, c.rotation); break;
+					case ColliderType::Sphere:  rb->AddSphereCollider(c.radius, c.position, c.rotation); break;
+					case ColliderType::Capsule: rb->AddCapsuleCollider(c.radius, c.height, c.position, c.rotation); break;
 					}
 				}
 				rb->SetMass(obj.rigidBody->mass);
@@ -500,6 +501,8 @@ namespace pimm
 						colliderJson[SceneKey::Height] = collider.height;
 						break;
 					}
+					colliderJson[SceneKey::Position] = Vec3ToJson(collider.position);
+					colliderJson[SceneKey::Rotation] = Vec3ToJson(collider.rotation);
 					colliders.push_back(std::move(colliderJson));
 				}
 				rigidBody[SceneKey::ColliderPrefix] = std::move(colliders);
@@ -635,6 +638,9 @@ namespace pimm
 						{
 							continue;
 						}
+
+						info.position = Vec3FromJson(colliderJson.value(SceneKey::Position, nlohmann::json::array()), Vec3{ 0.0f });
+						info.rotation = Vec3FromJson(colliderJson.value(SceneKey::Rotation, nlohmann::json::array()), Vec3{ 0.0f });
 
 						rigidBody.colliders.push_back(info);
 					}

@@ -426,7 +426,7 @@ namespace pimm
 												halfExtents[0],
 												halfExtents[1],
 												halfExtents[2]
-												});
+													}, current.position, current.rotation);
 										}
 									}
 									else if (current.type == ColliderType::Sphere)
@@ -438,7 +438,7 @@ namespace pimm
 											radius = std::max(radius, 0.01f);
 
 											rigidBody->RemoveAllColliders();
-											rigidBody->AddSphereCollider(radius);
+											rigidBody->AddSphereCollider(radius, current.position, current.rotation);
 										}
 									}
 									else if (current.type == ColliderType::Capsule)
@@ -457,7 +457,7 @@ namespace pimm
 											height = std::max(height, 0.01f);
 
 											rigidBody->RemoveAllColliders();
-											rigidBody->AddCapsuleCollider(radius, height);
+											rigidBody->AddCapsuleCollider(radius, height, current.position, current.rotation);
 										}
 									}
 								}

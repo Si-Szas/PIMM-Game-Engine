@@ -124,7 +124,7 @@ bool pimm::RigidBodyComponent::IsGravityEnabled() const noexcept
 	return m_rigidBody->isGravityEnabled();
 }
 
-void pimm::RigidBodyComponent::AddBoxCollider(const Vec3& halfExtents)
+void pimm::RigidBodyComponent::AddBoxCollider(const Vec3& halfExtents, const Vec3& position, const Vec3& rotation)
 {
 	const Vec3 scale = m_object.GetTransform().GetScale();
 	auto* shape = m_world.GetPhysicsCommon().createBoxShape(ToRP3D({
@@ -132,31 +132,34 @@ void pimm::RigidBodyComponent::AddBoxCollider(const Vec3& halfExtents)
 		halfExtents.y * scale.y,
 		halfExtents.z * scale.z
 	}));
-	auto* collider = m_rigidBody->addCollider(shape, rp3d::Transform::identity());  
+	rp3d::Transform localTransform(ToRP3D(position), ToRP3DQuat(rotation));
+	auto* collider = m_rigidBody->addCollider(shape, localTransform);  
 	m_rigidBody->updateMassPropertiesFromColliders();
-	m_colliders.push_back({ ColliderType::Box, halfExtents, 0.0f, 0.0f });
+	m_colliders.push_back({ ColliderType::Box, halfExtents, 0.0f, 0.0f, position, rotation });
 	m_colliderShapes.push_back(collider); 
 }
 
-void pimm::RigidBodyComponent::AddSphereCollider(f32 radius)
+void pimm::RigidBodyComponent::AddSphereCollider(f32 radius, const Vec3& position, const Vec3& rotation)
 {
 	const Vec3 scale = m_object.GetTransform().GetScale();
 	f32 uniformScale = std::max({ scale.x, scale.y, scale.z });
 	auto* shape = m_world.GetPhysicsCommon().createSphereShape(radius * uniformScale);
-	auto* collider = m_rigidBody->addCollider(shape, rp3d::Transform::identity());
+	rp3d::Transform localTransform(ToRP3D(position), ToRP3DQuat(rotation));
+	auto* collider = m_rigidBody->addCollider(shape, localTransform);
 	m_rigidBody->updateMassPropertiesFromColliders();
-	m_colliders.push_back({ ColliderType::Sphere, {}, radius, 0.0f });
+	m_colliders.push_back({ ColliderType::Sphere, {}, radius, 0.0f, position, rotation });
 	m_colliderShapes.push_back(collider);
 }
 
-void pimm::RigidBodyComponent::AddCapsuleCollider(f32 radius, f32 height)
+void pimm::RigidBodyComponent::AddCapsuleCollider(f32 radius, f32 height, const Vec3& position, const Vec3& rotation)
 {
 	const Vec3 scale = m_object.GetTransform().GetScale();
 	f32 radialScale = std::max(scale.x, scale.z);
 	auto* shape = m_world.GetPhysicsCommon().createCapsuleShape(radius * radialScale, height * scale.y);
-	auto* collider = m_rigidBody->addCollider(shape, rp3d::Transform::identity());
+	rp3d::Transform localTransform(ToRP3D(position), ToRP3DQuat(rotation));
+	auto* collider = m_rigidBody->addCollider(shape, localTransform);
 	m_rigidBody->updateMassPropertiesFromColliders();
-	m_colliders.push_back({ ColliderType::Capsule, {}, radius, height });
+	m_colliders.push_back({ ColliderType::Capsule, {}, radius, height, position, rotation });
 	m_colliderShapes.push_back(collider);
 }
 
@@ -186,9 +189,9 @@ void pimm::RigidBodyComponent::RestoreLastCollider()
 	{
 		switch (m_lastColliderInfo.type)
 		{
-		case ColliderType::Box: AddBoxCollider(m_lastColliderInfo.halfExtents); break;
-		case ColliderType::Sphere:  AddSphereCollider(m_lastColliderInfo.radius); break;
-		case ColliderType::Capsule: AddCapsuleCollider(m_lastColliderInfo.radius, m_lastColliderInfo.height); break;
+		case ColliderType::Box: AddBoxCollider(m_lastColliderInfo.halfExtents, m_lastColliderInfo.position, m_lastColliderInfo.rotation); break;
+		case ColliderType::Sphere:  AddSphereCollider(m_lastColliderInfo.radius, m_lastColliderInfo.position, m_lastColliderInfo.rotation); break;
+		case ColliderType::Capsule: AddCapsuleCollider(m_lastColliderInfo.radius, m_lastColliderInfo.height, m_lastColliderInfo.position, m_lastColliderInfo.rotation); break;
 		}
 	}
 	else
@@ -219,6 +222,11 @@ ColliderInfo pimm::RigidBodyComponent::GetCurrentColliderInfo(ui32 index) const 
 		info.height = static_cast<rp3d::CapsuleShape*>(shape)->getHeight();
 		break;
 	}
+
+	const rp3d::Transform& localTransform = m_colliderShapes[index]->getLocalToBodyTransform();
+	info.position = FromRP3D(localTransform.getPosition());
+	info.rotation = FromRP3DQuat(localTransform.getOrientation());
+
 	return info;
 }
 

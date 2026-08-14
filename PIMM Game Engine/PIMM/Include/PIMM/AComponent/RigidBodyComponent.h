@@ -29,6 +29,8 @@ namespace pimm
 		Vec3 halfExtents{ 0.5f };
 		f32 radius = 0.5f;
 		f32 height = 1.0f;
+		Vec3 position{ 0.0f };
+		Vec3 rotation{ 0.0f };
 	};
 
 	class RigidBodyComponent final : public AComponent
@@ -50,9 +52,10 @@ namespace pimm
 		bool IsGravityEnabled() const noexcept;
 
 		//COLLIDERS - halfExtents/radius are WORLD units, not affected by TransformComponent scale
-		void AddBoxCollider(const Vec3& halfExtents);
-		void AddSphereCollider(f32 radius);
-		void AddCapsuleCollider(f32 radius, f32 height);
+		//position/rotation define the collider's local transform relative to the rigid body
+		void AddBoxCollider(const Vec3& halfExtents, const Vec3& position = {}, const Vec3& rotation = {});
+		void AddSphereCollider(f32 radius, const Vec3& position = {}, const Vec3& rotation = {});
+		void AddCapsuleCollider(f32 radius, f32 height, const Vec3& position = {}, const Vec3& rotation = {});
 		void RemoveAllColliders();
 		void RestoreLastCollider();
 
